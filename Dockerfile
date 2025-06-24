@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     r-base r-cran-ggplot2 \
     minimap2 mummer trf cd-hit ncbi-blast+ gnuplot \
     samtools bedtools \
+    && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Install R package 'rideogram'
@@ -39,6 +40,42 @@ RUN pip3 install .
 # Make quartet accessible globally
 ENV PATH="/opt/quarTeT:/opt/conda/bin:$PATH"
 
+# Install Circos 0.69-9
+WORKDIR /opt
+
+RUN apt-get update && apt-get install -y \
+    curl ca-certificates libgd-dev cpanminus && \
+    rm -rf /var/lib/apt/lists/*
+
+# Securely download Circos 0.69-9
+RUN wget --no-check-certificate https://circos.ca/distribution/circos-0.69-9.tgz && \
+    ls -lh circos-0.69-9.tgz && \
+    tar -xzf circos-0.69-9.tgz && \
+    mv circos-0.69-9 circos && \
+    rm circos-0.69-9.tgz
+
+# Ensure /bin/env exists for Perl scripts
+RUN [ -f /bin/env ] || ln -s /usr/bin/env /bin/env
+
+ENV PATH="/opt/circos/bin:${PATH}"
+
+# Install required Perl modules
+RUN cpanm --notest \
+    Config::General     \
+    Font::TTF::Font     \
+    GD                  \
+    Math::Bezier        \
+    Math::Round         \
+    Math::VecStat       \
+    Params::Validate    \
+    Regexp::Common      \
+    Set::IntSpan        \
+    Statistics::Basic   \
+    SVG                 \
+    Text::Format
+
+# Validate the installation
+RUN circos -modules && circos -version
+
 # Set default behavior
-ENTRYPOINT ["quartet"]
 CMD ["-h"]
