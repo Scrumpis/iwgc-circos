@@ -89,6 +89,7 @@ cut -f2- > CirAr_female_haps_Chr06.coords.circos
   - Repeat density is power 3 transformed
   - All density and LTR age tracks are normalized
   - Paried comparisons are difficult, give link to Carvense circos which should have detailed instructions of changes made since they were extensivem, if they have config files for Carvense, they can use those. Give links to all config files for all projects.
+  - In special situtations where you need to edit the housekeeping.conf, such as if you have more contigs than what is typically allowed, you can either run the container interactively and update the housekeeping.conf file or you can create a housekeeping.conf file in the /circos directory and map it to the container, see Fusarium paper
 
 ## Circos Plot
 ### Setup
