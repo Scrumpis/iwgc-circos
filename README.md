@@ -22,6 +22,20 @@ singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:lat
 ```
 
 ### Usage
+./iwgc_circos_tracks.sh [options] <FASTA> [<GENES>] [<REPEATS>] [<INTACT>] [<LTRDATES>] <IWGC_CIRCOS_SIF> [WINDOW]
+Options:
+  -gene             Add gene density track (requires gene annotation GFF3)
+  -repeat           Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.TEanno.gff3)
+  -intact           Add intact TE density track (requires EDTA intact repeat annotation: EDTA/genome.fasta.mod.EDTA.intact.gff3)
+  -gc               Add GC content track
+  -ltr-dating       Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)
+  -telomere         Add telomere bands to ideogram (karyotype.circos)
+  -ts <value>       Telomere band size scale (default: 0.005)
+  -keep-temp        Keep intermediate files
+  -sliding         Use sliding windows instead of fixed
+  -step <value>    Step size for sliding windows (default: WINDOW/2)
+
+  
 **Input files:**
 | File Name                             | Description                                                                 |
 |--------------------------------------|-----------------------------------------------------------------------------|
