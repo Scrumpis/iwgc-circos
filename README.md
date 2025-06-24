@@ -126,13 +126,16 @@ iwgc_circos/
 - Reduce ```chromosomes_units =``` for small genomes or increase for big ones if needed, try with default 1000000 (1Mbp) first
 
 **ideogram.conf**
-- Change pairwise header block to your chr exact names
+- Change pairwise header block to your chr exact names to put a gap for the legend (typically last chr then first chr)
 ```
-<pairwise H2_Chr06 H1_Chr06> # Change chr names to your chr names to space for legend gap (typically last chr then first chr)
-# spacing between chr1 and chr9 is 5x 0.1% of image
-spacing = 15r 
+<pairwise H2_Chr06 H1_Chr06> # Change to your chrs
+spacing = 15r # spacing between chr1 and chr9 is 5x 0.1% of image
 </pairwise>
 ```
+
+**ticks.conf**
+- If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
+  
 **Run Circos:**  
 Docker (local use; easier refinement - quickly view png/svg, tweak .conf files, and re-run):
 ```
