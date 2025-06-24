@@ -15,7 +15,7 @@ For additional information, the [Circos](https://circos.ca/) website offers very
 
   
 ### Setup
-Pull container from DockerHub (can use Docker equivalent pull command too)
+Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks) (can use Docker equivalent pull command too)
 ```
 singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
 ```
