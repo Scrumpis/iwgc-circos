@@ -1,5 +1,5 @@
 # International Weed Genomics Consortium (IWGC) Genome Report Circos Plots
-This project aims to automate the generation of commonly used Circos tracks in genomics to reduce the barrier for entry for unfamaliar with Circos and to speed-up production for those experienced with Circos
+This repository documents the methods used to generate the Circos plots for many of the genome reports produced by the International Genomics Consortium (IWGC). This project aims to automate the generation of commonly used Circos tracks in genomics to reduce the barrier for entry for unfamaliar with Circos and to speed-up production for those experienced with Circos.
 
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
   
