@@ -107,6 +107,14 @@ cut -f2- > CirAr_female_haps_Chr06.coords.circos
   - Paried comparisons are difficult, give link to Carvense circos which should have detailed instructions of changes made since they were extensivem, if they have config files for Carvense, they can use those. Give links to all config files for all projects.
   - In special situtations where you need to edit the housekeeping.conf, such as if you have more contigs than what is typically allowed, you can either run the container interactively and update the housekeeping.conf file or you can create a housekeeping.conf file in the /circos directory and map it to the container, see Fusarium paper
 
+### Known Warnings:
+- (iwgc_circos_tracks.sh) File species.fasta_windows.bed has a record where naming convention (leading zero) is inconsistent with other files
+  - Seems ignorable with no effects, happens at Chr10 if previous are Chr01-09.
+- (Circos) WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+  - Seems ignorable. Occurs on Mac M1 chip while container built for Linux.
+- (Circos) Use of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781
+  - Seems ignorable.
+  
 ## Circos Plot
 ### Setup
 Move all desired track files (.circos) into the iwgc_circos_data directory
