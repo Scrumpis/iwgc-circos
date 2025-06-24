@@ -75,7 +75,7 @@ awk 'BEGIN{OFS="\t"} {
 sort -k1,1n | \
 cut -f2- > CirAr_female_haps_Chr06.coords.circos
 ```
-- If you need to reverse the orientation of any chromosomes to untwist links, edit the ```chromosomes_reverse = ``` line to indicate the chromosomes you wish to reverse (example: ```chromosomes_reverse = Chr1; Chr6; Chr9```
+- If you need to reverse the orientation of any chromosomes to untwist links, edit the ```chromosomes_reverse = ``` line of ```iwgc_circos.conf``` to indicate the chromosomes you wish to reverse (example: ```chromosomes_reverse = Chr1; Chr6; Chr9```
 
 
 ### Notes
