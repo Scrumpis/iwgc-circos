@@ -40,6 +40,7 @@ Options:
   -keep-temp       Keep intermediate files
   -sliding         Use sliding windows instead of fixed
   -step <value>    Step size for sliding windows (default: WINDOW/2)
+  -local           Use Docker instead of Singularity (default: false)
 ```
     
 **Input files:**
