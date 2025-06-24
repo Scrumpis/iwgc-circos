@@ -156,14 +156,14 @@ spacing = 15r # spacing between chr1 and chr9 is 5x 0.1% of image
 **ticks.conf**
 - If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
   
-**Run Circos:**  
+**Run Circos 0.69-9:**  
 *Run one level up from iwgc_circos and iwgc_circos_data*  
 Docker (local use; easier refinement - quickly view png/svg, tweak .conf files, and re-run):
 ```
 docker run --rm \
   -v "$PWD:/data" \
-  staphb/circos \
-  circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp --noparanoid
+  scrumpis/iwgc-circos-tracks \
+  circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp -noparanoid
 ```
 We use --noparanoid to ignore the error about telomere bands exceeding length of chromosomes  
 Singularity (HPC use):
@@ -171,7 +171,7 @@ Singularity (HPC use):
 singularity exec \
   --cleanenv \
   -B "$PWD":/data \
-  /path/to/staphb-circos.sif \
+  /path/to/iwgc-circos-tracks.sif \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp --noparanoid
 ```
   
