@@ -188,7 +188,7 @@ Use Inkspace or a similar tool capable of editing SVG images, or another method 
 Add legend characters (a, b, c, etc.) to the central gap  
 For comparisons with only two ideograms, such as the same chromosome of two haplotypes or species, you can adjust chromosome names this way  
    
-### Examples
+### Examples (Will add either links to GitHubs or upload the config files here as a template once these genomes are published)
 ![image](https://github.com/user-attachments/assets/4f4ebc51-7813-4bb9-a6a4-f49da1c9b119)
   
 ![image](https://github.com/user-attachments/assets/e9c1d8d7-9814-48be-afea-d34ce2fcfd5a)
