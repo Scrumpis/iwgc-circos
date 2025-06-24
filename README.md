@@ -22,6 +22,7 @@ singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:lat
 ```
 
 ### Usage
+```
 ./iwgc_circos_tracks.sh [options] <FASTA> [<GENES>] [<REPEATS>] [<INTACT>] [<LTRDATES>] <IWGC_CIRCOS_SIF> [WINDOW]
 Options:
   -gene             Add gene density track (requires gene annotation GFF3)
@@ -34,8 +35,8 @@ Options:
   -keep-temp        Keep intermediate files
   -sliding         Use sliding windows instead of fixed
   -step <value>    Step size for sliding windows (default: WINDOW/2)
-
-  
+```
+    
 **Input files:**
 | File Name                             | Description                                                                 |
 |--------------------------------------|-----------------------------------------------------------------------------|
