@@ -140,6 +140,7 @@ spacing = 15r # spacing between chr1 and chr9 is 5x 0.1% of image
 - If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
   
 **Run Circos:**  
+*Run one level up from iwgc_circos and iwgc_circos_data*  
 Docker (local use; easier refinement - quickly view png/svg, tweak .conf files, and re-run):
 ```
 docker run --rm \
