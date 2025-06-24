@@ -21,7 +21,7 @@ Singularity (HPC usage):
 ```
 singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
 ```
-Docker (Local usage): **iwgc_circos_tracks.sh currently only runs with singularity on hpc. I can add flag to allow docker usage**
+Docker (Local usage):
 ```
 docker pull scrumpis/iwgc-circos-tracks:latest
 ```
