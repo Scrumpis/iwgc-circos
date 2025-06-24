@@ -16,9 +16,14 @@ For additional information, the [Circos](https://circos.ca/) website offers very
 
   
 ### Setup
-Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks) (can use Docker equivalent pull command too)
+Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks)
+Singularity (HPC usage):
 ```
 singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
+```
+Docker (Local usage): **iwgc_circos_tracks.sh currently only runs with singularity on hpc. I can add flag to allow docker usage**
+```
+docker pull scrumpis/iwgc-circos-tracks:latest
 ```
 
 ### Usage
