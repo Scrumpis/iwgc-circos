@@ -192,14 +192,14 @@ Use Inkspace or a similar tool capable of editing SVG images, or another method 
 Add legend characters (a, b, c, etc.) to the central gap  
 For comparisons with only two ideograms, such as the same chromosome of two haplotypes or species, you can adjust chromosome names this way  
    
-### Examples (Will add either links to GitHubs or upload the config files here as a template once these genomes are published)
-![image](https://github.com/user-attachments/assets/4f4ebc51-7813-4bb9-a6a4-f49da1c9b119)
-  
-![image](https://github.com/user-attachments/assets/e9c1d8d7-9814-48be-afea-d34ce2fcfd5a)
-  
-![image](https://github.com/user-attachments/assets/6dee91e6-992f-4e23-ae8b-c24a87683bf3)
-  
-![image](https://github.com/user-attachments/assets/eb3b2b77-ce76-4a9b-8ff9-491d5b581885)
+### Example:
+The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-circos/tree/main/examples/all-tracks) producable by iwgc_circos_tracks.sh.
+a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
+b. Gene density, more blue is more gene rich, more yellow is less gene rich
+c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
+d. Intact Gypsy LTR coverage
+e. Intact Copia LTR coverage
+f. Intact non-Gypsy or Copia LTR coverage
+g. Intact 
 
-![image](https://github.com/user-attachments/assets/b8d23985-ed7e-45ce-b741-8576e1e6f402)
-
+![image](https://github.com/Scrumpis/iwgc-circos/blob/main/examples/all-tracks/iwgc_circos/tmp/iwgc_circos.png)
