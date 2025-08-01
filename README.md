@@ -193,7 +193,7 @@ Add legend characters (a, b, c, etc.) to the central gap
 For comparisons with only two ideograms, such as the same chromosome of two haplotypes or species, you can adjust chromosome names this way  
    
 ## Example:
-The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-circos/tree/main/examples/all-tracks), except LTR dating and links, producable by iwgc_circos_tracks.sh using the IWGC _Avena fatua_ genome assembly. Tracks can be removed and reordered using the provided iwgc_circos.conf file as a template.
+The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-circos/tree/main/examples/all-tracks), except LTR dating and links, producable by iwgc_circos_tracks.sh using the IWGC _Avena fatua_ genome assembly. Tracks can be removed and reordered using the provided iwgc_circos.conf file as a template. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes.
 - a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
 - b. Gene density, more blue is more gene rich, more yellow is less gene rich
 - c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
@@ -206,6 +206,7 @@ The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-
 - j. Intact Mutator-superfamily (DTM) coverage
 - k. Intact Tc1-Mariner-superfamily (DTT) coverage
 - l. Intact Rolling-circle-transposon/Helitron-superfamily (Helitron) coverage
+- m. GC-content
   
 
 ![image](https://github.com/Scrumpis/iwgc-circos/blob/main/examples/all-tracks/iwgc_circos/tmp/iwgc_circos.png)
