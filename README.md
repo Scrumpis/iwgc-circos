@@ -194,7 +194,7 @@ For comparisons with only two ideograms, such as the same chromosome of two hapl
    
 ## Example:
 The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-circos/tree/main/examples/all-tracks), except LTR dating and links, producable by iwgc_circos_tracks.sh using the IWGC _Avena fatua_ genome assembly. Tracks can be removed and reordered using the provided iwgc_circos.conf file as a template.
-* a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
+- a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
 - b. Gene density, more blue is more gene rich, more yellow is less gene rich
 - c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
 - d. Intact Gypsy LTR coverage
