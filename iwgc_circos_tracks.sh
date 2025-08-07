@@ -1,11 +1,16 @@
 #!/bin/bash
-# Generate Circos for IWGC Genome Reports with optional tracks and a single required SIF
+# Quickly generate Circos plots for commonly visualized genomic features
 
 usage() {
-  echo "Usage: $0 [options] <FASTA> [<GENES>] [<REPEATS>] [<INTACT>] [<LTRDATES>] <IWGC_CIRCOS_SIF> [WINDOW]"
-  echo "Options:"
+  echo "Usage: $0 [options] <FASTA> <CONTAINER> [options]"
+  echo
+  echo "Required:"
+  echo "  FASTA            Genome or contigs FASTA file"
+  echo "  CONTAINER        Singularity image (e.g, /path/to/iwgc-circos-tracks.sif) or Docker image (e.g, scrumpis/iwgc-circos-tracks)"
+  echo
+  echo "Optional:"
   echo "  -gene            Add gene density track (requires gene annotation GFF3)"
-  echo "  -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.TEanno.gff3)"
+  echo "  -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.mod.TEanno.gff3)"
   echo "  -intact          Add intact TE density track (requires EDTA intact repeat annotation: EDTA/genome.fasta.mod.EDTA.intact.gff3)"
   echo "  -gc              Add GC content track"
   echo "  -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)"
@@ -13,10 +18,12 @@ usage() {
   echo "  -ts <value>      Telomere band size scale (default: 0.005)"
   echo "  -keep-temp       Keep intermediate files"
   echo "  -sliding         Use sliding windows instead of fixed"
-  echo "  -step <value>    Step size for sliding windows (default: WINDOW/2)"
-  echo "  -local           Use Docker instead of Singularity (default: false)"
+  echo "  -step <value>    Step size for sliding windows (default: 0.5). The default is half window size steps"
+  echo "  -local           Use Docker instead of the default Singularity (default: false)"
+  echo "  -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off"
+  echo "  -h | --help      List usage options"
   echo
-  echo "Note: For visualization purposes, all density tracks are normalized, gene desity is sqrt transformed, and repeat density is power 3 transformed"
+  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power 3 transformed"
   exit 1
 }
 
@@ -32,53 +39,58 @@ TELOMERE_SCALE=0.005
 USE_SLIDING=false
 STEP_SIZE=""
 USE_DOCKER=false  # Default to Singularity
+FILTER_CHRS=false
 
 # Determine how to run container commands
 run_cmd() {
   if [[ "$USE_DOCKER" == true ]]; then
-    docker run --rm -v "$PWD:/data" -w /data "$IWGC_CIRCOS_SIF" "$@"
+    docker run --rm -v "$PWD:/data" -w /data "$CONTAINER" "$@"
   else
-    singularity exec "$IWGC_CIRCOS_SIF" "$@"
+    singularity exec "$CONTAINER" "$@"
   fi
 }
 
+FASTA=$1; shift
+CONTAINER=$1; shift
 
-while [[ $1 == -* ]]; do
+while [[ $# -gt 0 ]]; do
   case "$1" in
-    -gene) INCLUDE_GENE=true; shift ;;
-    -repeat) INCLUDE_REPEAT=true; shift ;;
-    -intact) INCLUDE_INTACT=true; shift ;;
+    -gene) INCLUDE_GENE=true; GENES=$2; shift 2 ;;
+    -repeat) INCLUDE_REPEAT=true; REPEATS=$2; shift 2 ;;
+    -intact) INCLUDE_INTACT=true; INTACT=$2; shift 2 ;;
+    -ltr-dating) INCLUDE_LTRDATING=true; LTRDATES=$2; shift 2 ;;
+    -window) WINDOW=$2; shift 2 ;;
+    -ts) TELOMERE_SCALE=$2; shift 2 ;;
+    -step) STEP_SIZE=$2; shift 2 ;;
     -gc) INCLUDE_GC=true; shift ;;
-    -ltr-dating) INCLUDE_LTRDATING=true; shift ;;
     -telomere) INCLUDE_TELOMERE=true; shift ;;
-    -keep-temp) KEEP_TEMP=true; shift ;;
-    -ts) shift; TELOMERE_SCALE="$1"; shift ;;
     -sliding) USE_SLIDING=true; shift ;;
-    -step) shift; STEP_SIZE="$1"; shift ;;
+    -keep-temp) KEEP_TEMP=true; shift ;;
+    -filter-chrs) FILTER_CHRS=true; shift ;;
     -local) USE_DOCKER=true; shift ;;
+    -h|--help) usage ;;
     *) echo "Unknown option: $1"; usage ;;
   esac
 done
 
-FASTA=$1; shift
-[[ $INCLUDE_GENE == true ]] && { GENES=$1; shift; }
-[[ $INCLUDE_REPEAT == true ]] && { REPEATS=$1; shift; }
-[[ $INCLUDE_INTACT == true ]] && { INTACT=$1; shift; }
-[[ $INCLUDE_LTRDATING == true ]] && { LTRDATES=$1; shift; }
-IWGC_CIRCOS_SIF=$1; shift
-WINDOW=${1:-300000}
+WINDOW=${WINDOW:-300000}
+STEP_SIZE=${STEP_SIZE:-0.5}
+
+FASTA_BASE=$(basename "$FASTA")
 
 [[ ! -f $FASTA ]] && { echo "Missing genome FASTA"; exit 1; }
-if [[ "$USE_DOCKER" == false && ! -f $IWGC_CIRCOS_SIF ]]; then
+
+if [[ "$USE_DOCKER" == false && ! -f $CONTAINER ]]; then
   echo "Missing required iwgc-circos-tracks.sif for Singularity"
   exit 1
 fi
 if [[ "$USE_DOCKER" == true ]]; then
-  if ! docker image inspect "$IWGC_CIRCOS_SIF" > /dev/null 2>&1; then
-    echo "Docker image '$IWGC_CIRCOS_SIF' not found locally. Please pull or build it first."
+  if ! docker image inspect "$CONTAINER" > /dev/null 2>&1; then
+    echo "Docker image '$CONTAINER' not found locally. Please pull or build it first."
     exit 1
   fi
 fi
+
 [[ $INCLUDE_GENE == true && ! -f $GENES ]] && { echo "Gene track requires a GFF file"; exit 1; }
 [[ $INCLUDE_REPEAT == true && ! -f $REPEATS ]] && { echo "Repeat track requires a GFF file"; exit 1; }
 [[ $INCLUDE_INTACT == true && ! -f $INTACT ]] && { echo "Intact TE track requires a GFF file"; exit 1; }
@@ -88,10 +100,19 @@ if [[ ! -f ${FASTA}.fai ]]; then
   run_cmd samtools faidx ${FASTA}
 fi
 
-grep -Ei 'Chr0?[1-9][0-9]?' ${FASTA}.fai | sort -t$'\t' -k1,1 > ${FASTA}_chrs.fai
-TEMP_FILES+=("${FASTA}_chrs.fai")
+if [[ "$FILTER_CHRS" == true ]]; then
+  grep -Ei 'Chr0?[1-9][0-9]?' ${FASTA}.fai | sort -t$'\t' -k1,1 > ${FASTA_BASE}_chrs.fai
+else
+  sort -t$'\t' -k1,1 ${FASTA}.fai > ${FASTA_BASE}_chrs.fai
+fi
 
-cut -f1,2 ${FASTA}_chrs.fai | sort -t$'\t' | awk 'BEGIN {
+if [[ ! -s ${FASTA_BASE}_chrs.fai ]]; then
+  echo "Error: No valid chromosomes found in ${FASTA}.fai"
+  exit 1
+fi
+TEMP_FILES+=("${FASTA_BASE}_chrs.fai")
+
+cut -f1,2 ${FASTA_BASE}_chrs.fai | sort -t$'\t' | awk 'BEGIN {
   idx=0;
   for(i=2;i<=21;i++) l[idx++]="chr"i;
   for(i=2;i<=21;i++) l[idx++]="lum70chr"i;
@@ -100,52 +121,71 @@ cut -f1,2 ${FASTA}_chrs.fai | sort -t$'\t' | awk 'BEGIN {
   chr=$1;
   gsub(/^[Cc][Hh][Rr]0?/, "", chr);
   print "chr", "-", $1, chr, 0, $2, l[NR-1]
-}' > ${FASTA}_karyotype.circos
+}' > ${FASTA_BASE}_karyotype.circos
 
 if [[ $INCLUDE_TELOMERE == true ]]; then
-  run_cmd quartet.py te -i ${FASTA} -c plant -m 50 -p ${FASTA} --noplot
-  genome_len=$(awk '{sum+=$2}END{print sum}' ${FASTA}_chrs.fai)
-  grep -v '#' ${FASTA}.telo.info | grep -Ei 'Chr0?[1-9][0-9]?' | awk '{ print $1, $2, $3, $4, "+", $6, "-" }' | \
+  run_cmd quartet.py te -i ${FASTA} -c plant -m 50 -p ${FASTA_BASE} --noplot
+
+  # Mark quartet outputs for cleanup
+  TEMP_FILES+=("${FASTA_BASE}.telo.info" "tmp")
+
+  genome_len=$(awk '{sum+=$2}END{print sum}' ${FASTA_BASE}_chrs.fai)
+
+  if [[ "$FILTER_CHRS" == true ]]; then
+    grep -v '#' ${FASTA_BASE}.telo.info | grep -Ei 'Chr0?[1-9][0-9]?'
+  else
+    grep -v '#' ${FASTA_BASE}.telo.info
+  fi | awk '{ print $1, $2, $3, $4, "+", $6, "-" }' | \
   awk -v glen="$genome_len" '{
     t=int(glen*'$TELOMERE_SCALE');
     if($3=="both"){print $1,0,t; print $1,$2-t,$2}
     else if($3=="right"){print $1,$2-t,$2}
     else if($3=="left"){print $1,0,t}
   }' | \
-  awk '{ print "band", $1, $1"_T"NR, $1"_T"NR, $2, $3, "vdgrey" }' > ${FASTA}_telomere_bands.bed
-  cat ${FASTA}_telomere_bands.bed >> ${FASTA}_karyotype.circos
-  TEMP_FILES+=("${FASTA}_telomere_bands.bed")
+  awk '{ print "band", $1, $1"_T"NR, $1"_T"NR, $2, $3, "vdgrey" }' > ${FASTA_BASE}_telomere_bands.bed
+
+  cat ${FASTA_BASE}_telomere_bands.bed >> ${FASTA_BASE}_karyotype.circos
+  TEMP_FILES+=("${FASTA_BASE}_telomere_bands.bed")
 fi
 
 if [[ $INCLUDE_GENE == true || $INCLUDE_REPEAT == true || $INCLUDE_INTACT == true || $INCLUDE_GC == true || $INCLUDE_LTRDATING == true ]]; then
   if [[ "$USE_SLIDING" == true ]]; then
-    STEP="${STEP_SIZE:-$((WINDOW / 2))}"
+    STEP_FRACTION="${STEP_SIZE:-0.5}"
+
+# Validate it's a float between 0 and 1
+    if ! [[ "$STEP_FRACTION" =~ ^0(\.[0-9]+)?$|^1(\.0+)?$ ]]; then
+        echo "Error: -step must be a decimal fraction between 0 and 1"
+        exit 1
+    fi
+
+    STEP=$(printf "%.0f" "$(echo "$STEP_FRACTION * $WINDOW" | bc -l)")
+
     echo "Generating sliding windows with size $WINDOW and step $STEP"
-    run_cmd bedtools makewindows -g ${FASTA}_chrs.fai -w ${WINDOW} -s ${STEP} | \
-    awk -v W=${WINDOW} '{ if (($3 - $2) >= (W / 2)) print }' > ${FASTA}_windows.bed
+    run_cmd bedtools makewindows -g ${FASTA_BASE}_chrs.fai -w ${WINDOW} -s ${STEP} | \
+    awk -v W=${WINDOW} '{ if (($3 - $2) >= (W / 2)) print }' > ${FASTA_BASE}_windows.bed
   else
     echo "Generating fixed windows with size $WINDOW"
-    run_cmd bedtools makewindows -g ${FASTA}_chrs.fai -w ${WINDOW} > ${FASTA}_windows.bed
+    run_cmd bedtools makewindows -g ${FASTA_BASE}_chrs.fai -w ${WINDOW} > ${FASTA_BASE}_windows.bed
   fi
-  TEMP_FILES+=("${FASTA}_windows.bed")
+  TEMP_FILES+=("${FASTA_BASE}_windows.bed")
 fi
 
 if [[ $INCLUDE_GENE == true ]]; then
-  grep 'gene' ${GENES} | grep -Ei 'Chr0?[1-9][0-9]?' | awk '{print $1,$4,$5}' OFS='\t' | sort -k1,1 -k2,2n > ${GENES}_genes_coords.bed
-  TEMP_FILES+=("${GENES}_genes_coords.bed")
-  run_cmd bedtools coverage -sorted -a ${FASTA}_windows.bed -b ${GENES}_genes_coords.bed | \
+  grep 'gene' ${GENES} | awk '{print $1,$4,$5}' OFS='\t' | sort -k1,1 -k2,2n > ${FASTA_BASE}_genes_coords.bed
+  TEMP_FILES+=("${FASTA_BASE}_genes_coords.bed")
+  run_cmd bedtools coverage -sorted -a ${FASTA_BASE}_windows.bed -b ${FASTA_BASE}_genes_coords.bed | \
   awk '{print $1,$2,$3,sqrt($7)}' | sort -k1,1 -k2,2n | \
   awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4} END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | \
-  awk '{ print $1, $2, $3, $5}' > ${FASTA}_gene_coverage.circos
+  awk '{ print $1, $2, $3, $5}' > ${FASTA_BASE}_gene_coverage.circos
 fi
 
 if [[ $INCLUDE_REPEAT == true ]]; then
-  grep -v '#' ${REPEATS} | grep -Ei 'Chr0?[1-9][0-9]?' | awk '{print $1,$4,$5}' OFS='\t' | sort -k1,1 -k2,2n > ${FASTA}_repeat_coords.bed
-  TEMP_FILES+=("${FASTA}_repeat_coords.bed")
-  run_cmd bedtools coverage -sorted -a ${FASTA}_windows.bed -b ${FASTA}_repeat_coords.bed | \
+  grep -v '#' ${REPEATS} | awk '{print $1,$4,$5}' OFS='\t' | sort -k1,1 -k2,2n > ${FASTA_BASE}_repeat_coords.bed
+  TEMP_FILES+=("${FASTA_BASE}_repeat_coords.bed")
+  run_cmd bedtools coverage -sorted -a ${FASTA_BASE}_windows.bed -b ${FASTA_BASE}_repeat_coords.bed | \
   awk '{print $1,$2,$3,($7^3)}' | sort -k1,1 -k2,2n | \
   awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4} END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | \
-  awk '{ print $1, $2, $3, $5}' > ${FASTA}_repeat_coverage.circos
+  awk '{ print $1, $2, $3, $5}' > ${FASTA_BASE}_repeat_coverage.circos
 fi
 
 if [[ $INCLUDE_INTACT == true ]]; then
@@ -155,34 +195,34 @@ if [[ $INCLUDE_INTACT == true ]]; then
   TEMP_FILES+=($output_files)
   for gff in $output_files; do
     class=$(basename $gff .gff | cut -d_ -f2)
-    coords="${FASTA}_${class}_intactTE_coords.bed"
-    grep -Ei 'Chr0?[1-9][0-9]?' $gff | awk '{print $1,$4,$5}' OFS='\t' | sort -k1,1 -k2,2n > $coords
+    coords="${FASTA_BASE}_${class}_intactTE_coords.bed"
+    awk '{print $1,$4,$5}' OFS='\t' $gff | sort -k1,1 -k2,2n > $coords
     TEMP_FILES+=("$coords")
-    run_cmd bedtools coverage -sorted -a ${FASTA}_windows.bed -b $coords | \
+    run_cmd bedtools coverage -sorted -a ${FASTA_BASE}_windows.bed -b $coords | \
     awk '{print $1,$2,$3,$7}' | sort -k1,1 -k2,2n | \
     awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4} END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | awk '{ print $1, $2, $3, $5
- }' > "${FASTA}_${class}_intactTE_coverage.circos"
+ }' > "${FASTA_BASE}_${class}_intactTE_coverage.circos"
   done
 fi
 
 if [[ $INCLUDE_GC == true ]]; then
-  run_cmd bedtools nuc -fi ${FASTA} -bed ${FASTA}_windows.bed > gc_content.bed
+  run_cmd bedtools nuc -fi ${FASTA} -bed ${FASTA_BASE}_windows.bed > gc_content.bed
   TEMP_FILES+=("gc_content.bed")
   awk '{print $1,$2,$3,$5}' gc_content.bed | grep -v '#' | sort -k1,1 -k2,2n | \
   awk '{v[NR]=$4; l[NR]=$0; if(NR==1 || $4<m) m=$4; if(NR==1 || $4>M) M=$4} 
        END {for(i=1;i<=NR;i++) print l[i], (M==m ? 0 : (v[i]-m)/(M-m))}' | \
-  awk '{print $1, $2, $3, $5}' > ${FASTA}_gc.circos
+  awk '{print $1, $2, $3, $5}' > ${FASTA_BASE}_gc.circos
 fi
 
 if [[ $INCLUDE_LTRDATING == true ]]; then
-  awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > ${FASTA}_LTR_insertion.bed
-  run_cmd bedtools map -a ${FASTA}_windows.bed -b ${FASTA}_LTR_insertion.bed -c 4 -o mean > ${FASTA}_LTR_age.bed
+  awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > ${FASTA_BASE}_LTR_insertion.bed
+  run_cmd bedtools map -a ${FASTA_BASE}_windows.bed -b ${FASTA_BASE}_LTR_insertion.bed -c 4 -o mean > ${FASTA_BASE}_LTR_age.bed
 
-  awk '$4 != "." {print $1,$2,$3,int($4 + 0.5)}' ${FASTA}_LTR_age.bed | sort -k1,1 -k2,2n | \
+  awk '$4 != "." {print $1,$2,$3,int($4 + 0.5)}' ${FASTA_BASE}_LTR_age.bed | sort -k1,1 -k2,2n | \
   awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4}
         END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | \
-  awk '{print $1, $2, $3, $5}' > ${FASTA}_LTR_age_normal.circos
-  TEMP_FILES+=("${FASTA}_LTR_insertion.bed" "${FASTA}_LTR_age.bed")
+  awk '{print $1, $2, $3, $5}' > ${FASTA_BASE}_LTR_age_normal.circos
+  TEMP_FILES+=("${FASTA_BASE}_LTR_insertion.bed" "${FASTA_BASE}_LTR_age.bed")
 fi
 
 if [[ $KEEP_TEMP == false ]]; then
