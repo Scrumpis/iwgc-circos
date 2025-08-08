@@ -4,7 +4,7 @@ This repository documents the methods used to generate the Circos plots for many
 
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
   
-## iwgc_circos_tracks.sh
+## iwgc_circos_tracks.sh - Create track files for Circos
 **Generate track data files for any of the following:**
 - Ideogram/Karyotype
 - Telomere presence
