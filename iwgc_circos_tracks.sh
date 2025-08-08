@@ -14,7 +14,7 @@ usage() {
   echo "  -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)"
   echo "  -gc              Add GC content track"
   echo "  -telomere        Add telomere bands to ideogram (karyotype.circos)"
-  echo "  -ts <value>      Telomere band size scale (default: 0.005)"
+  echo "  -ts <value>      Telomere band size scale (default: 0.005), 0.5% of total genome size"
   echo "  -sliding         Use sliding windows instead of fixed"
   echo "  -step <value>    Step size for sliding windows (default: 0.5). The default is half window size steps"
   echo "  -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off"
