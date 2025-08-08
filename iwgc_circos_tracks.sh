@@ -12,6 +12,7 @@ usage() {
   echo "  -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.mod.TEanno.gff3)"
   echo "  -intact          Add intact TE density track (requires EDTA intact repeat annotation: EDTA/genome.fasta.mod.EDTA.intact.gff3)"
   echo "  -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)"
+  echo "  -links           Add syntenic links from a .coords file (e.g., MUMmer or minimap2 output)"
   echo "  -gc              Add GC content track"
   echo "  -telomere        Add telomere bands to ideogram (karyotype.circos)"
   echo "  -ts <value>      Telomere band size scale (default: 0.005), 0.5% of total genome size"
@@ -37,6 +38,8 @@ INCLUDE_REPEAT=false
 INCLUDE_INTACT=false
 INCLUDE_GC=false
 INCLUDE_LTRDATING=false
+INCLUDE_LINKS=false
+LINKS_FILE=""
 INCLUDE_TELOMERE=false
 KEEP_TEMP=false
 TEMP_FILES=()
@@ -53,6 +56,7 @@ while [[ $# -gt 0 ]]; do
     -repeat) INCLUDE_REPEAT=true; REPEATS=$2; shift 2 ;;
     -intact) INCLUDE_INTACT=true; INTACT=$2; shift 2 ;;
     -ltr-dating) INCLUDE_LTRDATING=true; LTRDATES=$2; shift 2 ;;
+    -links) INCLUDE_LINKS=true; LINKS_FILE=$2; shift 2 ;;
     -window) WINDOW=$2; shift 2 ;;
     -ts) TELOMERE_SCALE=$2; shift 2 ;;
     -step) STEP_SIZE=$2; shift 2 ;;
@@ -79,6 +83,7 @@ FASTA_BASE=$(basename "$FASTA")
 [[ $INCLUDE_REPEAT == true && ! -f $REPEATS ]] && { echo "Repeat track requires a GFF file"; exit 1; }
 [[ $INCLUDE_INTACT == true && ! -f $INTACT ]] && { echo "Intact TE track requires a GFF file"; exit 1; }
 [[ $INCLUDE_LTRDATING == true && ! -f $LTRDATES ]] && { echo "LTR dating track requires a coordinate file"; exit 1; }
+[[ $INCLUDE_LINKS == true && ! -f $LINKS_FILE ]] && { echo "Links track requires a coords file"; exit 1; }
 
 # Create FASTA index if it doesn't exist
 if [[ ! -f ${FASTA}.fai ]]; then
@@ -214,6 +219,19 @@ if [[ $INCLUDE_INTACT == true ]]; then
 fi
 
 
+# Generate LTR dating track file if requested
+if [[ $INCLUDE_LTRDATING == true ]]; then
+  awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > ${FASTA_BASE}_LTR_insertion.bed
+  bedtools map -a ${FASTA_BASE}_windows.bed -b ${FASTA_BASE}_LTR_insertion.bed -c 4 -o mean > ${FASTA_BASE}_LTR_age.bed
+
+  awk '$4 != "." {print $1,$2,$3,int($4 + 0.5)}' ${FASTA_BASE}_LTR_age.bed | sort -k1,1 -k2,2n | \
+  awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4}
+        END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | \
+  awk '{print $1, $2, $3, $5}' > ${FASTA_BASE}_LTR_age_normal.circos
+  TEMP_FILES+=("${FASTA_BASE}_LTR_insertion.bed" "${FASTA_BASE}_LTR_age.bed")
+fi
+
+
 # Generate GC content track file if requested
 if [[ $INCLUDE_GC == true ]]; then
   bedtools nuc -fi ${FASTA} -bed ${FASTA_BASE}_windows.bed > gc_content.bed
@@ -225,16 +243,43 @@ if [[ $INCLUDE_GC == true ]]; then
 fi
 
 
-# Generate LTR dating track file if requested
-if [[ $INCLUDE_LTRDATING == true ]]; then
-  awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > ${FASTA_BASE}_LTR_insertion.bed
-  bedtools map -a ${FASTA_BASE}_windows.bed -b ${FASTA_BASE}_LTR_insertion.bed -c 4 -o mean > ${FASTA_BASE}_LTR_age.bed
-
-  awk '$4 != "." {print $1,$2,$3,int($4 + 0.5)}' ${FASTA_BASE}_LTR_age.bed | sort -k1,1 -k2,2n | \
-  awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4}
-        END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | \
-  awk '{print $1, $2, $3, $5}' > ${FASTA_BASE}_LTR_age_normal.circos
-  TEMP_FILES+=("${FASTA_BASE}_LTR_insertion.bed" "${FASTA_BASE}_LTR_age.bed")
+# Generate syntenic links file if requested
+if [[ $INCLUDE_LINKS == true ]]; then
+  echo "Generating syntenic links from $LINKS_FILE"
+  awk 'BEGIN{OFS="\t"} {
+    print $1, $2, $3, $4, $5, $6
+  }' "$LINKS_FILE" | \
+  sort -k1,1 -k2,2n -k4,4 -k5,5n | \
+  awk 'BEGIN{OFS="\t"}
+  {
+    if ($1 != qchr || $4 != schr || $2 > qend || $5 > send) {
+      if (NR > 1)
+        print qchr, qstart, qend, schr, sstart, send;
+      qchr = $1; qstart = $2; qend = $3;
+      schr = $4; sstart = $5; send = $6;
+    } else {
+      if ($3 > qend) qend = $3;
+      if ($6 > send) send = $6;
+    }
+  }
+  END {
+    print qchr, qstart, qend, schr, sstart, send;
+  }' | \
+  awk 'BEGIN{OFS="\t"} {
+    qlen = $3 - $2;
+    slen = $6 - $5;
+    tlen = qlen + slen;
+    print tlen, $0
+  }' | \
+  sort -k1,1n | \
+  cut -f2- | {
+    if [[ "$FILTER_CHRS" == true ]]; then
+#      awk -F'\t' '$1 ~ /^[Cc]hr[0-9]+[A-Za-z]*$/ && $4 ~ /^[Cc]hr[0-9]+[A-Za-z]*$/'
+       awk -F'\t' 'tolower($1) ~ /^chr0?[1-9][0-9]?[a-z]?$/ && tolower($4) ~ /^chr0?[1-9][0-9]?[a-z]?$/'
+    else
+      cat
+    fi
+  } > "${FASTA_BASE}_links.circos"
 fi
 
 
