@@ -274,7 +274,6 @@ if [[ $INCLUDE_LINKS == true ]]; then
   sort -k1,1n | \
   cut -f2- | {
     if [[ "$FILTER_CHRS" == true ]]; then
-#      awk -F'\t' '$1 ~ /^[Cc]hr[0-9]+[A-Za-z]*$/ && $4 ~ /^[Cc]hr[0-9]+[A-Za-z]*$/'
        awk -F'\t' 'tolower($1) ~ /^chr0?[1-9][0-9]?[a-z]?$/ && tolower($4) ~ /^chr0?[1-9][0-9]?[a-z]?$/'
     else
       cat
