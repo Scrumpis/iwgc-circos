@@ -7,7 +7,7 @@ For additional information, the [Circos](https://circos.ca/) website offers very
 ## iwgc_circos_tracks.sh
 **Generate track data files for any of the following:**
 - Ideogram/Karyotype
-  - Telomere presence
+- Telomere presence
 - Total gene density
 - Total repeat density
 - Intact transposable element density (separated by family, cat all together for total density)
@@ -28,20 +28,34 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 
 ### Usage
 ```
-./iwgc_circos_tracks.sh [options] <FASTA> [<GENES>] [<REPEATS>] [<INTACT>] [<LTRDATES>] <IWGC_CIRCOS_SIF> [WINDOW]
-Options:
-  -gene            Add gene density track (requires gene annotation GFF3)
-  -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.TEanno.gff3)
-  -intact          Add intact TE density track (requires EDTA annotation: EDTA/genome.fasta.mod.EDTA.intact.gff3)
-  -gc              Add GC content track
-  -ltr-dating      Add LTR dating track (requires EDTA annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)
-  -telomere        Add telomere bands to ideogram (karyotype.circos)
-  -ts <value>      Telomere band size scale (default: 0.005)
-  -keep-temp       Keep intermediate files
-  -sliding         Use sliding windows instead of fixed
-  -step <value>    Step size for sliding windows (default: WINDOW/2)
-  -local           Use Docker instead of Singularity (default: false)
+  Usage: ./iwgc_circos_tracks.sh [options] <FASTA> [options]
+  
+   Required:
+     FASTA            Genomic FASTA file
+  
+   Optional:
+     -gene            Add gene density track (requires gene annotation GFF3)
+     -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.mod.TEanno.gff3)
+     -intact          Add intact TE density track (requires EDTA intact repeat annotation: EDTA/genome.fasta.mod.EDTA.intact.gff3)
+     -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)
+     -gc              Add GC content track
+     -telomere        Add telomere bands to ideogram (karyotype.circos)
+     -ts <value>      Telomere band size scale (default: 0.005)
+     -sliding         Use sliding windows instead of fixed
+     -step <value>    Step size for sliding windows (default: 0.5). The default is half window size steps
+     -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off
+     -keep-temp       Keep intermediate files
+     -h | --help      List usage options
 ```
+  
+**Recommended containerized usage:**
+```
+singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> [options]
+```
+```
+docker run --rm -v $(pwd):/data scrumpis/iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]
+```
+Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power 3 transformed
     
 **Input files:**
 | File Name                             | Description                                                                 |
@@ -121,7 +135,7 @@ cut -f2- > CirAr_female_haps_Chr06.coords.circos
   
 ## Circos Plot
 ### Setup
-Move all desired track files (.circos) into the iwgc_circos_data directory
+Move all desired track files (.circos) into the iwgc_circos_data directory if not already there
 ```
 iwgc_circos/
 ├── iwgc_circos/
@@ -206,7 +220,8 @@ The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-
 - j. Intact Mutator-superfamily (DTM) coverage
 - k. Intact Tc1-Mariner-superfamily (DTT) coverage
 - l. Intact Rolling-circle-transposon/Helitron-superfamily (Helitron) coverage
-- m. GC-content
+- m. LTR insertion age
+- n. GC-content
   
 
 ![image](https://github.com/Scrumpis/iwgc-circos/blob/main/examples/all-tracks/iwgc_circos/tmp/iwgc_circos.png)
