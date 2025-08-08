@@ -62,11 +62,11 @@ Note: For visualization/automation purposes, all density tracks are normalized, 
 **Input files:**
 | File Name                             | Description                                                                 |
 |--------------------------------------|-----------------------------------------------------------------------------|
-| `genome.fasta`                       | Required input for karyotype telomeres, and GC-content tracks. This is the only required file for the script to run. |
+| `genome.fasta`                       | Required input for karyotype, telomeres, and GC-content tracks. This is the only required file for the base script to run. |
 | `gene.annotation.gff3`               | Gene annotation file used to generate the **total gene density track**. Accepts standard GFF3 format from any annotation pipeline. |
-| `genome.fasta.mod.EDTA.TEanno.gff3` | Repeat annotation file from EDTA used to create the **total repeat density track**. |
-| `genome.fasta.mod.EDTA.intact.gff3` | Intact repeat annotation from EDTA used to generate **intact repeat density tracks**. |
-| `genome.fasta.mod.pass.list`        | LTR insertion age from EDTA used to generate **LTR age track**. |
+| `genome.fasta.mod.EDTA.TEanno.gff3`  | Repeat annotation file from EDTA used to create the **total repeat density track**. |
+| `genome.fasta.mod.EDTA.intact.gff3`  | Intact repeat annotation from EDTA used to generate **intact repeat density tracks**. |
+| `genome.fasta.mod.pass.list`         | LTR insertion age from EDTA used to generate **LTR age track**. |
 
   
 The below would produce all possible track files with 300kbp (default size) sliding windows with half window size steps (default size)
