@@ -23,9 +23,9 @@ usage() {
   echo "  -h | --help      List usage options"
   echo
   echo "Recommended containerized usage:"
-  echo "singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> <CONTAINER> [options]"
+  echo "singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo "or"
-  echo "docker run --rm -v $(pwd):/data iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> <CONTAINER> [options]"
+  echo "docker run --rm -v $(pwd):/data iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo
   echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power 3 transforme
 d"
