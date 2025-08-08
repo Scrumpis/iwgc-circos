@@ -67,12 +67,9 @@ Note: For visualization/automation purposes, all density tracks are normalized, 
 | `genome.fasta.mod.pass.list`        | LTR insertion age from EDTA used to generate **LTR age track**. |
 
   
-The below would produce all tracks with 500kbp sliding windows with half window size steps
+The below would produce all tracks with 300kbp (default size) sliding windows with half window size steps (default size)
 ```
-./iwgc_circos_tracks.sh -gene -repeat -intact -gc -ltr-dating -telomere -sliding \
-genome.fasta genes.gff \
-repeats.fasta.mod.EDTA.TEanno.gff3 repeats.fasta.mod.EDTA.intact.gff3 repeats.fasta.mod.pass.list \
-iwgc-circos-tracks_v1.sif 500000
+singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks_v5.sh ../data/Chenopodium_album.genome_v2.fasta -gene ../data/CheAl_v01.0.gff -repeat ../data/Chenopodium_album.genome_v2.fasta.mod.EDTA.TEanno.gff3 -intact ../data/Chenopodium_album.genome_v2.fasta.mod.EDTA.intact.gff3 -ltr-dating ../data/Chenopodium_album.genome_v2.fasta.mod.pass.list -gc -telomere -sliding -filter-chrs
 ```
 
 ### Unincluded Tracks
