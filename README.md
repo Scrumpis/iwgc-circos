@@ -28,7 +28,7 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 
 ### Usage
 ```
-  Usage: ./iwgc_circos_tracks.sh [options] <FASTA> [options]
+  Usage: ./iwgc_circos_tracks.sh <FASTA> [options]
   
    Required:
      FASTA            Genomic FASTA file
