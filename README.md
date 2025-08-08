@@ -40,7 +40,7 @@ docker pull scrumpis/iwgc-circos-tracks:latest
      -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)
      -gc              Add GC content track
      -telomere        Add telomere bands to ideogram (karyotype.circos)
-     -ts <value>      Telomere band size scale (default: 0.005)
+     -ts <value>      Telomere band size scale (default: 0.005), 0.5% of total genome size
      -sliding         Use sliding windows instead of fixed
      -step <value>    Step size for sliding windows (default: 0.5). The default is half window size steps
      -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off
