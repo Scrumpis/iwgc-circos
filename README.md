@@ -1,6 +1,6 @@
 # International Weed Genomics Consortium (IWGC) Genome Report Circos Plots
 ## About
-This repository documents the methods used to generate the Circos plots for many of the genome reports produced by the International Genomics Consortium (IWGC). This project aims to automate the generation of commonly used Circos tracks in genomics to reduce the barrier for entry for unfamaliar with Circos and to speed-up production for those experienced with Circos.
+This repository documents the methods used to generate the Circos plots for many of the genome reports produced by the International Genomics Consortium (IWGC). This project aims to automate the generation of commonly used Circos tracks in genomics to reduce the barrier for entry for those unfamaliar with Circos and to speed-up production for those experienced with Circos.
 
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
   
@@ -54,7 +54,8 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> [options]
 ```
 ```
-docker run --rm -v $(pwd):/data scrumpis/iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]
+docker run --rm -v $(pwd):/data scrumpis/iwgc-circos-tracks:latest \
+./iwgc-circos-tracks.sh <FASTA> [options]
 ```
 Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power 3 transformed
     
