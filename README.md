@@ -58,8 +58,7 @@ singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> [options
 docker run --rm -v $(pwd):/data scrumpis/iwgc-circos-tracks:latest \
 ./iwgc-circos-tracks.sh <FASTA> [options]
 ```
-Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power 3 transformed
-    
+     
 **Input files:**
 | File Name                             | Description                                                                 |
 |--------------------------------------|-----------------------------------------------------------------------------|
