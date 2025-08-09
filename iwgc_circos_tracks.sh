@@ -32,8 +32,7 @@ usage() {
   echo "or"
   echo "docker run --rm -v $(pwd):/data iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo
-  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power 3 transforme
-d"
+  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power 3 transformed"
   exit 1
 }
 
@@ -249,8 +248,7 @@ fi
 # Generate LTR dating track file if requested
 if [[ $INCLUDE_LTRDATING == true ]]; then
   awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed"
-  bedtools map -a "${OUTPUT_DIR}/${FASTA_BASE}_windows.bed" -b "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed" -c 4 -o mean > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age
-.bed"
+  bedtools map -a "${OUTPUT_DIR}/${FASTA_BASE}_windows.bed" -b "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed" -c 4 -o mean > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed"
 
   awk '$4 != "." {print $1,$2,$3,int($4 + 0.5)}' "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed" | sort -k1,1 -k2,2n | \
   awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4}
