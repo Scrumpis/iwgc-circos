@@ -198,14 +198,14 @@ The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-
 
 ## Notes
 - When visualizing multiple species, datasets, etc. in a single Circos plot, all files must be concatenated first
-- All tracks are optional aside from the ideogram (telomeres and centromeres optional), so only required file is genome.fasta
+- All tracks are optional aside from the ideogram (telomeres optional), so only required file is genome.fasta
 - If you need to reverse the orientation of any chromosomes to untwist links, edit the ```chromosomes_reverse = ``` line of ```iwgc_circos.conf``` to indicate the chromosomes you wish to reverse (example: ```chromosomes_reverse = Chr1; Chr6; Chr9```
 - For automation and visualization purposes...
   - Gene desity is sqrt transformed
   - Repeat density is power 3 transformed
   - All density and LTR age tracks are normalized
-  - Paried comparisons are difficult, give link to Carvense circos which should have detailed instructions of changes made since they were extensivem, if they have config files for Carvense, they can use those. Give links to all config files for all projects.
-  - In special situtations where you need to edit the housekeeping.conf, such as if you have more contigs than what is typically allowed, you can either run the container interactively and update the housekeeping.conf file or you can create a housekeeping.conf file in the /circos directory and map it to the container, see Fusarium paper
+- Paried comparisons are difficult, give link to Carvense circos which should have detailed instructions of changes made since they were extensivem, if they have config files for Carvense, they can use those. Give links to all config files for all projects.
+- In special situtations where you need to edit the housekeeping.conf, such as if you have more contigs than what is typically allowed, you can either run the container interactively and update the housekeeping.conf file or you can create a housekeeping.conf file in the /circos directory and map it to the container, see Fusarium paper
 
 ### Known Warnings:
 - (iwgc_circos_tracks.sh) ```File species.fasta_windows.bed has a record where naming convention (leading zero) is inconsistent with other files```
