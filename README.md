@@ -72,10 +72,10 @@ docker run --rm -v $(pwd):/data scrumpis/iwgc-circos-tracks:latest \
   
 The below would produce all possible track files with 300kbp (default size) sliding windows with half window size steps (default size)
 ```
-singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks_v5.sh ../data/Chenopodium_album.genome_v2.fasta \
--gene ../data/CheAl_v01.0.gff -repeat ../data/Chenopodium_album.genome_v2.fasta.mod.EDTA.TEanno.gff3 \
--intact ../data/Chenopodium_album.genome_v2.fasta.mod.EDTA.intact.gff3 \
--ltr-dating ../data/Chenopodium_album.genome_v2.fasta.mod.pass.list -gc -telomere -sliding
+singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh Chenopodium_album.genome_v2.fasta -gene CheAl_v01.0.gff \
+-repeat Chenopodium_album.genome_v2.fasta.mod.EDTA.TEanno.gff3 -intact Chenopodium_album.genome_v2.fasta.mod.EDTA.intact.gff3 \
+-ltr-dating Chenopodium_album.genome_v2.fasta.mod.pass.list -links Chenopodium_album.genome_v2.coords \
+-gc -telomere -sliding -filter-chrs -out ../iwgc_circos_data/
 ```
   
 ### Notes
