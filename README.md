@@ -45,10 +45,10 @@ docker pull scrumpis/iwgc-circos-tracks:latest
      -link-order      Order of syntenic links - asc: smallest top to biggest bottom | dsc: big top to small bottom (default: asc)
      -gc              Add GC content track
      -telomere        Add telomere bands to ideogram (karyotype.circos)
-     -ts <value>      Telomere band size scale (default: 0.005), 0.5% of total genome size
+     -ts              Telomere band size scale (default: 0.005), 0.5% of total genome size
      -window          Window size in base pairs (default: 300000)
      -sliding         Use sliding windows instead of fixed
-     -step <value>    Step size for sliding windows (default: 0.5). The default is half window size steps
+     -step            Step size for sliding windows (default: 0.5). The default is half window size steps
      -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off
      -keep-temp       Keep intermediate files
      -out             Output directory for Circos track files (default: current directory)
