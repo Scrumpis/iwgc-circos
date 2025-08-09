@@ -13,6 +13,7 @@ For additional information, the [Circos](https://circos.ca/) website offers very
 - Intact transposable element density (separated by family, cat all together for total density)
 - GC content
 - LTR insertion age
+- Syntenic links
 
   
 ### Setup
@@ -67,6 +68,7 @@ Note: For visualization/automation purposes, all density tracks are normalized, 
 | `genome.fasta.mod.EDTA.TEanno.gff3`  | Repeat annotation file from EDTA used to create the **total repeat density track**. |
 | `genome.fasta.mod.EDTA.intact.gff3`  | Intact repeat annotation from EDTA used to generate **intact repeat density tracks**. |
 | `genome.fasta.mod.pass.list`         | LTR insertion age from EDTA used to generate **LTR age track**. |
+| `genome.coords`                      | .coords alignment file from minimap2 or similar used to generate **links track**. |
 
   
 The below would produce all possible track files with 300kbp (default size) sliding windows with half window size steps (default size)
@@ -76,52 +78,11 @@ singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks_v5.sh ../data/C
 -intact ../data/Chenopodium_album.genome_v2.fasta.mod.EDTA.intact.gff3 \
 -ltr-dating ../data/Chenopodium_album.genome_v2.fasta.mod.pass.list -gc -telomere -sliding
 ```
-
-### Unincluded Tracks
-**Links**
-Circos links tracks are not produced by this script because there is too little preprocessing required for circos and alignments are usually too custom to easily script:
-- Align your regions of interest with minimap2 or similar
-- If needed, convert output into a .coords file. I have used the below to convert .paf to .coords before, but other tools exist:
-```
-awk 'BEGIN { OFS="\t" } { printf "%s\t%d\t%d\t%s\t%d\t%d\t%s\t%.2f\n", \
-$1, $3+1, $4, $6, $8+1, $9, $5, ($10/$11)*100 }' CirAr_female_haps_Chr06.paf > CirAr_female_haps_Chr06.coords
-```
-- Once you have a coords file, extract the columns of interest (query, qstart, qend, subject, sstart, send), collapse links which overlap in both the subject and query, and sort by qstart from least (top of file) to greatest (bottom) to overlay larger links on top of smaller ones:
-```
-awk 'BEGIN{OFS="\t"} {
-  print $1, $2, $3, $4, $5, $6
-}' CirAr_female_haps_Chr06.coords | \
-sort -k1,1 -k2,2n -k4,4 -k5,5n | \
-awk 'BEGIN{OFS="\t"}
-{
-  if ($1 != qchr || $4 != schr || $2 > qend || $5 > send) {
-    if (NR > 1)
-      print qchr, qstart, qend, schr, sstart, send;
-    qchr = $1; qstart = $2; qend = $3;
-    schr = $4; sstart = $5; send = $6;
-  } else {
-    if ($3 > qend) qend = $3;
-    if ($6 > send) send = $6;
-  }
-}
-END {
-  print qchr, qstart, qend, schr, sstart, send;
-}' | \
-awk 'BEGIN{OFS="\t"} {
-  qlen = $3 - $2;
-  slen = $6 - $5;
-  tlen = qlen + slen;
-  print tlen, $0
-}' | \
-sort -k1,1n | \
-cut -f2- > CirAr_female_haps_Chr06.coords.circos
-```
-- If you need to reverse the orientation of any chromosomes to untwist links, edit the ```chromosomes_reverse = ``` line of ```iwgc_circos.conf``` to indicate the chromosomes you wish to reverse (example: ```chromosomes_reverse = Chr1; Chr6; Chr9```
-
-
+  
 ### Notes
 - When visualizing multiple species, datasets, etc. in a single Circos plot, all files must be concatenated first
 - All tracks are optional aside from the ideogram (telomeres and centromeres optional), so only required file is genome.fasta
+- If you need to reverse the orientation of any chromosomes to untwist links, edit the ```chromosomes_reverse = ``` line of ```iwgc_circos.conf``` to indicate the chromosomes you wish to reverse (example: ```chromosomes_reverse = Chr1; Chr6; Chr9```
 - For automation and visualization purposes...
   - Gene desity is sqrt transformed
   - Repeat density is power 3 transformed
@@ -131,7 +92,7 @@ cut -f2- > CirAr_female_haps_Chr06.coords.circos
 
 ### Known Warnings:
 - (iwgc_circos_tracks.sh) ```File species.fasta_windows.bed has a record where naming convention (leading zero) is inconsistent with other files```
-  - Seems ignorable with no effects, happens at Chr10 if previous are Chr01-09.
+  - Seems ignorable with no effects, happens at Chr10 or ChrChlr if previous are Chr01-09.
 - (Circos) ```Use of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781```
   - Seems ignorable.
   
@@ -139,7 +100,7 @@ cut -f2- > CirAr_female_haps_Chr06.coords.circos
 ### Setup
 Move all desired track files (.circos) into the iwgc_circos_data directory if not already there
 ```
-iwgc_circos/
+iwgc-circos/
 ├── iwgc_circos/
     ├── tmp/
         ├── iwgc_circos.png
