@@ -15,16 +15,7 @@ Docker (Local usage):
 ```
 docker pull scrumpis/iwgc-circos-tracks:latest
 ```
-Aside from standard Unix commands like awk and grep, the below software are required to run all scripts/commands in this package. Perl is also required to run Circos itself. If these requirements are already satisfied on your system or through an environment, you may use those, otherwise the above containerized setup method is strongly recommended.
-**Dependencies:**
-| Software                             | Version                                                                     |
-|--------------------------------------|-----------------------------------------------------------------------------|
-| `bedtools`                       | Required input for karyotype, telomeres, and GC-content tracks. This is the only required file for the base script to run. |
-| `samtools`               | Gene annotation file used to generate the **total gene density track**. Accepts standard GFF3 format from any annotation pipeline. |
-| `quartet`  | Repeat annotation file from EDTA used to create the **total repeat density track**. |
-| `genome.fasta.mod.EDTA.intact.gff3`  | Intact repeat annotation from EDTA used to generate **intact repeat density tracks**. |
-| `genome.fasta.mod.pass.list`         | LTR insertion age from EDTA used to generate **LTR age track**. |
-| `Circos`                             | 0.69-9 |
+
   
 ## 1. Create Track Files for Circos Plot (iwgc_circos_tracks.sh)
 **Generate track data files for any of the following:**
