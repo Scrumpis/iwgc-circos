@@ -62,7 +62,7 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> [options]
 ```
 ```
-docker run --rm -v $(pwd):/data scrumpis/iwgc-circos-tracks:latest \
+docker run --rm -v $"PWD":/data scrumpis/iwgc-circos-tracks:latest \
 ./iwgc-circos-tracks.sh <FASTA> [options]
 ```
      
@@ -91,6 +91,13 @@ singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh Chenopodium_
 
   
 ## 2. Create Circos Plot Config Files
+
+```
+docker run --rm -v "$PWD":/data -w /data \
+  scrumpis/iwgc-circos-tracks:latest \
+  ./create_configs.sh 
+```
+
 **Manually edit files:**  
 **iwgc_circos.conf (Required)**
 - Change File Names:
