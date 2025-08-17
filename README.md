@@ -91,36 +91,13 @@ singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh Chenopodium_
 
   
 ## 2. Create Circos Plot Config Files
-
+The below command will generate Circos config files in iwgc_circos using the provided template_config files.
+*Run one level up from iwgc_circos and iwgc_circos_data* 
 ```
 docker run --rm -v "$PWD":/data -w /data \
   scrumpis/iwgc-circos-tracks:latest \
   ./create_configs.sh 
 ```
-
-**Manually edit files:**  
-**iwgc_circos.conf (Required)**
-- Change File Names:
-  - Karyotype
-  - Any Tracks  
-- Change chromosomes following ```chromosomes =```
-  - The below script can be used in the iwgc_circos_data to print chrs in correct format to stdout, then copy-paste into config file):
-    ```
-    grep -v '_T[0-9]\+' *karyotype.circos | awk '{print $3}' | paste -sd';' -
-    ```
-- Reduce ```chromosomes_units =``` for small genomes or increase for big ones if needed, try with default 1000000 (1Mbp) first
-
-**ideogram.conf**
-- Change pairwise header block to your chr exact names to put a gap for the legend (typically last chr then first chr)
-```
-<pairwise H2_Chr06 H1_Chr06> # Change to your chrs
-spacing = 15r # spacing between chr1 and chr9 is 5x 0.1% of image
-</pairwise>
-```
-
-**ticks.conf**
-- If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
-  
   
     
 ## 3. Circos Plot
@@ -158,7 +135,7 @@ docker run --rm \
   scrumpis/iwgc-circos-tracks \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp -noparanoid
 ```
-We use --noparanoid to ignore the error about telomere bands exceeding length of chromosomes  
+
 Singularity (HPC use):
 ```
 singularity exec \
@@ -169,9 +146,22 @@ singularity exec \
 ```
   
 ## Final Touches
-Use Inkspace or a similar tool capable of editing SVG images, or another method you are familiar with which will preserve quality.  
-Add legend characters (a, b, c, etc.) to the central gap  
-For comparisons with only two ideograms, such as the same chromosome of two haplotypes or species, you can adjust chromosome names this way  
+**iwgc_circos.conf**
+- Reduce ```chromosomes_units =``` for small genomes or increase for big ones if needed, try with default 1000000 (1Mbp) first
+
+**ideogram.conf**
+- Change pairwise header block to your chr exact names to put a gap for the legend (typically last chr then first chr)
+```
+<pairwise H2_Chr06 H1_Chr06> # Change to your chrs
+spacing = 15r # spacing between chr1 and chr9 is 5x 0.1% of image
+</pairwise>
+```
+
+**ticks.conf**
+- If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
+  
+Use Inkspace or a similar SVG editing tool to add legend characters or add or edit any other text. 
+
    
 ## Example:
 The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-circos/tree/main/examples/all-tracks), except LTR dating and links, producable by iwgc_circos_tracks.sh using the IWGC _Avena fatua_ genome assembly. Tracks can be removed and reordered using the provided iwgc_circos.conf file as a template. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes.
