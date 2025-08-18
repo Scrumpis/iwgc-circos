@@ -120,10 +120,11 @@ awk -v dir="$BLOCK_DIR" '
 ' "$PLOTS_BODY"
 
 # --- Dynamic tracks order & regex (top -> inward) ---
-DYN_KEYS=(gene_cov repeat_cov gypsy copia unknown dta dtc dth dtm dtt helitron gc_content)
+DYN_KEYS=(gene_cov repeat_cov ltrdating gypsy copia unknown dta dtc dth dtm dtt helitron gc_content)
 DYN_REGEX=(
   "iwgc_circos_data/\*_gene_coverage\.circos"
   "iwgc_circos_data/\*_repeat_coverage\.circos"
+  "iwgc_circos_data/\*_LTRdating_coverage\.circos"
   "iwgc_circos_data/\*_Gypsy_intactTE_coverage\.circos"
   "iwgc_circos_data/\*_Copia_intactTE_coverage\.circos"
   "iwgc_circos_data/\*_unknown_intactTE_coverage\.circos"
@@ -136,15 +137,10 @@ DYN_REGEX=(
   "iwgc_circos_data/\*_gc\.circos"
 )
 
-# Defaults (untouched tracks keep these)
-r1_defaults=(0.97 0.88 0.79 0.74 0.69 0.62 0.57 0.52 0.47 0.42 0.37 0.30)
-r0_defaults=(0.91 0.82 0.75 0.70 0.65 0.58 0.53 0.48 0.43 0.38 0.33 0.24)
-
 # Geometry
 UNIT=0.01
 TRACK_WIDTH=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 4*u}')   # 0.04r
 TRACK_SPACING=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 3*u}') # 0.03r
-TOP_R1="0.97"
 LINKS_GAP=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 0.5*u}')   # 0.005r
 
 # Gather blocks
@@ -156,10 +152,8 @@ declare -a PRESENT
 declare -a HAS_BLOCK
 
 for i in "${!DYN_KEYS[@]}"; do
-  key="${DYN_KEYS[$i]}"
-  regex="${DYN_REGEX[$i]}"
-  HAS_BLOCK[$i]=0
-  PRESENT[$i]=0
+  key="${DYN_KEYS[$i]}"; regex="${DYN_REGEX[$i]}"
+  HAS_BLOCK[$i]=0; PRESENT[$i]=0
   for blk in "${BLOCKS[@]}"; do
     if block_matches_regex "$blk" "$regex"; then
       HAS_BLOCK[$i]=1
@@ -174,6 +168,22 @@ for i in "${!DYN_KEYS[@]}"; do
     fi
   done
 done
+
+# --- Derive default r1/r0 from the template (no hard-coded arrays) ---
+declare -a R1_DEFAULT R0_DEFAULT
+for i in "${!DYN_KEYS[@]}"; do
+  R1_DEFAULT[$i]="" ; R0_DEFAULT[$i]=""
+  if [[ "${HAS_BLOCK[$i]}" -eq 1 ]]; then
+    blk="${KEY_TO_BLOCK[${DYN_KEYS[$i]}]}"
+    R1_DEFAULT[$i]="$(
+      awk 'match($0,/^[[:space:]]*r1[[:space:]]*=[[:space:]]*([0-9.]+)r/,a){print a[1]; exit}' "$blk"
+    )"
+    R0_DEFAULT[$i]="$(
+      awk 'match($0,/^[[:space:]]*r0[[:space:]]*=[[:space:]]*([0-9.]+)r/,a){print a[1]; exit}' "$blk"
+    )"
+  fi
+done
+TOP_R1="${R1_DEFAULT[0]:-0.97}"
 
 # Labels/highlights: drop if file missing; otherwise resolve to concrete path now
 for blk in "${BLOCKS[@]}"; do
@@ -214,7 +224,7 @@ if [[ "$first_missing_idx" -lt 0 ]]; then
     fi
   done
   if [[ "$last_present_idx" -ge 0 ]]; then
-    INNERMOST_R0="${r0_defaults[$last_present_idx]}"
+    INNERMOST_R0="${R0_DEFAULT[$last_present_idx]}"
   fi
 else
   # Partial repack: before first missing -> keep defaults (resolve file); at/after -> repack + resolve file
@@ -233,8 +243,8 @@ else
       blk="${KEY_TO_BLOCK[${DYN_KEYS[$i]}]}"; : > "$blk"
     fi
   done
-  if [[ "$last_kept_before" -ge 0 ]]; then
-    anchor_r1="$(awk -v r0="${r0_defaults[$last_kept_before]}" -v s="$TRACK_SPACING" 'BEGIN{printf "%.4f", r0 - s}')"
+  if [[ "$last_kept_before" -ge 0 && -n "${R0_DEFAULT[$last_kept_before]}" ]]; then
+    anchor_r1="$(awk -v r0="${R0_DEFAULT[$last_kept_before]}" -v s="$TRACK_SPACING" 'BEGIN{printf "%.4f", r0 - s}')"
   fi
 
   cur_r1="$anchor_r1"
