@@ -148,8 +148,8 @@ singularity exec \
 ```
   
 ## Final Touches
-If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments.  
-  
+If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments. After making these config file adjustments, re-run Circos to generate a new plot with your updates.  
+    
 **iwgc_circos.conf**
 - Reduce ```chromosomes_units =``` for small genomes or increase for big ones if needed, try with default 1000000 (1Mbp) first
 
