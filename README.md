@@ -91,8 +91,8 @@ singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh Chenopodium_
 
   
 ## 2. Create Circos Plot Config Files
-The below command will generate Circos config files in iwgc_circos using the provided template_config files.
-*Run one level up from iwgc_circos and iwgc_circos_data* 
+The below command will generate Circos config files in iwgc_circos using the provided template_config files.  
+***Run one level up from iwgc_circos and iwgc_circos_data*** 
 ```
 docker run --rm -v "$PWD":/data -w /data \
   scrumpis/iwgc-circos-tracks:latest \
@@ -126,8 +126,10 @@ iwgc-circos/
     ├── any.other.track.files.circos
 ```
 
-**Run Circos 0.69-9:**  
-*Run one level up from iwgc_circos and iwgc_circos_data*  
+### Run Circos v0.69-9:
+The below command will generate Circos config files in iwgc_circos using the provided template_config files.  
+***Run one level up from iwgc_circos and iwgc_circos_data***    
+  
 Docker (local use; easier refinement - quickly view png/svg, tweak .conf files, and re-run):
 ```
 docker run --rm \
