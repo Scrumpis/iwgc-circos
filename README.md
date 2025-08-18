@@ -143,7 +143,7 @@ Singularity (HPC use):
 singularity exec \
   --cleanenv \
   -B "$PWD":/data \
-  /path/to/iwgc-circos-tracks.sif \
+  iwgc-circos-tracks.sif \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp --noparanoid
 ```
   
