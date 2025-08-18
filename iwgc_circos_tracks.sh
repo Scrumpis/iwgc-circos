@@ -253,7 +253,7 @@ if [[ $INCLUDE_LTRDATING == true ]]; then
   awk '$4 != "." {print $1,$2,$3,int($4 + 0.5)}' "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed" | sort -k1,1 -k2,2n | \
   awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4}
         END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | \
-  awk '{print $1, $2, $3, $5}' > "${OUTPUT_DIR}/${FASTA_BASE}_LTRage_coverage.circos"
+  awk '{print $1, $2, $3, $5}' > "${OUTPUT_DIR}/${FASTA_BASE}_LTRdating_coverage.circos"
   TEMP_FILES+=("${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed" "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed")
 fi
 
