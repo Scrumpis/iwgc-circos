@@ -77,7 +77,8 @@ docker run --rm -v $"PWD":/data scrumpis/iwgc-circos-tracks:latest \
 | `genome.coords`                      | .coords alignment file from minimap2 or similar used to generate **links track**. |
 
   
-The below would produce all possible track files with 300kbp (default size) sliding windows with half window size steps (default size)
+The below would produce all possible track files with 300kbp (default size) sliding windows with half window size steps (default size)  
+Singularity:
 ```
 singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh Chenopodium_album.genome_v2.fasta \
 -gene CheAl_v01.0.gff \
@@ -88,7 +89,17 @@ singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh Chenopodium_
 -gc -telomere -sliding -filter-chrs \
 -out ../iwgc_circos_data/
 ```
-
+Docker:
+```
+docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwgc_circos_tracks.sh /circos/data/Chenopodium_album.genome_v2.fasta \
+-gene /circos/data/CheAl_v01.0.gff \
+-repeat /circos/data/Chenopodium_album.genome_v2.fasta.mod.EDTA.TEanno.gff3 \
+-intact /circos/data/Chenopodium_album.genome_v2.fasta.mod.EDTA.intact.gff3 \
+-ltr-dating /circos/data/Chenopodium_album.genome_v2.fasta.mod.pass.list \
+-links /circos/data/Chenopodium_album.genome_v2.coords \
+-gc -telomere -sliding -filter-chrs \
+-out /circos/iwgc_circos_data/ -window 1000000
+```
   
 ## 2. Create Circos Plot Config Files
 The below command will generate Circos config files in iwgc_circos using the provided template_config files.  
