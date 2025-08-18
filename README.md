@@ -201,7 +201,6 @@ The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-
 
 ## Notes
 - When visualizing multiple species, datasets, etc. in a single Circos plot, all files must be concatenated first
-- All tracks are optional aside from the ideogram (telomeres optional), so only required file is genome.fasta
 - If you need to reverse the orientation of any chromosomes to untwist links, edit the ```chromosomes_reverse = ``` line of ```iwgc_circos.conf``` to indicate the chromosomes you wish to reverse (example: ```chromosomes_reverse = Chr1; Chr6; Chr9```
 - For automation and visualization purposes...
   - Gene desity is sqrt transformed
