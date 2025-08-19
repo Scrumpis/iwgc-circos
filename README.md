@@ -38,7 +38,7 @@ docker pull scrumpis/iwgc-circos-tracks:latest
   
    Optional:
      -gene            Add gene density track (requires gene annotation GFF3)
-     -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.mod.TEanno.gff3)
+     -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.mod.EDTA.TEanno.gff3)
      -intact          Add intact TE density track (requires EDTA intact repeat annotation: EDTA/genome.fasta.mod.EDTA.intact.gff3)
      -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)
      -links           Add syntenic links from a .coords file (e.g., MUMmer or minimap2 output)
