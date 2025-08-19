@@ -102,6 +102,18 @@ docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwg
 ```
   
 ## 2. Create Circos Plot Config Files
+### Usage
+```
+  Usage: ./create_configs.sh <FASTA> [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]
+  
+   Optional:
+     -template        Path, including file name, to iwgc_circos_template.config (default: ./iwgc_circos_template.config)
+     -outdir          Path to output directory (default: ./iwgc_circos)
+     -ideogram        Path, indluding file name, to ideogram.conf (default: $OUTDIR/iwgc_circos.conf)
+     -gap             Adds gap to middle-top of plot, between last and first chromosomes (default: FALSE)
+     -h | --help      List usage options
+```
+
 The below command will generate Circos config files in iwgc_circos using the provided template_config files.  
 ***Run one level up from iwgc_circos and iwgc_circos_data*** 
 ```
