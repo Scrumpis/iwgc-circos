@@ -48,22 +48,13 @@ docker pull scrumpis/iwgc-circos-tracks:latest
      -gc              Add GC content track
      -telomere        Add telomere bands to ideogram (karyotype.circos)
      -ts              Telomere band size scale (default: 0.005), 0.5% of total genome size
-     -window          Window size in base pairs (default: 300000)
+     -window          Window size in base pairs (default: 1000000)
      -sliding         Use sliding windows instead of fixed
      -step            Step size for sliding windows (default: 0.5). The default is half window size steps
      -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off
      -keep-temp       Keep intermediate files
      -out             Output directory for Circos track files (default: current directory)
      -h | --help      List usage options
-```
-  
-**Recommended containerized usage:**
-```
-singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> [options]
-```
-```
-docker run --rm -v $"PWD":/data scrumpis/iwgc-circos-tracks:latest \
-./iwgc-circos-tracks.sh <FASTA> [options]
 ```
      
 **Input files:**
@@ -77,7 +68,7 @@ docker run --rm -v $"PWD":/data scrumpis/iwgc-circos-tracks:latest \
 | `genome.coords`                      | .coords alignment file from minimap2 or similar used to generate **links track**. |
 
   
-The below would produce all possible track files with 300kbp (default size) sliding windows with half window size steps (default size)  
+The below would produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size)  
 Singularity:
 ```
 singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh Chenopodium_album.genome_v2.fasta \
@@ -98,7 +89,7 @@ docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwg
 -ltr-dating /circos/data/Chenopodium_album.genome_v2.fasta.mod.pass.list \
 -links /circos/data/Chenopodium_album.genome_v2.coords \
 -gc -telomere -sliding -filter-chrs \
--out /circos/iwgc_circos_data/ -window 1000000
+-out /circos/iwgc_circos_data/
 ```
   
 ## 2. Create Circos Plot Config Files
