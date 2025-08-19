@@ -150,7 +150,7 @@ iwgc-circos/
 ```
 
 ### Run Circos v0.69-9:
-The below command will generate Circos config files in iwgc_circos using the provided template_config files.  
+The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg)  
 ***Run one level up from iwgc_circos and iwgc_circos_data***    
   
 Docker (local use; easier refinement - quickly view png/svg, tweak .conf files, and re-run):
