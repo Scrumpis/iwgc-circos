@@ -39,20 +39,29 @@ block_file_pattern() {
   awk 'match($0, /^[[:space:]]*file[[:space:]]*=[[:space:]]*(.*)$/, a){print a[1]}' "$1" | head -n1
 }
 
-# Return 0 if any match exists
+# Return 0 if any match exists (safe under set -e)
 pattern_has_match() {
   local pat="$1"
   pat="${pat%%#*}"
-  pat="$(echo "$pat" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')"
-  compgen -G "$pat" >/dev/null 2>&1
+  # remove quotes and trim
+  pat="$(echo "$pat" | sed -E 's/^["'\'' ]+|["'\'' ]+$//g')"
+  if compgen -G "$pat" >/dev/null 2>&1; then
+    return 0
+  else
+    return 1
+  fi
 }
 
-# Resolve a glob to one concrete path (first in lexicographic order). Prints "" if none.
+# Resolve a glob to one concrete path (first in lexicographic order). Prints "" if none (safe).
 resolve_first_match() {
   local pat="$1"
-  local first
-  first="$(compgen -G "$pat" | sort | head -n1 || true)"
-  printf '%s' "$first"
+  local out
+  out="$(compgen -G "$pat" 2>/dev/null || true)"
+  if [[ -n "$out" ]]; then
+    printf '%s\n' "$out" | sort | head -n1
+  else
+    printf '%s' ""
+  fi
 }
 
 rewrite_block_file_line() {
@@ -68,6 +77,118 @@ is_labels_block()     { grep -qE '^[[:space:]]*type[[:space:]]*=[[:space:]]*text
 is_highlights_block() { grep -qE '^[[:space:]]*type[[:space:]]*=[[:space:]]*highlight' "$1"; }
 block_matches_regex() { grep -qE "$2" "$1"; }
 
+# --- helper: compute major tick (rounded as requested) ---
+compute_tick_major() {
+  local karyo="${KARYOTYPE:-}"
+  if [[ -z "$karyo" ]]; then
+    # safe fallback discovery
+    shopt -s nullglob
+    local cands=( iwgc_circos_data/*_karyotype.circos )
+    shopt -u nullglob
+    [[ ${#cands[@]} -gt 0 ]] && karyo="${cands[0]}"
+  fi
+  [[ -f "$karyo" ]] || { echo "[ERROR] Karyotype not found." >&2; return 1; }
+
+  awk '
+    $1=="chr" && $3 !~ /_T[0-9]+/ {
+      len = $6 - $5
+      total += len
+      N += 1
+    }
+    END {
+      if (N==0) { print "ERR"; exit 1 }
+      genomeGb = total / 1e9
+
+      # length-dominant scaling (small chr-count effect)
+      refGb=1.5; refN=27
+      expL=0.8; expN=0.2
+
+      scale   = pow(genomeGb/refGb, expL) * pow(refN/N, expN)
+      baseMaj = 10
+      major_raw = baseMaj * scale
+
+      # rounding rule:
+      # - if major_raw <= 2.4 -> 1
+      # - else round to nearest multiple of 5 (7.5->10, 7.4->5)
+      if (major_raw <= 2.4) {
+        major = 1
+      } else {
+        major = round5(major_raw)
+        if (major < 1) major = 1
+      }
+
+      # pretty-print major (strip trailing zeros)
+      major_s = fmt(major)
+      genome_s = fmt(genomeGb)
+
+      printf("OK\t%s\t%d\t%s\n", major_s, N, genome_s)
+      exit 0
+    }
+
+    function round5(x) { return 5*int(x/5 + 0.5) }  # nearest 5
+    function fmt(x, s){ s=sprintf("%.6f",x); sub(/\.?0+$/,"",s); return s }
+    function pow(a,b) { return exp(b*log(a)) }
+  ' "$karyo"
+}
+
+# --- writer: minor = major/2; keep your styling; pretty numbers ---
+write_ticks_conf() {
+  local outdir="$1"
+  local ticks_file="${outdir%/}/ticks.conf"
+
+  local res
+  res="$(compute_tick_major)" || { echo "[ERROR] Could not compute tick spacing."; return 1; }
+  if [[ "$res" == ERR* ]]; then
+    echo "[ERROR] No chromosomes found in karyotype."; return 1
+  fi
+
+  local status major nchr genomeGb
+  status="$(cut -f1 <<<"$res")"
+  major="$(cut -f2 <<<"$res")"
+  nchr="$(cut -f3 <<<"$res")"
+  genomeGb="$(cut -f4 <<<"$res")"
+
+  # minor = major / 2
+  local minor
+  minor="$(awk -v m="$major" 'BEGIN{v=m/2; s=sprintf("%.6f",v); sub(/\.?0+$/,"",s); print s}')"
+
+  # clean major as well (already clean, but ensure)
+  local major_clean
+  major_clean="$(awk -v m="$major" 'BEGIN{s=sprintf("%.6f",m); sub(/\.?0+$/,"",s); print s}')"
+
+  echo "[INFO] Using karyotype for ticks: ${KARYOTYPE:-auto}"
+  echo "[INFO] Auto tick spacing: major=${major_clean}u, minor=${minor}u (${genomeGb} Gbp; ${nchr} chr)"
+
+  cat > "$ticks_file" <<EOF
+show_ticks          = yes
+show_tick_labels    = yes
+
+<ticks>
+radius           = dims(ideogram,radius_outer)
+orientation      = out
+label_multiplier = 1e-6
+color            = black
+size             = 20p
+thickness        = 3p
+label_offset     = 5p
+format           = %d
+
+<tick>
+spacing        = ${minor}u
+show_label     = no
+size           = 10p
+</tick>
+
+<tick>
+spacing        = ${major_clean}u
+show_label     = yes
+label_size     = 18p
+</tick>
+
+</ticks>
+EOF
+}
+
 # === workspace ===
 WORKDIR="$(mktemp -d)"
 trap 'rm -rf "$WORKDIR"' EXIT
@@ -78,12 +199,28 @@ POST="$WORKDIR/post.txt"
 BLOCK_DIR="$WORKDIR/blocks"
 mkdir -p "$BLOCK_DIR"
 
-# --- Evaluate ${chrs} using grep -v + awk + paste (NOT literal in output) ---
-CHRS_EVAL="$(grep -v '_T[0-9]\+' iwgc_circos_data/*karyotype.circos \
-  | awk 'NF>=3 {print $3}' \
-  | paste -sd';' - || true)"
+# --- Resolve the karyotype wildcard directly from TEMPLATE to a concrete file ---
+kary_glob="$(sed -nE 's/^[[:space:]]*karyotype[[:space:]]*=[[:space:]]*(.*)/\1/p' "$TEMPLATE" | head -n1)"
+if [[ -z "${kary_glob// /}" ]]; then
+  echo "[ERROR] Could not find a karyotype line in template." >&2
+  exit 1
+fi
+# strip inline comments and surrounding quotes/space
+kary_glob="$(echo "$kary_glob" | sed -E 's/#.*$//; s/^["'\'' ]+|["'\'' ]+$//; s/[[:space:]]+$//')"
+kary_file="$(resolve_first_match "$kary_glob")"
+if [[ -z "${kary_file// /}" ]]; then
+  echo "[ERROR] karyotype pattern has no matches: $kary_glob" >&2
+  exit 1
+fi
+echo "[INFO] Resolved karyotype: $kary_file"
+
+# --- Evaluate ${chrs} from the resolved karyotype (skip _T[0-9]+) ---
+CHRS_EVAL="$(
+  awk '$1=="chr" && $0!~/^#/ && $3 !~ /_T[0-9]+/ {print $3}' "$kary_file" \
+  | paste -sd';' - || true
+)"
 if [[ -z "${CHRS_EVAL// /}" ]]; then
-  echo "[ERROR] Chromosome extraction returned empty. Check karyotype files." >&2
+  echo "[ERROR] Chromosome extraction returned empty from: $kary_file" >&2
   exit 1
 fi
 
@@ -93,18 +230,7 @@ sed -e "s|\${chrs}|$(escape_sed_repl "$CHRS_EVAL")|g" \
     -e "s|\${reverse}||g" \
     "$TEMPLATE" > "$SUBBED"
 
-# --- Resolve the karyotype wildcard to a concrete file (first lexicographic match) ---
-kary_glob="$(sed -nE 's/^[[:space:]]*karyotype[[:space:]]*=[[:space:]]*(.*)/\1/p' "$SUBBED" | head -n1)"
-if [[ -z "${kary_glob// /}" ]]; then
-  echo "[ERROR] Could not find a karyotype line in template." >&2
-  exit 1
-fi
-kary_file="$(resolve_first_match "$kary_glob")"
-if [[ -z "${kary_file// /}" ]]; then
-  echo "[ERROR] karyotype pattern has no matches: $kary_glob" >&2
-  exit 1
-fi
-# Replace only the first karyotype line
+# Replace only the first karyotype line with the resolved concrete path
 awk -v newk="$kary_file" '
   BEGIN{done=0}
   /^[[:space:]]*karyotype[[:space:]]*=/ && !done { print "karyotype   = " newk; done=1; next }
@@ -151,8 +277,16 @@ TRACK_WIDTH=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 4*u}')   # 0.04r
 TRACK_SPACING=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 3*u}') # 0.03r
 LINKS_GAP=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 0.5*u}')   # 0.005r
 
-# Gather blocks
-mapfile -t BLOCKS < <(ls "$BLOCK_DIR"/block_*.txt 2>/dev/null | sort -V)
+# Gather blocks (nullglob-safe; no early exit)
+shopt -s nullglob
+BLOCKS=( "$BLOCK_DIR"/block_*.txt )
+shopt -u nullglob
+if ((${#BLOCKS[@]})); then
+  IFS=$'\n' BLOCKS=( $(printf '%s\n' "${BLOCKS[@]}" | sort -V) )
+  unset IFS
+else
+  BLOCKS=()
+fi
 
 # Track dynamic blocks & presence
 declare -A KEY_TO_BLOCK=()
@@ -291,6 +425,94 @@ else
   done
 fi
 
+# --- Compact layout pass (≤ 8 dynamic tracks) ---
+apply_compact_layout() {
+  # Build ordered list of present dynamic blocks (top -> inward)
+  local idxs=()
+  local i
+  local n=0
+  for i in "${!DYN_KEYS[@]}"; do
+    if [[ "${HAS_BLOCK[$i]}" -eq 1 && "${PRESENT[$i]}" -eq 1 ]]; then
+      idxs+=("$i")
+      (( ++n ))   # <<< was (( n++ )) which trips set -e when n==0
+    fi
+  done
+
+  # Only trigger when 1..8 present
+  if (( n == 0 || n > 8 )); then
+    return 0
+  fi
+
+  # Use compact spacing = 0.02r
+  local COMPACT_SPACING
+  COMPACT_SPACING=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 2*u}')  # 0.02r
+  local BASE_W="$TRACK_WIDTH"
+
+  # Provisional inner r0 using base width + compact spacing
+  local PROV_INNER_R0
+  PROV_INNER_R0="$(
+    awk -v top="$TOP_R1" -v w="$BASE_W" -v s="$COMPACT_SPACING" -v n="$n" '
+      BEGIN{
+        r1=top
+        for(i=1;i<=n;i++){
+          r0=r1-w
+          if(i<n){ r1=r0-s }
+        }
+        printf "%.6f", r0
+      }'
+  )"
+
+  # If inner r0 too far out (>0.50), enlarge each track height evenly
+  local WIDTH_ADD_PER_TRACK
+  WIDTH_ADD_PER_TRACK="$(
+    awk -v r0="$PROV_INNER_R0" -v tgt=0.50 -v n="$n" '
+      BEGIN{
+        d = r0 - tgt
+        if (d > 0 && n > 0) printf "%.6f", d/n; else printf "0"
+      }'
+  )"
+
+  local NEW_WIDTH
+  NEW_WIDTH="$(awk -v w="$BASE_W" -v a="$WIDTH_ADD_PER_TRACK" 'BEGIN{printf "%.6f", w + a}')"
+
+  # Re-pack present dynamic tracks with COMPACT_SPACING and NEW_WIDTH
+  local cur_r1="$TOP_R1"
+  INNERMOST_R0=""
+  for i in "${idxs[@]}"; do
+    local key="${DYN_KEYS[$i]}"
+    local blk="${KEY_TO_BLOCK[$key]:-}"
+    [[ -n "$blk" ]] || continue
+
+    # Resolve file path to concrete path
+    local pat resolved
+    pat="$(block_file_pattern "$blk")"
+    if [[ -n "$pat" ]]; then
+      resolved="$(resolve_first_match "$pat")"
+      rewrite_block_file_line "$blk" "$resolved"
+    fi
+
+    local r1 r0
+    r1="$cur_r1"
+    r0=$(awk -v r1="$r1" -v w="$NEW_WIDTH" 'BEGIN{printf "%.6f", r1 - w}')
+    awk -v newr1="$r1" -v newr0="$r0" '
+      BEGIN{r1done=0; r0done=0}
+      /^[[:space:]]*r1[[:space:]]*=[[:space:]]*[0-9.]+r/ && !r1done { sub(/[0-9.]+r/, sprintf("%.4fr", newr1)); r1done=1 }
+      /^[[:space:]]*r0[[:space:]]*=[[:space:]]*[0-9.]+r/ && !r0done { sub(/[0-9.]+r/, sprintf("%.4fr", newr0)); r0done=1 }
+      {print}
+    ' "$blk" > "$blk.tmp" && mv "$blk.tmp" "$blk"
+
+    cur_r1=$(awk -v r0="$r0" -v s="$COMPACT_SPACING" 'BEGIN{printf "%.6f", r0 - s}')
+    INNERMOST_R0="$r0"
+  done
+
+  echo "[INFO] Compact layout active: ${n} dynamic tracks"
+  echo "[INFO]  spacing=${COMPACT_SPACING}r, per-track height=${NEW_WIDTH}r"
+  echo "[INFO]  provisional inner r0=${PROV_INNER_R0} -> final inner r0=${INNERMOST_R0}"
+}
+
+# --- Apply compact layout if applicable ---
+apply_compact_layout
+
 # --- Rebuild <plots> region ---
 PLOTS_REBUILT="$WORKDIR/plots_rebuilt.txt"
 {
@@ -315,6 +537,8 @@ links_pat="$(awk '
   /<\/links>/{inlinks=0}
   inlinks && /^[[:space:]]*file[[:space:]]*=/ {
     sub(/^[[:space:]]*file[[:space:]]*=[[:space:]]*/, "", $0)
+    # strip inline comments and surrounding quotes/space
+    sub(/#.*/,"",$0); gsub(/^["'\'' ]+|["'\'' ]+$/,"",$0); gsub(/^[[:space:]]+|[[:space:]]+$/,"",$0)
     print; exit
   }
 ' "$WORKDIR/stitched.conf" || true)"
@@ -423,3 +647,7 @@ EOF
     fi
   fi
 fi
+
+# === Ticks (export the exact karyotype used) ===
+export KARYOTYPE="$kary_file"
+write_ticks_conf "$OUTDIR"
