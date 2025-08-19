@@ -4,14 +4,18 @@ set -euo pipefail
 # Defaults
 TEMPLATE="iwgc_circos_template.config"
 OUTDIR="iwgc_circos"
+GAP=false
+IDEO=""
 
-# Parse args
+# Parse args (single-dash flags)
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --template) TEMPLATE="$2"; shift 2;;
-    --outdir)   OUTDIR="$2"; shift 2;;
-    -h|--help)
-      echo "Usage: $0 [--template FILE] [--outdir DIR]"
+    -template) TEMPLATE="$2"; shift 2;;
+    -outdir)   OUTDIR="$2"; shift 2;;
+    -ideogram) IDEO="$2"; shift 2;;   # optional override; default set after OUTFILE
+    -gap)      GAP=true; shift;;
+    -h|-help)
+      echo "Usage: $0 [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]"
       exit 0;;
     *)
       echo "[ERROR] Unknown arg: $1" >&2; exit 1;;
@@ -22,13 +26,17 @@ done
 mkdir -p "$OUTDIR"
 OUTFILE="${OUTDIR%/}/iwgc_circos.conf"
 
+# Default ideogram path: $OUTDIR/ideogram.conf unless -ideogram is provided
+if [[ -z "${IDEO}" ]]; then
+  IDEO="${OUTDIR%/}/ideogram.conf"
+fi
+echo "[INFO] ideogram target: $IDEO"
+
 # === helpers ===
 escape_sed_repl() { printf '%s' "$1" | sed -e 's/[&|\\]/\\&/g'; }
 
 block_file_pattern() {
-  awk '
-    match($0, /^[[:space:]]*file[[:space:]]*=[[:space:]]*(.*)$/, a){print a[1]}
-  ' "$1" | head -n1
+  awk 'match($0, /^[[:space:]]*file[[:space:]]*=[[:space:]]*(.*)$/, a){print a[1]}' "$1" | head -n1
 }
 
 # Return 0 if any match exists
@@ -252,7 +260,6 @@ else
     key="${DYN_KEYS[$i]}"
     blk="${KEY_TO_BLOCK[$key]:-}"
     [[ -n "$blk" ]] || continue
-
     if [[ "$i" -lt "$first_missing_idx" ]]; then
       continue
     fi
@@ -348,3 +355,71 @@ else
 fi
 
 echo "[OK] Wrote $OUTFILE"
+
+# === Optional: patch ideogram.conf with pairwise, if -gap was provided ===
+if $GAP; then
+  echo "[INFO] -gap set: patching pairwise into: $IDEO"
+  if [[ ! -f "$IDEO" ]]; then
+    echo "[WARN] ideogram not found at: $IDEO — skipping pairwise patch."
+  else
+    echo "[INFO] using karyotype: $kary_file"
+
+    # Robustly derive FIRST (first 'chr' row col3) and LAST (last 'chr' row col3)
+    FIRST_ID="$(awk 'BEGIN{IGNORECASE=1} {sub(/\r$/,"")} $1=="chr" && $0!~/^#/ && NF>=3 {print $3; exit}' "$kary_file" || true)"
+    LAST_ID="$(awk  'BEGIN{IGNORECASE=1} {sub(/\r$/,"")} $1=="chr" && $0!~/^#/ && NF>=3 {id=$3} END{if(id!="") print id}' "$kary_file" || true)"
+
+    if [[ -z "${FIRST_ID:-}" || -z "${LAST_ID:-}" ]]; then
+      echo "[ERROR] Could not derive chromosome IDs from: $kary_file" >&2
+      echo "[ERROR] (looked for lines with first column == 'chr' and >=3 fields)" >&2
+    else
+      echo "[INFO] pairwise will be: <pairwise $LAST_ID $FIRST_ID>"
+    fi
+
+    pairwise_block="$(
+      cat <<EOF
+<pairwise ${LAST_ID:-chrZ} ${FIRST_ID:-chrA}>
+# spacing between edge chromosomes; computed from karyotype ($kary_file)
+spacing = 15r
+</pairwise>
+EOF
+    )"
+
+    # Idempotent patch: replace or insert inside <spacing>. If no <spacing>, append a minimal one.
+    awk -v block="$pairwise_block" '
+      { sub(/\r$/, "", $0) }                               # normalize CRLF
+      BEGIN{ in_spacing=0; in_pair=0; replaced=0; saw_spacing=0 }
+      /<spacing[^>]*>/ { in_spacing=1; saw_spacing=1 }
+      in_spacing && /<pairwise[[:space:]][^>]*>/ { in_pair=1 }
+      in_pair && /<\/pairwise>/ {
+        if (!replaced) { print block; replaced=1 }
+        in_pair=0; next
+      }
+      in_pair { next }
+      in_spacing && /<\/spacing>/ {
+        if (!replaced) { print block; replaced=1 }
+        in_spacing=0; print; next
+      }
+      { print }
+      END{
+        if (!saw_spacing) {
+          print ""
+          print "<spacing>"
+          print block
+          print "</spacing>"
+        }
+      }
+    ' "$IDEO" > "$IDEO.tmp" && mv "$IDEO.tmp" "$IDEO"
+
+    if grep -qE '^<pairwise[[:space:]]' "$IDEO"; then
+      echo "[OK] Patched $IDEO with pairwise: ${LAST_ID:-NA} ${FIRST_ID:-NA}"
+    else
+      echo "[WARN] Pairwise block not found after patch. Dumping <spacing> for debug:"
+      awk '{
+        sub(/\r$/,"",$0)
+        if ($0 ~ /<spacing[^>]*>/) {show=1}
+        if (show) print
+        if ($0 ~ /<\/spacing>/) {show=0}
+      }' "$IDEO"
+    fi
+  fi
+fi
