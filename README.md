@@ -166,11 +166,11 @@ singularity exec \
 ```
   
 ## Final Touches
-If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments. After making these config file adjustments, re-run Circos to generate a new plot with your updates.  
-
-### Common adjustments
+If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments. After making these config file adjustments, re-run Circos to generate a new plot with your updates. I tried to leave comments throughtout the config files as well. Below are some commonly made adjustments.  
+  
 **iwgc_circos.conf**
 - Reduce ```chromosomes_units =``` to for very small genomes or increase for very big ones if needed. Default 1000000 (1Mbp) should cover a broad size range. You will likely have to adjust ticks.conf if you change this.
+- Change plot type, colors of plots, reverse chromosomes, insert breaks into chromsomes, etc.
 
 **ideogram.label.conf**
 - Increase "150p" in ```label_radius``` to move chromosome labels further from ideogram, or decrease to bring them closer.
@@ -187,6 +187,7 @@ The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-
 - a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
 - b. Gene density, more blue is more gene rich, more yellow is less gene rich
 - c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
+- d. LTR insertion age, more purple 
 - d. Intact Gypsy LTR coverage
 - e. Intact Copia LTR coverage
 - f. Intact non-Gypsy or Copia LTR coverage
