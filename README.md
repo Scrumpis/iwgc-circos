@@ -104,7 +104,7 @@ docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwg
 ## 2. Create Circos Plot Config Files
 ### Usage
 ```
-  Usage: ./create_configs.sh <FASTA> [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]
+  Usage: ./create_configs.sh [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]
   
    Optional:
      -template        Path, including file name, to iwgc_circos_template.config (default: ./iwgc_circos_template.config)
