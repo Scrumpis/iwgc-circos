@@ -78,7 +78,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Default window and step sizes
-WINDOW=${WINDOW:-300000}
+WINDOW=${WINDOW:-1000000}
 STEP_SIZE=${STEP_SIZE:-0.5}
 OUTPUT_DIR=${OUTPUT_DIR:-.}     # current directory by default
 MIN_TLEN=${MIN_TLEN:-0}
