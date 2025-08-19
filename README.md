@@ -23,9 +23,9 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 - Telomere presence
 - Total gene density
 - Total repeat density
-- Intact transposable element density (separated by family, cat all together for total density)
-- GC content
 - LTR insertion age
+- Intact transposable element density (separated by family)
+- GC content
 - Syntenic links
 
   
