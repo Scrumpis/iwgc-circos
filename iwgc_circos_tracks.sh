@@ -19,7 +19,7 @@ usage() {
   echo "  -gc              Add GC content track"
   echo "  -telomere        Add telomere bands to ideogram (karyotype.circos)"
   echo "  -ts              Telomere band size scale (default: 0.005), 0.5% of total genome size"
-  echo "  -window          Window size in base pairs (default: 300000)"
+  echo "  -window          Window size in base pairs (default: 1000000)"
   echo "  -sliding         Use sliding windows instead of the default fixed windows"
   echo "  -step            Step size for sliding windows (default: 0.5). The default is half window size steps"
   echo "  -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off"
