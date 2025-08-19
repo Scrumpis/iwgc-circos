@@ -248,12 +248,45 @@ fi
 # Generate LTR dating track file if requested
 if [[ $INCLUDE_LTRDATING == true ]]; then
   awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed"
-  bedtools map -a "${OUTPUT_DIR}/${FASTA_BASE}_windows.bed" -b "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed" -c 4 -o mean > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed"
+  # Per-window mean age (keep all windows)
+  bedtools map -a "${OUTPUT_DIR}/${FASTA_BASE}_windows.bed" \
+               -b "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed" \
+               -c 4 -o mean \
+  > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed"
 
-  awk '$4 != "." {print $1,$2,$3,int($4 + 0.5)}' "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed" | sort -k1,1 -k2,2n | \
-  awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4}
-        END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | \
-  awk '{print $1, $2, $3, $5}' > "${OUTPUT_DIR}/${FASTA_BASE}_LTRdating_coverage.circos"
+  # Normalize ignoring zeros, invert so younger=larger, and offset to 1..2; empties=0
+  awk -v OFS='\t' '
+  {
+    chrom=$1; start=$2; end=$3; raw=$4;
+
+    has = (raw != ".");            # did this window get any LTRs?
+    val = has ? (raw+0) : 0;       # numeric value when present
+
+    A[NR]=chrom; B[NR]=start; C[NR]=end; V[NR]=val; H[NR]=has;
+
+    if (has) {
+      if (!seen++) { m=val; M=val }
+      if (val < m) m=val;
+      if (val > M) M=val;
+    }
+  }
+  END{
+    for (i=1; i<=NR; i++) {
+      if (!H[i]) {
+        out = 0;                   # no insertions in this window
+      } else if (M == m) {
+        out = 1.5;                 # all ages identical (incl. all zeros)
+      } else {
+        y = 1 - ((V[i] - m) / (M - m));  # younger (smaller age) -> larger y
+        out = y + 1;                      # shift to [1,2]
+      }
+      printf "%s\t%s\t%s\t%.6f\n", A[i], B[i], C[i], out;
+    }
+  }
+  ' "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed" \
+  > "${OUTPUT_DIR}/${FASTA_BASE}_LTRdating_coverage.circos"
+
+
   TEMP_FILES+=("${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed" "${OUTPUT_DIR}/${FASTA_BASE}_LTR_age.bed")
 fi
 
