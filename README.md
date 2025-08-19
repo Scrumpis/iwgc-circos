@@ -1,6 +1,6 @@
 # International Weed Genomics Consortium (IWGC) Genome Report Circos Plots
 ## About
-This repository documents the methods used to generate the Circos plots for many of the genome reports produced by the International Genomics Consortium (IWGC). This project aims to automate the generation of commonly used Circos tracks in genomics to reduce the barrier for entry for those unfamaliar with Circos and to speed-up production for those experienced with Circos.
+This repository documents the methods used to generate the Circos plots for many of the genome reports produced by the International Genomics Consortium (IWGC). This project aims to automate the generation of commonly used Circos tracks in genomics to reduce the barrier for entry for those unfamaliar with Circos and to speed-up production for those experienced with Circos. Useful as a template for further customization or to get a quick snapshot at patterns going on in your genome of interest.
 
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
 
@@ -92,7 +92,11 @@ docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwg
 -out /circos/iwgc_circos_data/
 ```
   
-## 2. Create Circos Plot Config Files
+## 2. Create Circos Plot Config Files (create_configs.sh)
+This command will produce the following:
+- iwgc_circos/iwgc_circos.conf file containing plots for every expected input file contained in iwgc_circos_data. So, if iwgc_circos_data/genome.fasta_gene_coverage.circos exists, gene density plot will be created.
+- If the gap flag is invoked, iwgc_circos/ideogram.conf file with your last and first chromosomes in the pairwise header for legend.
+
 ### Usage
 ```
   Usage: ./create_configs.sh [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]
@@ -168,8 +172,9 @@ If you are planning to include the Circos plot in a publication, you will likely
 **iwgc_circos.conf**
 - Reduce ```chromosomes_units =``` to for very small genomes or increase for very big ones if needed. Default 1000000 (1Mbp) should cover a broad size range. You will likely have to adjust ticks.conf if you change this.
 
-**ideogram.conf**
-- 
+**ideogram.label.conf**
+- Increase "150p" in ```label_radius``` to move chromosome labels further from ideogram, or decrease to bring them closer.
+- Adjust "chr0*" regex in ```label_format``` to match patterns you want to remove from labels. It currently removes Chr/chr/Chr0/chr0 from the beginning of all chromosomes, so Chr09B becomes 9B.
 
 **ticks.conf**
 - If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
