@@ -171,6 +171,8 @@ If you are planning to include the Circos plot in a publication, you will likely
 **iwgc_circos.conf**
 - Reduce ```chromosomes_units =``` to for very small genomes or increase for very big ones if needed. Default 1000000 (1Mbp) should cover a broad size range. You will likely have to adjust ticks.conf if you change this.
 - Change plot type, colors of plots, reverse chromosomes, insert breaks into chromsomes, etc.
+- Uncomment ```chromosome_reverse =``` and add chromosomes in a list (Chr09D; Chr01B; Chr04C) to reverse chromosomes and all associated plots.
+- Syntenic links are very customizable. Change thresholds for sizes to hide or color differently, allow intrachromosomal links, add twists, flatten, etc.
 
 **ideogram.label.conf**
 - Increase "150p" in ```label_radius``` to move chromosome labels further from ideogram, or decrease to bring them closer.
