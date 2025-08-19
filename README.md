@@ -172,17 +172,13 @@ singularity exec \
   
 ## Final Touches
 If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments. After making these config file adjustments, re-run Circos to generate a new plot with your updates.  
-    
+
+### Common adjustments
 **iwgc_circos.conf**
-- Reduce ```chromosomes_units =``` for small genomes or increase for big ones if needed, try with default 1000000 (1Mbp) first
+- Reduce ```chromosomes_units =``` to for very small genomes or increase for very big ones if needed. Default 1000000 (1Mbp) should cover a broad size range. You will likely have to adjust ticks.conf if you change this.
 
 **ideogram.conf**
-- Change pairwise header block to your chr exact names to put a gap for the legend (typically last chr then first chr)
-```
-<pairwise H2_Chr06 H1_Chr06> # Change to your chrs
-spacing = 15r # spacing between chr1 and chr9 is 5x 0.1% of image
-</pairwise>
-```
+- 
 
 **ticks.conf**
 - If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
