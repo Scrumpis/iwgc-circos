@@ -4,7 +4,25 @@ This repository documents the methods used to generate the Circos plots for many
 
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
 
+The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). 
+- a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
+- b. Gene density, more blue is more gene rich, more yellow is less gene rich
+- c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
+- d. LTR insertion age
+- e. Intact Gypsy LTR coverage
+- f. Intact Copia LTR coverage
+- g. Intact non-Gypsy or Copia LTR coverage
+- h. Intact hAT-superfamily (DTA) coverage
+- i. Intact CACTA-superfamily (DTC) coverage
+- j. Intact Harbinger-superfamily (DTH) coverage
+- k. Intact Mutator-superfamily (DTM) coverage
+- l. Intact Tc1-Mariner-superfamily (DTT) coverage
+- m. Intact Rolling-circle-transposon/Helitron-superfamily (Helitron) coverage
+- n. GC-content
+- Syntenic links on the interior
+  
 
+![image](https://github.com/Scrumpis/iwgc-circos/blob/main/iwgc_circos/tmp/iwgc_circos.labeled.svg)
 ## Clone Repo
 The scripts are built to run with this repo structure by default. It will simplify things for you to do the same.
 ```
@@ -230,31 +248,9 @@ If you are planning to include the Circos plot in a publication, you will likely
 **ticks.conf**
 - If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
   
-Use Inkspace or a similar SVG editing tool to manually edit or add any text. 
-
-   
-## Example:
-The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). 
-- a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
-- b. Gene density, more blue is more gene rich, more yellow is less gene rich
-- c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
-- d. LTR insertion age
-- e. Intact Gypsy LTR coverage
-- f. Intact Copia LTR coverage
-- g. Intact non-Gypsy or Copia LTR coverage
-- h. Intact hAT-superfamily (DTA) coverage
-- i. Intact CACTA-superfamily (DTC) coverage
-- j. Intact Harbinger-superfamily (DTH) coverage
-- k. Intact Mutator-superfamily (DTM) coverage
-- l. Intact Tc1-Mariner-superfamily (DTT) coverage
-- m. Intact Rolling-circle-transposon/Helitron-superfamily (Helitron) coverage
-- n. GC-content
-- Syntenic links on the interior
+Use Inkspace or a similar SVG editing tool to manually edit or add any text.  
   
-
-![image](https://github.com/Scrumpis/iwgc-circos/blob/main/iwgc_circos/tmp/iwgc_circos.labeled.svg)
-
-
+   
 ## Notes
 - When visualizing multiple species, datasets, etc. in a single Circos plot, all files must be concatenated first
 - For automation and visualization purposes...
