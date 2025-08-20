@@ -106,7 +106,7 @@ docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwg
 ## 2. Create Circos Plot Config Files (create_configs.sh)
 This command will produce the following:
 - iwgc_circos/iwgc_circos.conf file containing plots for every included track data file contained in iwgc_circos_data. So, if iwgc_circos_data/genome.fasta_gene_coverage.circos exists, gene density plot will be created.
-- If the gap flag is invoked, iwgc_circos/ideogram.conf file with your last and first chromosomes in the pairwise header for legend.
+- If the gap flag is invoked, iwgc_circos/ideogram.conf file will contain a legend gap between your last and first chromosomes in the pairwise header.
 - If 8 or less of the files associated with any of the plot tracks (excludes ideogram, labels, or links) are present in iwgc_circos_data, tracks will be dynamically resized to keep the inner most tracks r0 value near 0.5 and the gap between tracks is doubled (0.02 units instead of 0.01).
 - Dynamically adjusts tick amount and spacing based on genome length and chromosome amount.
   
