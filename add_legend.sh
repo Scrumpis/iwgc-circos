@@ -10,8 +10,8 @@ PNG_OUT=""
 FONT_TTF="fonts/ArialBold.ttf"
 
 # Placement & sizing
-DX_FRAC="0.25"        # left nudge as fraction of font-size
-DY_FRAC="0.10"        # down nudge as fraction of font-size
+DX_FRAC="0"        # left nudge as fraction of font-size
+DY_FRAC="0"        # down nudge as fraction of font-size
 THETA_DEG=""          # if empty, default to -90° (top)
 
 usage(){ cat <<EOF
@@ -160,6 +160,34 @@ extract_plot_mids_from_svg(){
   ' "$svg" | sort -n -k1,1
 }
 
+# ---------- Get gap endpoints (first ideogram start, last ideogram end) ----------
+gap_endpoints_from_svg(){
+  local svg="$1"
+  awk '
+    BEGIN{ingrp=0; have_first=0; x2=""; y2=""}
+    /<g[^>]*id="ideograms"/ {ingrp=1}
+    ingrp && /<\/g>/ {ingrp=0}
+    ingrp && match($0, /<path[^>]*d="([^"]+)"/, p){
+      d = p[1]
+      # first path start "M x,y"
+      if (!have_first && match(d, /[mM][[:space:]]*([-0-9.+eE]+)[ ,]([-0-9.+eE]+)/, m)) {
+        x1=m[1]+0; y1=m[2]+0; have_first=1
+      }
+      # update to the end x,y of the FIRST arc "A rx,ry rot laf,sf x,y"
+      if (match(d, /[aA][^A-Za-z]*[-0-9.+eE]+[ ,][-0-9.+eE]+[^A-Za-z]*[, ][01][ ,]*,[01][ ,]*([-0-9.+eE]+)[ ,]([-0-9.+eE]+)/, a)) {
+        x2=a[1]+0; y2=a[2]+0
+      }
+    }
+    END{
+      if (have_first && x2!="") {
+        printf "%.6f %.6f %.6f %.6f", x1, y1, x2, y2
+      } else {
+        print "NaN NaN NaN NaN"
+      }
+    }
+  ' "$svg"
+}
+
 alpha_label(){ local n="$1" s="" base=26 a=97; n=$((n+1)); while (( n>0 )); do local r=$(( (n-1)%base )); s="$(printf \\$(printf "%03o" $((a+r))))${s}"; n=$(( (n-1)/base )); done; printf "%s." "$s"; }
 
 # ---------- PNG ----------
@@ -225,6 +253,16 @@ else
   echo "[INFO] Gap angle defaulting to -90°: $GAP_THETA"
 fi
 
+# 5.5) NEW: compute dynamic gap X from ideogram first-start and last-end
+read -r X1 Y1 X2 Y2 <<<"$(gap_endpoints_from_svg "$SVG" || true)"
+if [[ -z "${X1:-}" || "$X1" == "NaN" || -z "${X2:-}" || "$X2" == "NaN" ]]; then
+  echo "[WARN] Could not parse ideogram gap endpoints; falling back to radial X."
+  XGAP_MID=""
+else
+  XGAP_MID="$(awk -v a="$X1" -v b="$X2" 'BEGIN{printf "%.6f", (a+b)/2.0}')"
+  echo "[INFO] Gap endpoints: first-start=($X1,$Y1) last-end=($X2,$Y2); Xmid=$XGAP_MID"
+fi
+
 # 6) Build and inject labels
 INJ="$WORK/inject.svgfrag"
 {
@@ -237,8 +275,17 @@ INJ="$WORK/inject.svgfrag"
   idx=0
   paste "$ALL_MIDS_PX" "$ALL_H_PX" | while read -r mid_px h_px; do
     fsz="$(awk -v h="$h_px" 'BEGIN{v=h*0.6; if(v<10)v=10; if(v>48)v=48; printf "%.2f", v}')"
-    xpix="$(awk -v cx="$CX" -v r="$mid_px" -v th="$GAP_THETA" 'BEGIN{printf "%.6f", cx + r*cos(th)}')"
+
+    # y stays dynamic per ring (unchanged)
     ypix="$(awk -v cy="$CY" -v r="$mid_px" -v th="$GAP_THETA" 'BEGIN{printf "%.6f", cy + r*sin(th)}')"
+
+    # x is dynamic gap-midpoint (if available), else previous radial fallback
+    if [[ -n "${XGAP_MID:-}" ]]; then
+      xpix="$XGAP_MID"
+    else
+      xpix="$(awk -v cx="$CX" -v r="$mid_px" -v th="$GAP_THETA" 'BEGIN{printf "%.6f", cx + r*cos(th)}')"
+    fi
+
     dxpx="$(awk -v f="$fsz" -v frac="$DX_FRAC" 'BEGIN{printf "%.3f", -frac*f}')"
     dypx="$(awk -v f="$fsz" -v frac="$DY_FRAC" 'BEGIN{printf "%.3f",  frac*f}')"
     printf '  <text class="iwgc-gap-label" x="%.6f" y="%.6f" dx="%.3f" dy="%.3f" font-size="%s">%s</text>\n' \
