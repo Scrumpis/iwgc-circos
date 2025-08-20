@@ -223,7 +223,7 @@ The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh
 - For automation and visualization purposes...
   - Gene desity is sqrt transformed
   - Repeat density is power 3 transformed
-  - All density and LTR age tracks are normalized
+  - All tracks are normalized
 - In special situtations where you need to edit the housekeeping.conf, such as if you have more contigs than what is typically allowed, you can either run the container interactively and update the housekeeping.conf file or you can create a housekeeping.conf file in the /circos directory and map it to the container, see Fusarium paper
 
 ### Known Warnings:
