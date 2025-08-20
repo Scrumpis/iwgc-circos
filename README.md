@@ -152,7 +152,7 @@ The below command will generate Circos config files in iwgc_circos using the pro
   
 **Singularity:**
 ```
-singularity exec ../../iwgc-circos-tracks.sif ./create_configs.sh -gap
+singularity exec iwgc-circos-tracks.sif ./create_configs.sh -gap
 ```
   
 **Docker:**
