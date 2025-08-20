@@ -195,7 +195,7 @@ docker run --rm \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp -noparanoid
 ```
 
-**Singularity** (HPC use):
+**Singularity:**
 ```
 singularity exec \
   --cleanenv \
