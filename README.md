@@ -185,7 +185,7 @@ singularity exec \
 ## 4. Final Touches (optional)
 ### Add legend characters to the central gap (add_legend.sh)
 Dynamically add legend characters (a., b., c., etc.) for each track present, centered vertically within tracks and horizontally within the gap (from ideogram coords).   
-_Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap looks off-center prior to adding legend characters._
+***Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap looks off-center prior to adding legend characters.***  
   
 ```
   Usage: ./create_configs.sh [-conf FILE] [-svg FILE] [-ideo FILE] [-out FILE] [-png FILE] [-font FILE] [--dx-frac F] [--dy-frac F] [--theta-deg DEG]
@@ -214,7 +214,7 @@ docker run --rm -v "$PWD":/data -w /data \
 ```
 
 ### Additional Tips
-If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments to the .config files in ```iwgc_circos/```. After making these config file adjustments, re-run Circos to generate a new plot with your updates. I tried to leave comments throughtout the config files as well. Below are some commonly made adjustments.  
+If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments to the .config files in ```iwgc_circos/```. After making these config file adjustments, re-run Circos to generate a new plot with your updates. Below are some commonly made adjustments.  
   
 **iwgc_circos.conf**
 - Reduce ```chromosomes_units =``` for very small genomes or increase for very big ones. Default 1000000 (1Mbp) should cover a broad size range. You will likely have to adjust ticks.conf if you change this.
