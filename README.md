@@ -158,7 +158,7 @@ iwgc-circos/
   
 ### Usage
 ```
-  Usage: ./create_configs.sh [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]
+  Usage: ./create_configs.sh [options]
   
    Optional:
      -template        Path, including file name, to iwgc_circos_template.config (default: ./iwgc_circos_template.config)
@@ -209,7 +209,7 @@ Dynamically add legend characters (a., b., c., etc.) for each track present, cen
 ***Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap looks off-center prior to adding legend characters.***  
   
 ```
-  Usage: ./create_configs.sh [-conf FILE] [-svg FILE] [-ideo FILE] [-out FILE] [-png FILE] [-font FILE] [--dx-frac F] [--dy-frac F] [--theta-deg DEG]
+  Usage: ./create_configs.sh [options]
   
    Optional:
      -conf            Path, including file name, to iwgc_circos.conf (default: iwgc_circos/iwgc_circos.conf)
