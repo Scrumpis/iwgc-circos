@@ -168,7 +168,8 @@ iwgc-circos/
      -h | --help      List usage options
 ```
 
-The below command will generate Circos config files in iwgc_circos using the provided iwgc_circos_template.config file. The gap flag adds a gap for legend characters. ***Run one level up from iwgc_circos and iwgc_circos_data.*** 
+  
+***Run one level up from iwgc_circos and iwgc_circos_data.***  
     
 **Singularity:**
 ```
