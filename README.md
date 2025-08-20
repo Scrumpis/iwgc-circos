@@ -235,7 +235,7 @@ docker run --rm -v "$PWD":/data -w /data \
   ./add_legend
 ```
 
-### Additional Tips
+### Manual Adjustments
 If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments to the .config files in ```iwgc_circos/```. After making these config file adjustments, re-run Circos to generate a new plot with your updates. Below are some commonly made adjustments.  
   
 **iwgc_circos.conf**
