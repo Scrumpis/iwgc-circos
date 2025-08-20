@@ -14,11 +14,11 @@ git clone https://github.com/Scrumpis/iwgc-circos
 ## Setup
 Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks).  
   
-**Singularity** (HPC usage):
+**Singularity** (Typically for HPC usage):
 ```
 singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
 ```
-[**Docker**](https://docs.docker.com/desktop/) (Local usage):
+[**Docker**](https://docs.docker.com/desktop/) (Typically for local usage):
 ```
 docker pull scrumpis/iwgc-circos-tracks:latest
 ```
@@ -147,9 +147,8 @@ iwgc-circos/
      -h | --help      List usage options
 ```
 
-The below command will generate Circos config files in iwgc_circos using the provided iwgc_circos_template.config file. The gap flag adds a gap for legend characters.  
-***Run one level up from iwgc_circos and iwgc_circos_data*** 
-  
+The below command will generate Circos config files in iwgc_circos using the provided iwgc_circos_template.config file. The gap flag adds a gap for legend characters. ***Run one level up from iwgc_circos and iwgc_circos_data.*** 
+    
 **Singularity:**
 ```
 singularity exec iwgc-circos-tracks.sif ./create_configs.sh -gap
@@ -164,10 +163,9 @@ docker run --rm -v "$PWD":/data -w /data \
   
     
 ## 3. Circos Plot
-The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg).    
-***Run one level up from iwgc_circos and iwgc_circos_data***    
-  
-**Docker** (local use; easier refinement - quickly view png/svg, tweak .conf files, and re-run):
+The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg). ***Run one level up from iwgc_circos and iwgc_circos_data.***    
+   
+**Docker** (easier refinement - quickly view png/svg, tweak .conf files, and re-run):
 ```
 docker run --rm \
   -v "$PWD:/data" \
@@ -197,7 +195,7 @@ docker run --rm -v "$PWD":/data -w /data \
 If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments to the .config files in ```iwgc_circos/```. After making these config file adjustments, re-run Circos to generate a new plot with your updates. I tried to leave comments throughtout the config files as well. Below are some commonly made adjustments.  
   
 **iwgc_circos.conf**
-- Reduce ```chromosomes_units =``` to for very small genomes or increase for very big ones if needed. Default 1000000 (1Mbp) should cover a broad size range. You will likely have to adjust ticks.conf if you change this.
+- Reduce ```chromosomes_units =``` for very small genomes or increase for very big ones. Default 1000000 (1Mbp) should cover a broad size range. You will likely have to adjust ticks.conf if you change this.
 - Change r1 and r0 values within each ```<plot>``` block to adjust height/thickness of individual plot tracks and the gaps between each track.
 - Change plot type, colors of plots, plot background colors, reverse chromosomes, insert breaks into chromsomes, etc.
 - Uncomment ```chromosome_reverse =``` and add chromosomes in a list (Chr09D; Chr01B; Chr04C) to reverse chromosomes and all associated plots.
