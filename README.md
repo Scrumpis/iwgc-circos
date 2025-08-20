@@ -1,6 +1,6 @@
 # International Weed Genomics Consortium (IWGC) Genome Report Circos Plots
 ## About
-This repository documents the methods used to generate the Circos plots for many of the genome reports produced by the International Genomics Consortium (IWGC). This project aims to automate the generation of commonly used Circos tracks in genomics to reduce the barrier for entry for those unfamaliar with Circos and to speed-up production for those experienced with Circos. Useful as a template for further customization or to get a quick snapshot of patterns occurring in your genome of interest.
+This repository documents the methods used to generate the Circos plots for many of the genome reports produced by the [International Genomics Consortium (IWGC)](https://www.weedgenomics.org/). This project aims to automate the generation of commonly used Circos tracks in genomics to reduce the barrier for entry for those unfamaliar with Circos and to speed-up production for those experienced with Circos. Useful as a template for further customization or to get a quick snapshot of patterns occurring in your genome of interest.
 
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
 
@@ -17,7 +17,7 @@ Singularity (HPC usage):
 ```
 singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
 ```
-Docker (Local usage):
+[Docker](https://docs.docker.com/desktop/) (Local usage):
 ```
 docker pull scrumpis/iwgc-circos-tracks:latest
 ```
@@ -37,7 +37,7 @@ A genomic.fasta is the only required input file for every Circos. We include a c
 
   
 ## 1. Create Track Files for Circos Plot (iwgc_circos_tracks.sh)
-**Generate track data files for any of the following:**
+**Generate input data files for any of the following tracks:**
 - Ideogram/Karyotype
 - Telomere presence
 - Total gene density
@@ -77,7 +77,8 @@ A genomic.fasta is the only required input file for every Circos. We include a c
 ```
 
      
-The below would produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size), telomere labels, and filter for canonical chromosome names (Chr1, chr01, chr2B, etc.; not Chr00, ChrMT, N00011.1, etc.).    
+The below commands will produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size), telomere labels, and filter for canonical chromosome names (Chr1, chr01, chr2B, etc.; not Chr00, ChrMT, N00011.1, etc.).    
+  
 **Singularity:**
 ```
 singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh genome.fasta \
@@ -103,7 +104,7 @@ docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwg
   
 ## 2. Create Circos Plot Config Files (create_configs.sh)
 This command will produce the following:
-- iwgc_circos/iwgc_circos.conf file containing plots for every expected input file contained in iwgc_circos_data. So, if iwgc_circos_data/genome.fasta_gene_coverage.circos exists, gene density plot will be created.
+- iwgc_circos/iwgc_circos.conf file containing plots for every included track data file contained in iwgc_circos_data. So, if iwgc_circos_data/genome.fasta_gene_coverage.circos exists, gene density plot will be created.
 - If the gap flag is invoked, iwgc_circos/ideogram.conf file with your last and first chromosomes in the pairwise header for legend.
 - If 8 or less of the files associated with any of the plot tracks (excludes ideogram, labels, or links) are present in iwgc_circos_data, tracks will be dynamically resized to keep the inner most tracks r0 value near 0.5 and the gap between tracks is doubled (0.02 units instead of 0.01).
 - Dynamically adjusts tick amount and spacing based on genome length and chromosome amount.
