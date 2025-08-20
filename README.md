@@ -68,8 +68,8 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 | `genome.coords`                      | .coords alignment file from minimap2 or similar used to generate **links track**. |
 
   
-The below would produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size)  
-Singularity:
+The below would produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size).    
+**Singularity:**
 ```
 singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh genome.fasta \
 -gene genome.gff \
@@ -80,7 +80,7 @@ singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh genome.fasta
 -gc -telomere -sliding -filter-chrs \
 -out ../iwgc_circos_data/
 ```
-Docker:
+**Docker:**
 ```
 docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwgc_circos_tracks.sh /circos/data/genome.fasta \
 -gene /circos/data/genome.gff \
@@ -98,31 +98,9 @@ This command will produce the following:
 - If the gap flag is invoked, iwgc_circos/ideogram.conf file with your last and first chromosomes in the pairwise header for legend.
 - If 8 or less of the files associated with any of the plot tracks (excludes ideogram, labels, or links) are present in iwgc_circos_data, tracks will be dynamically resized to keep the inner most tracks r0 value near 0.5 and the gap between tracks is doubled (0.02 units instead of 0.01).
 - Dynamically adjusts tick amount and spacing based on genome length and chromosome amount.
-
-### Usage
-```
-  Usage: ./create_configs.sh [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]
   
-   Optional:
-     -template        Path, including file name, to iwgc_circos_template.config (default: ./iwgc_circos_template.config)
-     -outdir          Path to output directory (default: ./iwgc_circos)
-     -ideogram        Path, indluding file name, to ideogram.conf (default: $OUTDIR/iwgc_circos.conf)
-     -gap             Adds gap to middle-top of plot, between last and first chromosomes (default: FALSE)
-     -h | --help      List usage options
-```
-
-The below command will generate Circos config files in iwgc_circos using the provided iwgc_circos_template.config file. The gap flag adds a gap for legend characters.  
-***Run one level up from iwgc_circos and iwgc_circos_data*** 
-```
-docker run --rm -v "$PWD":/data -w /data \
-  scrumpis/iwgc-circos-tracks:latest \
-  ./create_configs.sh -gap
-```
-  
-    
-## 3. Circos Plot
 ### Setup
-Move all desired track files (.circos) into the iwgc_circos_data directory if not already there
+Move all desired track files (.circos) into the iwgc_circos_data directory if not already there.  
 ```
 iwgc-circos/
 ├── iwgc_circos/
@@ -145,12 +123,33 @@ iwgc-circos/
     ├── links.circos
     ├── any.other.track.files.circos
 ```
+  
+### Usage
+```
+  Usage: ./create_configs.sh [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]
+  
+   Optional:
+     -template        Path, including file name, to iwgc_circos_template.config (default: ./iwgc_circos_template.config)
+     -outdir          Path to output directory (default: ./iwgc_circos)
+     -ideogram        Path, indluding file name, to ideogram.conf (default: $OUTDIR/iwgc_circos.conf)
+     -gap             Adds gap to middle-top of plot, between last and first chromosomes (default: FALSE)
+     -h | --help      List usage options
+```
 
-### Run Circos v0.69-9:
-The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg)  
+The below command will generate Circos config files in iwgc_circos using the provided iwgc_circos_template.config file. The gap flag adds a gap for legend characters.  
+***Run one level up from iwgc_circos and iwgc_circos_data*** 
+```
+docker run --rm -v "$PWD":/data -w /data \
+  scrumpis/iwgc-circos-tracks:latest \
+  ./create_configs.sh -gap
+```
+  
+    
+## 3. Circos Plot
+The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg).    
 ***Run one level up from iwgc_circos and iwgc_circos_data***    
   
-Docker (local use; easier refinement - quickly view png/svg, tweak .conf files, and re-run):
+**Docker** (local use; easier refinement - quickly view png/svg, tweak .conf files, and re-run):
 ```
 docker run --rm \
   -v "$PWD:/data" \
@@ -158,7 +157,7 @@ docker run --rm \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp -noparanoid
 ```
 
-Singularity (HPC use):
+**Singularity** (HPC use):
 ```
 singularity exec \
   --cleanenv \
@@ -169,8 +168,8 @@ singularity exec \
   
 ## 4. Final Touches
 ### Add legend characters to the central gap (add_legend.sh)
-_Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap is not angled centrally prior to adding legend characters._
-The below will dynamically add characters for each track, centered vertically within tracks and horizontally within the gap (from ideogram coords). Use ```--dx-frac``` to shift characters left or right and ```--dy-frac``` for up and down.
+_Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap is not angled centrally prior to adding legend characters._  
+The below will dynamically add characters for each track, centered vertically within tracks and horizontally within the gap (from ideogram coords). Use ```--dx-frac``` to shift characters left or right and ```--dy-frac``` for up and down.  
 ```
 docker run --rm -v "$PWD":/data -w /data \
   scrumpis/iwgc-circos-tracks:latest \
