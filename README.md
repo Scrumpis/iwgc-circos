@@ -207,7 +207,7 @@ Use Inkspace or a similar SVG editing tool to manually edit or add any text.
 
    
 ## Example:
-The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes.
+The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). 
 - a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
 - b. Gene density, more blue is more gene rich, more yellow is less gene rich
 - c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
