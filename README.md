@@ -193,7 +193,7 @@ If you are planning to include the Circos plot in a publication, you will likely
 **ticks.conf**
 - If you want more or less ticks, different sizes of ticks, labels or no labels, etc.
   
-Use Inkspace or a similar SVG editing tool to add legend characters or add or edit any other text. 
+Use Inkspace or a similar SVG editing tool to manually edit or add any text. 
 
    
 ## Example:
