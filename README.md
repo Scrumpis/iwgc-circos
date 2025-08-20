@@ -197,7 +197,7 @@ Use Inkspace or a similar SVG editing tool to manually edit or add any text.
 
    
 ## Example:
-The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-circos/tree/main/examples/all-tracks), except LTR dating and links, producable by iwgc_circos_tracks.sh using the IWGC _Avena fatua_ genome assembly. Tracks can be removed and reordered using the provided iwgc_circos.conf file as a template. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes.
+The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes.
 - a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
 - b. Gene density, more blue is more gene rich, more yellow is less gene rich
 - c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
@@ -219,7 +219,6 @@ The below Circos plot illustrates [all tracks](https://github.com/Scrumpis/iwgc-
 
 ## Notes
 - When visualizing multiple species, datasets, etc. in a single Circos plot, all files must be concatenated first
-- If you need to reverse the orientation of any chromosomes to untwist links, edit the ```chromosomes_reverse = ``` line of ```iwgc_circos.conf``` to indicate the chromosomes you wish to reverse (example: ```chromosomes_reverse = Chr1; Chr6; Chr9```
 - For automation and visualization purposes...
   - Gene desity is sqrt transformed
   - Repeat density is power 3 transformed
