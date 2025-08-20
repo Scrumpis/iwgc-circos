@@ -5,7 +5,7 @@ This repository documents the methods used to generate the Circos plots for many
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
   
 ### Example:
-The below Circos plot illustrates all tracks producable by iwgc-circos. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). 
+The below Circos plot illustrates all tracks producable by iwgc-circos. Select as many of them as you would like for your output. All values are normalized and gene density is square-root transformed and repeat density is power three transformed for automation and visualiztion purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). 
 - a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
 - b. Gene density, more blue is more gene rich, more yellow is less gene rich
 - c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
@@ -24,6 +24,8 @@ The below Circos plot illustrates all tracks producable by iwgc-circos. All valu
   
 
 ![image](https://github.com/Scrumpis/iwgc-circos/blob/main/iwgc_circos/tmp/iwgc_circos.labeled.svg)
+
+  
 ## Clone Repo
 The scripts are built to run with this repo structure by default. It will simplify things for you to do the same.
 ```
@@ -130,7 +132,7 @@ This command will produce the following:
 - Dynamically adjusts tick amount and spacing based on genome length and chromosome amount.
   
 ### Setup
-Move all desired track files (.circos) into the iwgc_circos_data directory if not already there.  
+Move all desired track files (.circos) into the iwgc_circos_data directory if not already there. Make sure ONLY the track files you wish to visualize are present in iwgc_circos_data.  
 ```
 iwgc-circos/
 ├── iwgc_circos/
