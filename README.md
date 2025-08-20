@@ -5,7 +5,7 @@ This repository documents the methods used to generate the Circos plots for many
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
 
 
-## Clone repo
+## Clone Repo
 The scripts are built to run with this repo structure by default. It will simplify things for you to do the same.
 ```
 git clone https://github.com/Scrumpis/iwgc-circos
@@ -184,14 +184,36 @@ singularity exec \
   
 ## 4. Final Touches (optional)
 ### Add legend characters to the central gap (add_legend.sh)
-_Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap is not angled centrally prior to adding legend characters._  
-The below will dynamically add characters for each track, centered vertically within tracks and horizontally within the gap (from ideogram coords). Use ```--dx-frac``` to shift characters left or right and ```--dy-frac``` for up and down.  
+Dynamically add legend characters (a., b., c., etc.) for each track present, centered vertically within tracks and horizontally within the gap (from ideogram coords).   
+_Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap looks off-center prior to adding legend characters._
+  
+```
+  Usage: ./create_configs.sh [-conf FILE] [-svg FILE] [-ideo FILE] [-out FILE] [-png FILE] [-font FILE] [--dx-frac F] [--dy-frac F] [--theta-deg DEG]
+  
+   Optional:
+     -conf            Path, including file name, to iwgc_circos.conf (default: iwgc_circos/iwgc_circos.conf)
+     -svg             Path, including file name, to iwgc_circos.svg (default: iwgc_circos/tmp/iwgc_circos.svg)
+     -out             Path, indluding file name, to output SVG file (default: iwgc_circos/tmp/iwgc_circos.labeled.svg)
+     -font            Path, indluding file name, to legend font file (default: fonts/ArialBold.ttf)
+     --dx-frac        Nudge legend characters left (+) or right (-) in fractions of total legend character size (default: 0)
+     --dy-frac        Nudge legend characters up (+) or down (-) in fractions of total legend character size (default: 0)
+     --theta-deg      Pivot characters around the center of the Circos plot (default: -90)
+     -h | --help      List usage options
+```
+
+**Singularity:**
+```
+singularity exec iwgc-circos-tracks.sif ./add_legend.sh
+```
+
+**Docker:**
 ```
 docker run --rm -v "$PWD":/data -w /data \
   scrumpis/iwgc-circos-tracks:latest \
-  ./add_legend --dx-frac -0.5
+  ./add_legend
 ```
-  
+
+### Additional Tips
 If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments to the .config files in ```iwgc_circos/```. After making these config file adjustments, re-run Circos to generate a new plot with your updates. I tried to leave comments throughtout the config files as well. Below are some commonly made adjustments.  
   
 **iwgc_circos.conf**
