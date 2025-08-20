@@ -184,7 +184,7 @@ If you are planning to include the Circos plot in a publication, you will likely
 - Change r1 and r0 values within each ```<plot>``` block to adjust height/thickness of individual plot tracks and the gaps between each track.
 - Change plot type, colors of plots, reverse chromosomes, insert breaks into chromsomes, etc.
 - Uncomment ```chromosome_reverse =``` and add chromosomes in a list (Chr09D; Chr01B; Chr04C) to reverse chromosomes and all associated plots.
-- Syntenic links are very customizable. Change thresholds for sizes to hide or color differently, allow intrachromosomal links, add twists, flatten, etc.
+- Syntenic links are very customizable. Change thresholds for sizes to hide or color differently, allow intrachromosomal links, add twists, flatten, etc. Defaults: 20Kbp<50Kbp blue, 50kbp<100Kbp green, 100Kbp>200Kbp yellow, 200Kbp>1Mbp orange, 1Mbp> red. 
 
 **ideogram.label.conf**
 - Increase "150p" in ```label_radius``` to move chromosome labels further from ideogram, or decrease to bring them closer.
@@ -212,6 +212,7 @@ The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh
 - l. Intact Tc1-Mariner-superfamily (DTT) coverage
 - m. Intact Rolling-circle-transposon/Helitron-superfamily (Helitron) coverage
 - n. GC-content
+- Syntenic links on the interior
   
 
 ![image](https://github.com/Scrumpis/iwgc-circos/blob/main/iwgc_circos/tmp/iwgc_circos.labeled.svg)
