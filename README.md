@@ -89,11 +89,11 @@ singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh genome.fasta
 **Docker:**
 ```
 docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwgc_circos_tracks.sh /circos/data/genome.fasta \
--gene /circos/data/genome.gff \
--repeat /circos/data/genome.fasta.mod.EDTA.TEanno.gff3 \
--intact /circos/data/genome.fasta.mod.EDTA.intact.gff3 \
--ltr-dating /circos/data/genome.fasta.mod.pass.list \
--links /circos/data/genome.coords \
+-gene /circos/genome.gff \
+-repeat /circos/genome.fasta.mod.EDTA.TEanno.gff3 \
+-intact /circos/genome.fasta.mod.EDTA.intact.gff3 \
+-ltr-dating /circos/genome.fasta.mod.pass.list \
+-links /circos/genome.coords \
 -gc -telomere -sliding -filter-chrs \
 -out /circos/iwgc_circos_data/
 ```
