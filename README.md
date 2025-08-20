@@ -177,7 +177,7 @@ singularity exec \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp --noparanoid
 ```
   
-## 4. Final Touches
+## 4. Final Touches (optional)
 ### Add legend characters to the central gap (add_legend.sh)
 _Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap is not angled centrally prior to adding legend characters._  
 The below will dynamically add characters for each track, centered vertically within tracks and horizontally within the gap (from ideogram coords). Use ```--dx-frac``` to shift characters left or right and ```--dy-frac``` for up and down.  
