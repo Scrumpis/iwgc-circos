@@ -214,7 +214,7 @@ The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh
 - n. GC-content
   
 
-![image]([https://github.com/Scrumpis/iwgc-circos/blob/main/examples/all-tracks/iwgc_circos/tmp/iwgc_circos.png](https://github.com/Scrumpis/iwgc-circos/blob/main/iwgc_circos/tmp/iwgc_circos.labeled.svg))
+![image](https://github.com/Scrumpis/iwgc-circos/blob/main/iwgc_circos/tmp/iwgc_circos.labeled.svg)
 
 
 ## Notes
