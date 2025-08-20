@@ -45,7 +45,7 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 ```
 
 ## Preprocess
-A genomic.fasta is the only required input file for every Circos. We include a couple of sample scripts for repeat annotation with EDTA and minimap2 self-alignment as templates. Minimap2 is in iwgc-circos container, EDTA is not. Below are descriptions of the required input files for certain tracks.
+A genomic.fasta is the only required input file for every Circos. We include a couple of sample scripts for repeat annotation with [EDTA](https://github.com/oushujun/EDTA) and [minimap2](https://github.com/lh3/minimap2) self-alignment and .coords conversion as templates. Minimap2 is in iwgc-circos container, EDTA is not. Below are descriptions of the required input files for certain tracks.
 
 **Input files:**
 | File Name                             | Description                                                                 |
