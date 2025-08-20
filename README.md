@@ -174,7 +174,7 @@ The below will dynamically add characters for each track, centered vertically wi
 ```
 docker run --rm -v "$PWD":/data -w /data \
   scrumpis/iwgc-circos-tracks:latest \
-  ./add_legend --dx-frac -0.1
+  ./add_legend --dx-frac -0.5
 ```
   
 If you are planning to include the Circos plot in a publication, you will likely need to make a few manual adjustments to the .config files in ```iwgc_circos/```. After making these config file adjustments, re-run Circos to generate a new plot with your updates. I tried to leave comments throughtout the config files as well. Below are some commonly made adjustments.  
@@ -214,7 +214,7 @@ The below Circos plot illustrates all tracks producable by iwgc_circos_tracks.sh
 - n. GC-content
   
 
-![image](https://github.com/Scrumpis/iwgc-circos/blob/main/examples/all-tracks/iwgc_circos/tmp/iwgc_circos.png)
+![image]([https://github.com/Scrumpis/iwgc-circos/blob/main/examples/all-tracks/iwgc_circos/tmp/iwgc_circos.png](https://github.com/Scrumpis/iwgc-circos/blob/main/iwgc_circos/tmp/iwgc_circos.labeled.svg))
 
 
 ## Notes
