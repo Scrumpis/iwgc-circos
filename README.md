@@ -99,7 +99,7 @@ A genomic.fasta is the only required input file for every Circos. We include a c
 ```
 
      
-The below commands will produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size), telomere labels, and filter for canonical chromosome names (Chr1, chr01, chr2B, etc.; not Chr00, ChrMT, N00011.1, etc.).    
+The below commands will produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size), telomere labels, and filter for typical chromosome names (Chr1, chr01, chr2B, etc.; not Chr00, ChrMT, N00011.1, etc.).    
   
 **Singularity:**
 ```
