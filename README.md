@@ -149,6 +149,13 @@ iwgc-circos/
 
 The below command will generate Circos config files in iwgc_circos using the provided iwgc_circos_template.config file. The gap flag adds a gap for legend characters.  
 ***Run one level up from iwgc_circos and iwgc_circos_data*** 
+  
+**Singularity:**
+```
+singularity exec ../../iwgc-circos-tracks.sif ./create_configs.sh -gap
+```
+  
+**Docker:**
 ```
 docker run --rm -v "$PWD":/data -w /data \
   scrumpis/iwgc-circos-tracks:latest \
