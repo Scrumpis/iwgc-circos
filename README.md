@@ -61,7 +61,7 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 | File Name                             | Description                                                                 |
 |--------------------------------------|-----------------------------------------------------------------------------|
 | `genome.fasta`                       | Required input for karyotype, telomeres, and GC-content tracks. This is the only required file for the base script to run. |
-| `gene.annotation.gff3`               | Gene annotation file used to generate the **total gene density track**. Accepts standard GFF3 format from any annotation pipeline. |
+| `genome.gff3`                        | Gene annotation file used to generate the **total gene density track**. Accepts standard GFF3 format from any annotation pipeline. |
 | `genome.fasta.mod.EDTA.TEanno.gff3`  | Repeat annotation file from EDTA used to create the **total repeat density track**. |
 | `genome.fasta.mod.EDTA.intact.gff3`  | Intact repeat annotation from EDTA used to generate **intact repeat density tracks**. |
 | `genome.fasta.mod.pass.list`         | LTR insertion age from EDTA used to generate **LTR age track**. |
@@ -71,23 +71,23 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 The below would produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size)  
 Singularity:
 ```
-singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh Chenopodium_album.genome_v2.fasta \
--gene CheAl_v01.0.gff \
--repeat Chenopodium_album.genome_v2.fasta.mod.EDTA.TEanno.gff3 \
--intact Chenopodium_album.genome_v2.fasta.mod.EDTA.intact.gff3 \
--ltr-dating Chenopodium_album.genome_v2.fasta.mod.pass.list \
--links Chenopodium_album.genome_v2.coords \
+singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh genome.fasta \
+-gene genome.gff \
+-repeat genome.fasta.mod.EDTA.TEanno.gff3 \
+-intact genome.fasta.mod.EDTA.intact.gff3 \
+-ltr-dating genome.fasta.mod.pass.list \
+-links genome.coords \
 -gc -telomere -sliding -filter-chrs \
 -out ../iwgc_circos_data/
 ```
 Docker:
 ```
-docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwgc_circos_tracks.sh /circos/data/Chenopodium_album.genome_v2.fasta \
--gene /circos/data/CheAl_v01.0.gff \
--repeat /circos/data/Chenopodium_album.genome_v2.fasta.mod.EDTA.TEanno.gff3 \
--intact /circos/data/Chenopodium_album.genome_v2.fasta.mod.EDTA.intact.gff3 \
--ltr-dating /circos/data/Chenopodium_album.genome_v2.fasta.mod.pass.list \
--links /circos/data/Chenopodium_album.genome_v2.coords \
+docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwgc_circos_tracks.sh /circos/data/genome.fasta \
+-gene /circos/data/genome.gff \
+-repeat /circos/data/genome.fasta.mod.EDTA.TEanno.gff3 \
+-intact /circos/data/genome.fasta.mod.EDTA.intact.gff3 \
+-ltr-dating /circos/data/genome.fasta.mod.pass.list \
+-links /circos/data/genome.coords \
 -gc -telomere -sliding -filter-chrs \
 -out /circos/iwgc_circos_data/
 ```
