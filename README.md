@@ -5,6 +5,12 @@ This repository documents the methods used to generate the Circos plots for many
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
 
 
+## Clone repo
+The scripts are built to run with this repo structure by default. It will simplify things for you to do the same.
+```
+git clone https://github.com/Scrumpis/iwgc-circos
+```
+
 ## Setup
 Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks)  
 Singularity (HPC usage):
