@@ -12,12 +12,13 @@ git clone https://github.com/Scrumpis/iwgc-circos
 ```
 
 ## Setup
-Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks)  
-Singularity (HPC usage):
+Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks).  
+  
+**Singularity** (HPC usage):
 ```
 singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
 ```
-[Docker](https://docs.docker.com/desktop/) (Local usage):
+[**Docker**](https://docs.docker.com/desktop/) (Local usage):
 ```
 docker pull scrumpis/iwgc-circos-tracks:latest
 ```
