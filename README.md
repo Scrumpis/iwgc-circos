@@ -82,7 +82,7 @@ The below commands will produce all possible track files with 1Mbp (default size
   
 **Singularity:**
 ```
-singularity exec iwgc-circos-tracks.sif iwgc_circos_tracks.sh genome.fasta \
+singularity exec iwgc-circos-tracks.sif ./iwgc_circos_tracks.sh genome.fasta \
 -gene genome.gff \
 -repeat genome.fasta.mod.EDTA.TEanno.gff3 \
 -intact genome.fasta.mod.EDTA.intact.gff3 \
