@@ -22,6 +22,19 @@ Docker (Local usage):
 docker pull scrumpis/iwgc-circos-tracks:latest
 ```
 
+## Preprocess
+We include a couple of sample scripts for repeat annotation with EDTA and minimap2 self-alignment. Below are descriptions of the required input files for certain tracks. A genomic.fasta is the only required input file for every Circos.
+
+**Input files:**
+| File Name                             | Description                                                                 |
+|--------------------------------------|-----------------------------------------------------------------------------|
+| `genome.fasta`                       | Required input for karyotype, telomeres, and GC-content tracks. This is the only required file for the base script to run. |
+| `genome.gff3`                        | Gene annotation file used to generate the **total gene density track**. Accepts standard GFF3 format from any annotation pipeline. |
+| `genome.fasta.mod.EDTA.TEanno.gff3`  | Repeat annotation file from EDTA used to create the **total repeat density track**. (EDTA default path: EDTA/genome.fasta.mod.EDTA.TEanno.gff3)|
+| `genome.fasta.mod.EDTA.intact.gff3`  | Intact repeat annotation from EDTA used to generate **intact repeat density tracks**. (EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)|
+| `genome.fasta.mod.pass.list`         | LTR insertion age from EDTA used to generate **LTR age track**. (EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)|
+| `genome.coords`                      | .coords alignment file from minimap2 or similar used to generate **links track**. |
+
   
 ## 1. Create Track Files for Circos Plot (iwgc_circos_tracks.sh)
 **Generate track data files for any of the following:**
@@ -62,19 +75,9 @@ docker pull scrumpis/iwgc-circos-tracks:latest
      -out             Output directory for Circos track files (default: current directory)
      -h | --help      List usage options
 ```
-     
-**Input files:**
-| File Name                             | Description                                                                 |
-|--------------------------------------|-----------------------------------------------------------------------------|
-| `genome.fasta`                       | Required input for karyotype, telomeres, and GC-content tracks. This is the only required file for the base script to run. |
-| `genome.gff3`                        | Gene annotation file used to generate the **total gene density track**. Accepts standard GFF3 format from any annotation pipeline. |
-| `genome.fasta.mod.EDTA.TEanno.gff3`  | Repeat annotation file from EDTA used to create the **total repeat density track**. |
-| `genome.fasta.mod.EDTA.intact.gff3`  | Intact repeat annotation from EDTA used to generate **intact repeat density tracks**. |
-| `genome.fasta.mod.pass.list`         | LTR insertion age from EDTA used to generate **LTR age track**. |
-| `genome.coords`                      | .coords alignment file from minimap2 or similar used to generate **links track**. |
 
-  
-The below would produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size).    
+     
+The below would produce all possible track files with 1Mbp (default size) sliding windows with half window size steps (default size), telomere labels, and filter for canonical chromosome names (Chr1, chr01, chr2B, etc.; not Chr00, ChrMT, N00011.1, etc.).    
 **Singularity:**
 ```
 singularity exec ../iwgc-circos-tracks.sif ../iwgc_circos_tracks.sh genome.fasta \
