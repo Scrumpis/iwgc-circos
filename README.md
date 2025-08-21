@@ -34,12 +34,13 @@ git clone https://github.com/Scrumpis/iwgc-circos
 
 ## Setup
 Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks).  
+You can use [Singularity](https://apptainer.org/) or [Docker](https://docs.docker.com/desktop/) to run these scripts. Both give the same results.  
   
-[**Singularity**](https://apptainer.org/) (Typically for HPC usage):
+**Singularity** (Typically for HPC usage):
 ```
 singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
 ```
-[**Docker**](https://docs.docker.com/desktop/) (Typically for local usage):
+**Docker** (Typically for local usage):
 ```
 docker pull scrumpis/iwgc-circos-tracks:latest
 ```
@@ -187,14 +188,6 @@ docker run --rm -v "$PWD":/data -w /data \
 ## 3. Circos Plot
 The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg). ***Run one level up from iwgc_circos and iwgc_circos_data.***    
    
-**Docker** (easier refinement - quickly view png/svg, tweak .conf files, and re-run):
-```
-docker run --rm \
-  -v "$PWD:/data" \
-  scrumpis/iwgc-circos-tracks \
-  circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp -noparanoid
-```
-
 **Singularity:**
 ```
 singularity exec \
@@ -203,6 +196,15 @@ singularity exec \
   iwgc-circos-tracks.sif \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp --noparanoid
 ```
+  
+**Docker** (easier refinement - quickly view png/svg, tweak .conf files, and re-run):
+```
+docker run --rm \
+  -v "$PWD:/data" \
+  scrumpis/iwgc-circos-tracks \
+  circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp -noparanoid
+```
+  
   
 ## 4. Final Touches (optional)
 ### Add legend characters to the central gap (add_legend.sh)
