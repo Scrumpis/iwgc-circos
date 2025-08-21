@@ -33,9 +33,8 @@ git clone https://github.com/Scrumpis/iwgc-circos
 ```
 
 ## Setup
-Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks).  
-You can use [Singularity](https://apptainer.org/) or [Docker](https://docs.docker.com/desktop/) to run these scripts. Both give the same results.  
-  
+Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks). You can use [Singularity](https://apptainer.org/) or [Docker](https://docs.docker.com/desktop/) to run these scripts. Both give the same results.  
+   
 **Singularity** (Typically for HPC usage):
 ```
 singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
