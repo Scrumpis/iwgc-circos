@@ -5,7 +5,7 @@ This repository documents the methods used to generate the Circos plots for many
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
   
 ### Example:
-The below Circos plot illustrates all tracks producable by iwgc-circos. Select as many of them as you would like for your output. All values are normalized, gene density is square-root transformed, and repeat density is power three transformed for automation and visualiztion purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). 
+The below Circos plot illustrates all tracks producable by iwgc-circos. Select as many of them as you would like for your output. All values are normalized, gene density is square-root transformed, and repeat density is power three transformed for automation and visualization purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). 
 - a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
 - b. Gene density, more blue is more gene rich, more yellow is less gene rich
 - c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
@@ -45,7 +45,7 @@ docker pull scrumpis/iwgc-circos-tracks:latest
 ```
 
 ## Preprocess
-A genomic.fasta is the only required input file for every Circos. We include a couple of sample scripts for repeat annotation with [EDTA](https://github.com/oushujun/EDTA) and [minimap2](https://github.com/lh3/minimap2) self-alignment and .coords conversion as templates. Minimap2 is in iwgc-circos container, EDTA is not. Below are descriptions of the required input files for certain tracks.
+A genomic.fasta is the only required input file for every Circos. We include a couple of sample scripts for repeat annotation with [EDTA](https://github.com/oushujun/EDTA) and [minimap2](https://github.com/lh3/minimap2) self-alignment and .coords conversion as templates. Minimap2 is in iwgc-circos container, EDTA is not to avoid further bloating the container. A recommended EDTA container is included in the sample script. Below are descriptions of the required input files for certain tracks.
 
 **Input files:**
 | File Name                             | Description                                                                 |
