@@ -5,11 +5,11 @@ This repository documents the methods used to generate the Circos plots for many
 For additional information, the [Circos](https://circos.ca/) website offers very detailed tutorials for the generation of Circos plots and tracks beyond the scope of these standard genomics tracks.  
   
 ### Example:
-The below Circos plot illustrates all tracks producable by iwgc-circos. Select as many of them as you would like for your output. All values are normalized, gene density is square-root transformed, and repeat density is power three transformed for automation and visualization purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). 
+The below Circos plot illustrates all tracks producable by iwgc-circos. Select as many of them as you would like for your output. All values are normalized, gene density is square-root transformed, and repeat density is power three transformed for automation and visualization purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). Windows are 1Mb, with sliding half steps (500Kbp). 
 - a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
-- b. Gene density, more blue is more gene rich, more yellow is less gene rich
-- c. Repeat density, more red is more repeat rich, more yellow is less repeat rich
-- d. LTR insertion age
+- b. Gene density - more blue is more gene rich, more yellow is less gene rich
+- c. Repeat density - more red is more repeat rich, more yellow is less repeat rich
+- d. LTR insertion age - more purple are newer insertions, less purple are older, white contain no insertions
 - e. Intact Gypsy LTR coverage
 - f. Intact Copia LTR coverage
 - g. Intact non-Gypsy or Copia LTR coverage
