@@ -32,7 +32,8 @@ usage() {
   echo "or"
   echo "docker run --rm -v $(pwd):/data iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo
-  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power 3 transformed"
+  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power
+ 3 transformed"
   exit 1
 }
 
@@ -220,6 +221,7 @@ fi
 # Generate intact TE coverage track files if requested
 if [[ $INCLUDE_INTACT == true ]]; then
   awk -F'\t' -v base="${FASTA_BASE}" -v out="${OUTPUT_DIR}" '
+    BEGIN { IGNORECASE=1 }
     match($9, /Classification=([^;]+)/, a) {
       split(a[1], p, "/");
       if (p[2] != "") {
@@ -247,7 +249,13 @@ fi
 
 # Generate LTR dating track file if requested
 if [[ $INCLUDE_LTRDATING == true ]]; then
-  awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed"
+  #awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insert
+ion.bed"
+  awk -F'\t' 'BEGIN{OFS="\t"} !/^#/ {print $1, $12}' "${LTRDATES}" \
+| sed -e 's/:/\t/' -e 's/\.\./\t/' \
+| awk -v OFS='\t' '{ if ($2 > $3) { t=$2; $2=$3; $3=t } print }' \
+| sort -k1,1 -k2,2n \
+> "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed"
   # Per-window mean age (keep all windows)
   bedtools map -a "${OUTPUT_DIR}/${FASTA_BASE}_windows.bed" \
                -b "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insertion.bed" \
