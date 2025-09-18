@@ -249,8 +249,6 @@ fi
 
 # Generate LTR dating track file if requested
 if [[ $INCLUDE_LTRDATING == true ]]; then
-  #awk -F'\t' 'BEGIN { OFS="\t" } !/^#/ { print $1, $12 }' ${LTRDATES} | sed -e 's/:/\t/g' -e 's/\.\./\t/g' > "${OUTPUT_DIR}/${FASTA_BASE}_LTR_insert
-ion.bed"
   awk -F'\t' 'BEGIN{OFS="\t"} !/^#/ {print $1, $12}' "${LTRDATES}" \
 | sed -e 's/:/\t/' -e 's/\.\./\t/' \
 | awk -v OFS='\t' '{ if ($2 > $3) { t=$2; $2=$3; $3=t } print }' \
