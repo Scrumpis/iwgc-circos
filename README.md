@@ -238,7 +238,7 @@ singularity exec iwgc-circos-tracks.sif ./add_legend.sh
 ```
 docker run --rm -v "$PWD":/data -w /data \
   scrumpis/iwgc-circos-tracks:latest \
-  ./add_legend
+  ./add_legend.sh
 ```
 
 ### Manual Adjustments
