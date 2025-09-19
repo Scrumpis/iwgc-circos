@@ -112,7 +112,8 @@ singularity exec iwgc-circos-tracks.sif ./iwgc_circos_tracks.sh genome.fasta \
 -gc -telomere -sliding -filter-chrs \
 -out iwgc_circos_data/
 ```
-**Docker:**
+**Docker:**  
+_Note: Give path to input file after ```/circos```. If local path is ```./genome.fasta```, then use ```/circos/genome.fasta```_
 ```
 docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwgc_circos_tracks.sh /circos/data/genome.fasta \
 -gene /circos/genome.gff \
