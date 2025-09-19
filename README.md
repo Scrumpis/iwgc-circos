@@ -170,7 +170,7 @@ iwgc-circos/
 ```
 
   
-***Run one level up from iwgc_circos and iwgc_circos_data.***  
+***Run in ```iwgc-circos```, one level up from ```iwgc_circos``` and ```iwgc_circos_data```***  
     
 **Singularity:**
 ```
@@ -186,7 +186,9 @@ docker run --rm -v "$PWD":/data -w /data \
   
     
 ## 3. Circos Plot
-The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg). ***Run one level up from iwgc_circos and iwgc_circos_data.***    
+The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg).  
+   
+***Run in ```iwgc-circos```, one level up from ```iwgc_circos``` and ```iwgc_circos_data```***       
    
 **Singularity:**
 ```
@@ -224,7 +226,9 @@ Dynamically add legend characters (a., b., c., etc.) for each track present, cen
      --theta-deg      Pivot characters around the center of the Circos plot (default: -90)
      -h | --help      List usage options
 ```
-
+  
+***Run in ```iwgc-circos```, one level up from ```iwgc_circos``` and ```iwgc_circos_data```***  
+  
 **Singularity:**
 ```
 singularity exec iwgc-circos-tracks.sif ./add_legend.sh
