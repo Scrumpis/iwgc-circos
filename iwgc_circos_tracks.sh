@@ -307,11 +307,66 @@ if [[ $INCLUDE_GC == true ]]; then
   awk '{print $1, $2, $3, $5}' > "${OUTPUT_DIR}/${FASTA_BASE}_gc.circos"
 fi
 
+# --- Normalize links input to 6-column format if needed -----------------------
+# Output schema: qchr qstart qend schr sstart send
+SIXCOL_LINKS="${OUTPUT_DIR}/${FASTA_BASE}_links_input.sixcol"
+
+if [[ $INCLUDE_LINKS == true ]]; then
+  echo "Preparing links from $LINKS_FILE"
+
+  # Case A: already simple 6-col (allow comments/blank lines). Require numeric cols 2,3,5,6.
+  if awk '
+      BEGIN{ok=1}
+      /^[[:space:]]*($|#)/{next}
+      {
+        if (NF!=6) {ok=0; exit}
+        if (($2+0)!=$2 || ($3+0)!=$3 || ($5+0)!=$5 || ($6+0)!=$6) {ok=0; exit}
+      }
+      END{exit ok?0:1}
+    ' "$LINKS_FILE"
+  then
+    # Use as-is but enforce start<=end on both sides
+    awk -v OFS="\t" '
+      /^[[:space:]]*($|#)/{next}
+      {
+        a1=$2; b1=$3; if (a1>b1){t=a1;a1=b1;b1=t}
+        a2=$5; b2=$6; if (a2>b2){t=a2;a2=b2;b2=t}
+        print $1,a1,b1,$4,a2,b2
+      }
+    ' "$LINKS_FILE" > "$SIXCOL_LINKS"
+
+  else
+    # Case B: 11-col (S1 E1 S2 E2 LEN1 LEN2 %IDY LENR LENQ REF_ID QUERY_ID), no header.
+    # Require: NF>=11, first 9 fields numeric (allow decimal for %IDY), last 2 are IDs.
+    awk -v OFS="\t" '
+      function isn(x){ return (x ~ /^-?[0-9]+(\.[0-9]+)?$/) }  # numeric (int/float)
+      /^[[:space:]]*($|#)/{next}
+      {
+        if (NF<11) next
+        # check 1..9 numeric
+        for (i=1;i<=9;i++){ gsub(/,/, "", $i); if (!isn($i)) nextline=1 }
+        if (nextline){ nextline=0; next }
+        s1=$1+0; e1=$2+0; s2=$3+0; e2=$4+0
+        ref=$(NF-1); qry=$NF
+        if (s1>e1){t=s1;s1=e1;e1=t}
+        if (s2>e2){t=s2;s2=e2;e2=t}
+        print ref, s1, e1, qry, s2, e2
+      }
+    ' "$LINKS_FILE" > "$SIXCOL_LINKS"
+
+    if [[ ! -s "$SIXCOL_LINKS" ]]; then
+      echo "Error: Could not parse $LINKS_FILE as 6-col or 11-col coords."
+      exit 1
+    fi
+  fi
+
+  TEMP_FILES+=("$SIXCOL_LINKS")
+fi
 
 # Generate syntenic links file if requested
 if [[ $INCLUDE_LINKS == true ]]; then
-  echo "Generating syntenic links from $LINKS_FILE"
-  awk 'BEGIN{OFS="\t"} { print $1,$2,$3,$4,$5,$6 }' "$LINKS_FILE" \
+  echo "Generating syntenic links (normalized) from $SIXCOL_LINKS"
+  awk 'BEGIN{OFS="\t"} { print $1,$2,$3,$4,$5,$6 }' "$SIXCOL_LINKS" \
   | sort -k1,1 -k2,2n -k4,4 -k5,5n \
   | awk 'BEGIN{OFS="\t"}
     {
@@ -339,6 +394,7 @@ if [[ $INCLUDE_LINKS == true ]]; then
       fi
     } > "${OUTPUT_DIR}/${FASTA_BASE}_links.circos"
 fi
+
 
 
 # Remove temporary files (default behavior)
