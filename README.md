@@ -37,15 +37,15 @@ git clone https://github.com/Scrumpis/iwgc-circos
 ```
 
 ## Setup
-Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos-tracks). You can use [Singularity](https://apptainer.org/) or [Docker](https://docs.docker.com/desktop/) to run these scripts. Both give the same results.  
+Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos). You can use [Singularity](https://apptainer.org/) or [Docker](https://docs.docker.com/desktop/) to run these scripts. Both give the same results.  
    
 **Singularity** (Typically for HPC usage):
 ```
-singularity pull iwgc-circos-tracks.sif docker://scrumpis/iwgc-circos-tracks:latest
+singularity pull iwgc-circos.sif docker://scrumpis/iwgc-circos:latest
 ```
 **Docker** (Typically for local usage):
 ```
-docker pull scrumpis/iwgc-circos-tracks:latest
+docker pull scrumpis/iwgc-circos:latest
 ```
 
 ## Preprocess
@@ -107,7 +107,7 @@ The below commands will produce all possible track files with 1Mbp (default size
   
 **Singularity:**
 ```
-singularity exec iwgc-circos-tracks.sif ./iwgc_circos_tracks.sh genome.fasta \
+singularity exec iwgc-circos.sif ./iwgc_circos_tracks.sh genome.fasta \
 -gene genome.gff \
 -repeat genome.fasta.mod.EDTA.TEanno.gff3 \
 -intact genome.fasta.mod.EDTA.intact.gff3 \
@@ -119,7 +119,7 @@ singularity exec iwgc-circos-tracks.sif ./iwgc_circos_tracks.sh genome.fasta \
 **Docker:**  
 _Note: Give path to input file after ```/circos```. If local path is ```./genome.fasta```, then use ```/circos/genome.fasta```_
 ```
-docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos-tracks:latest /circos/iwgc_circos_tracks.sh /circos/genome.fasta \
+docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos:latest /circos/iwgc_circos_tracks.sh /circos/genome.fasta \
 -gene /circos/genome.gff \
 -repeat /circos/genome.fasta.mod.EDTA.TEanno.gff3 \
 -intact /circos/genome.fasta.mod.EDTA.intact.gff3 \
@@ -178,13 +178,13 @@ iwgc-circos/
     
 **Singularity:**
 ```
-singularity exec iwgc-circos-tracks.sif ./create_configs.sh -gap
+singularity exec iwgc-circos.sif ./create_configs.sh -gap
 ```
   
 **Docker:**
 ```
 docker run --rm -v "$PWD":/data -w /data \
-  scrumpis/iwgc-circos-tracks:latest \
+  scrumpis/iwgc-circos:latest \
   ./create_configs.sh -gap
 ```
   
@@ -199,7 +199,7 @@ The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.pn
 singularity exec \
   --cleanenv \
   -B "$PWD":/data \
-  iwgc-circos-tracks.sif \
+  iwgc-circos.sif \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp --noparanoid
 ```
   
@@ -207,7 +207,7 @@ singularity exec \
 ```
 docker run --rm \
   -v "$PWD:/data" \
-  scrumpis/iwgc-circos-tracks \
+  scrumpis/iwgc-circos \
   circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp -noparanoid
 ```
   
@@ -235,13 +235,13 @@ Dynamically add legend characters (a., b., c., etc.) for each track present, cen
   
 **Singularity:**
 ```
-singularity exec iwgc-circos-tracks.sif ./add_legend.sh
+singularity exec iwgc-circos.sif ./add_legend.sh
 ```
 
 **Docker:**
 ```
 docker run --rm -v "$PWD":/data -w /data \
-  scrumpis/iwgc-circos-tracks:latest \
+  scrumpis/iwgc-circos:latest \
   ./add_legend.sh
 ```
 
