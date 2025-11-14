@@ -10,7 +10,7 @@ PNG_OUT=""
 FONT_TTF="fonts/ArialBold.ttf"
 
 # Placement & sizing
-DX_FRAC="0"        # left nudge as fraction of font-size
+DX_FRAC="-0.5"        # left nudge as fraction of font-size
 DY_FRAC="0"        # down nudge as fraction of font-size
 THETA_DEG=""          # if empty, default to -90° (top)
 
