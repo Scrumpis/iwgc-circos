@@ -206,8 +206,10 @@ fi
 
 
 # Generate sliding or fixed window file if any tracks other than karyotype are requested
-if [[ $INCLUDE_GENE == true || $INCLUDE_REPEAT == true || $INCLUDE_INTACT == true || $INCLUDE_GC == true || $INCLUDE_LTRDATING == true ]
-]; then
+# Generate sliding or fixed window file if any tracks other than karyotype are requested
+if [[ "$INCLUDE_GENE" == true || "$INCLUDE_REPEAT" == true || \
+      "$INCLUDE_INTACT" == true || "$INCLUDE_GC" == true || \
+      "$INCLUDE_LTRDATING" == true ]]; then
   if [[ "$USE_SLIDING" == true ]]; then
     STEP_FRACTION="${STEP_SIZE:-0.5}"
 
