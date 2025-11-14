@@ -11,10 +11,11 @@ usage() {
   echo "  -gene            Add gene density track (requires gene annotation GFF3)"
   echo "  -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.mod.TEanno.gff3)"
   echo "  -intact          Add intact TE density track (requires EDTA intact repeat annotation: EDTA/genome.fasta.mod.EDTA.intact.gff3)"
-  echo "  -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)"
+  echo "  -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.lis
+t)"
   echo "  -links           Add syntenic links from a .coords file (e.g., MUMmer or minimap2 output)"
   echo "  -min-tlen        Minimum length of syntenic links"
-  echo "  -top-n           Number of top syntenic links to include (e.g., "20" for top 20 longest links)"
+  echo "  -top-n           Number of top syntenic links to include (e.g., \"20\" for top 20 longest links)"
   echo "  -link-order      Order of syntenic links - asc: smallest top to biggest bottom | dsc: big top to small bottom (default: asc)"
   echo "  -gc              Add GC content track"
   echo "  -telomere        Add telomere bands to ideogram (karyotype.circos)"
@@ -22,7 +23,12 @@ usage() {
   echo "  -window          Window size in base pairs (default: 1000000)"
   echo "  -sliding         Use sliding windows instead of the default fixed windows"
   echo "  -step            Step size for sliding windows (default: 0.5). The default is half window size steps"
-  echo "  -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off"
+  echo "  -filter-chrs [PATTERN]"
+  echo "                   Restrict chromosomes to those whose names match PATTERN."
+  echo "                   If PATTERN is omitted, defaults to typical nuclear naming"
+  echo "                   (e.g., Chr01, Chr1, chr01B; regex: Chr0?[1-9][0-9]?)."
+  echo "                   Matching is case-insensitive; PATTERN is an extended regex"
+  echo "                   applied to the chromosome name (first column). Default: off"
   echo "  -keep-temp       Keep intermediate files"
   echo "  -out             Output directory for Circos track files (default: current directory)"
   echo "  -h | --help      List usage options"
@@ -30,10 +36,11 @@ usage() {
   echo "Recommended containerized usage:"
   echo "singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo "or"
-  echo "docker run --rm -v $(pwd):/data iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]"
+  echo "docker run --rm -v \$(pwd):/data iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo
-  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power
- 3 transformed"
+  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat den
+sity is power"
+  echo "3 transformed"
   exit 1
 }
 
@@ -51,6 +58,8 @@ TELOMERE_SCALE=0.005
 USE_SLIDING=false
 STEP_SIZE=""
 FILTER_CHRS=false
+### New: optional pattern used when FILTER_CHRS is true
+FILTER_PATTERN=""
 
 FASTA=$1; shift
 
@@ -71,7 +80,18 @@ while [[ $# -gt 0 ]]; do
     -telomere) INCLUDE_TELOMERE=true; shift ;;
     -sliding) USE_SLIDING=true; shift ;;
     -keep-temp) KEEP_TEMP=true; shift ;;
-    -filter-chrs) FILTER_CHRS=true; shift ;;
+    ### Updated: -filter-chrs can take an optional PATTERN argument
+    -filter-chrs)
+      FILTER_CHRS=true
+      # If next argument exists and is not another flag, treat it as PATTERN
+      if [[ -n "${2-}" && ! "$2" =~ ^- ]]; then
+        FILTER_PATTERN="$2"
+        shift 2
+      else
+        FILTER_PATTERN=""
+        shift
+      fi
+      ;;
     -out) OUTPUT_DIR=$2; shift 2 ;;
     -h|--help) usage ;;
     *) echo "Unknown option: $1"; usage ;;
@@ -115,8 +135,15 @@ if [[ ! -f ${FASTA}.fai ]]; then
 fi
 
 # Filter for chromosomes if requested
+### Updated block: use optional PATTERN, defaulting to Chr0?[1-9][0-9]? if empty
 if [[ "$FILTER_CHRS" == true ]]; then
-  grep -Ei 'Chr0?[1-9][0-9]?' ${FASTA}.fai | sort -t$'\t' -k1,1 > "${OUTPUT_DIR}/${FASTA_BASE}_chrs.fai"
+  if [[ -n "$FILTER_PATTERN" ]]; then
+    awk -v pat="$FILTER_PATTERN" 'BEGIN{IGNORECASE=1} $1 ~ pat' "${FASTA}.fai" \
+      | sort -t$'\t' -k1,1 > "${OUTPUT_DIR}/${FASTA_BASE}_chrs.fai"
+  else
+    awk 'BEGIN{IGNORECASE=1} $1 ~ /Chr0?[1-9][0-9]?/' "${FASTA}.fai" \
+      | sort -t$'\t' -k1,1 > "${OUTPUT_DIR}/${FASTA_BASE}_chrs.fai"
+  fi
 else
   sort -t$'\t' -k1,1 ${FASTA}.fai > "${OUTPUT_DIR}/${FASTA_BASE}_chrs.fai"
 fi
@@ -155,8 +182,13 @@ if [[ $INCLUDE_TELOMERE == true ]]; then
 
   genome_len=$(awk '{sum+=$2}END{print sum}' "${OUTPUT_DIR}/${FASTA_BASE}_chrs.fai")
 
+  ### Updated: apply same FILTER_PATTERN logic to telomere info
   if [[ "$FILTER_CHRS" == true ]]; then
-    grep -v '#' "$TELO_INFO" | grep -Ei 'Chr0?[1-9][0-9]?'
+    if [[ -n "$FILTER_PATTERN" ]]; then
+      grep -v '#' "$TELO_INFO" | awk -v pat="$FILTER_PATTERN" 'BEGIN{IGNORECASE=1} $1 ~ pat'
+    else
+      grep -v '#' "$TELO_INFO" | awk 'BEGIN{IGNORECASE=1} $1 ~ /Chr0?[1-9][0-9]?/'
+    fi
   else
     grep -v '#' "$TELO_INFO"
   fi | awk '{ print $1, $2, $3, $4, "+", $6, "-" }' | \
@@ -174,7 +206,8 @@ fi
 
 
 # Generate sliding or fixed window file if any tracks other than karyotype are requested
-if [[ $INCLUDE_GENE == true || $INCLUDE_REPEAT == true || $INCLUDE_INTACT == true || $INCLUDE_GC == true || $INCLUDE_LTRDATING == true ]]; then
+if [[ $INCLUDE_GENE == true || $INCLUDE_REPEAT == true || $INCLUDE_INTACT == true || $INCLUDE_GC == true || $INCLUDE_LTRDATING == true ]
+]; then
   if [[ "$USE_SLIDING" == true ]]; then
     STEP_FRACTION="${STEP_SIZE:-0.5}"
 
@@ -349,7 +382,7 @@ if [[ $INCLUDE_LINKS == true ]]; then
         s1=$1+0; e1=$2+0; s2=$3+0; e2=$4+0
         ref=$(NF-1); qry=$NF
         if (s1>e1){t=s1;s1=e1;e1=t}
-        if (s2>e2){t=s2;s2=e2;e2=t}
+        if (s2>e2){t=s2;e2=s2;s2=t}
         print ref, s1, e1, qry, s2, e2
       }
     ' "$LINKS_FILE" > "$SIXCOL_LINKS"
@@ -387,8 +420,13 @@ if [[ $INCLUDE_LINKS == true ]]; then
   | { if (( ${TOP_N:-0} > 0 )); then head -n "${TOP_N}"; else cat; fi; } \
   | cut -f2- \
   | {
+      ### Updated: apply same optional PATTERN to link chromosomes
       if [[ "$FILTER_CHRS" == true ]]; then
-        awk -F'\t' 'tolower($1) ~ /^chr0?[1-9][0-9]?[a-z]?$/ && tolower($4) ~ /^chr0?[1-9][0-9]?[a-z]?$/'
+        if [[ -n "$FILTER_PATTERN" ]]; then
+          awk -F'\t' -v pat="$FILTER_PATTERN" 'BEGIN{IGNORECASE=1} $1 ~ pat && $4 ~ pat'
+        else
+          awk -F'\t' 'BEGIN{IGNORECASE=1} $1 ~ /^chr0?[1-9][0-9]?[a-z]?$/ && $4 ~ /^chr0?[1-9][0-9]?[a-z]?$/'
+        fi
       else
         cat
       fi
