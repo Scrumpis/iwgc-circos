@@ -135,7 +135,7 @@ if [[ ! -f ${FASTA}.fai ]]; then
 fi
 
 # Filter for chromosomes if requested
-### Updated block: use optional PATTERN, defaulting to Chr0?[1-9][0-9]? if empty
+### Use optional PATTERN, defaulting to Chr0?[1-9][0-9]? if empty
 if [[ "$FILTER_CHRS" == true ]]; then
   if [[ -n "$FILTER_PATTERN" ]]; then
     awk -v pat="$FILTER_PATTERN" 'BEGIN{IGNORECASE=1} $1 ~ pat' "${FASTA}.fai" \
@@ -182,7 +182,7 @@ if [[ $INCLUDE_TELOMERE == true ]]; then
 
   genome_len=$(awk '{sum+=$2}END{print sum}' "${OUTPUT_DIR}/${FASTA_BASE}_chrs.fai")
 
-  ### Updated: apply same FILTER_PATTERN logic to telomere info
+  ### Apply same FILTER_PATTERN logic to telomere info
   if [[ "$FILTER_CHRS" == true ]]; then
     if [[ -n "$FILTER_PATTERN" ]]; then
       grep -v '#' "$TELO_INFO" | awk -v pat="$FILTER_PATTERN" 'BEGIN{IGNORECASE=1} $1 ~ pat'
@@ -205,7 +205,6 @@ if [[ $INCLUDE_TELOMERE == true ]]; then
 fi
 
 
-# Generate sliding or fixed window file if any tracks other than karyotype are requested
 # Generate sliding or fixed window file if any tracks other than karyotype are requested
 if [[ "$INCLUDE_GENE" == true || "$INCLUDE_REPEAT" == true || \
       "$INCLUDE_INTACT" == true || "$INCLUDE_GC" == true || \
