@@ -34,7 +34,7 @@ t)"
   echo "  -h | --help      List usage options"
   echo
   echo "Recommended containerized usage:"
-  echo "singularity exec iwgc-circos-tracks.sif ./iwgc-circos-tracks.sh <FASTA> [options]"
+  echo "singularity exec iwgc-circos.sif ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo "or"
   echo "docker run --rm -v \$(pwd):/data iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo
