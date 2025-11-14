@@ -97,7 +97,9 @@ A genomic.fasta is the only required input file for every Circos. We include a c
      -window          Window size in base pairs (default: 1000000)
      -sliding         Use sliding windows instead of fixed
      -step            Step size for sliding windows (default: 0.5). The default is half window size steps
-     -filter-chrs     Restrict chromosomes to those matching typical nuclear naming patterns (e.g., Chr01, Chr1, chr01B). Default: off
+     -filter-chrs     Restrict chromosomes to those whose names match input PATTERN."
+                      If PATTERN is omitted, defaults to typical nuclear naming (e.g., Chr01, Chr1, chr01B; regex: Chr0?[1-9][0-9]?).
+                      Matching is case-insensitive; PATTERN is an extended regex" applied to the chromosome name (first column). Default: off"
      -keep-temp       Keep intermediate files
      -out             Output directory for Circos track files (default: current directory)
      -h | --help      List usage options
