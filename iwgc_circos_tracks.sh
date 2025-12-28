@@ -11,8 +11,7 @@ usage() {
   echo "  -gene            Add gene density track (requires gene annotation GFF3)"
   echo "  -repeat          Add repeat density track (requires EDTA repeat annotation: EDTA/genome.fasta.EDTA.mod.TEanno.gff3)"
   echo "  -intact          Add intact TE density track (requires EDTA intact repeat annotation: EDTA/genome.fasta.mod.EDTA.intact.gff3)"
-  echo "  -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.lis
-t)"
+  echo "  -ltr-dating      Add LTR dating track (requires EDTA repeat annotation: EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)"
   echo "  -links           Add syntenic links from a .coords file (e.g., MUMmer or minimap2 output)"
   echo "  -min-tlen        Minimum length of syntenic links"
   echo "  -top-n           Number of top syntenic links to include (e.g., \"20\" for top 20 longest links)"
@@ -38,8 +37,7 @@ t)"
   echo "or"
   echo "docker run --rm -v \$(pwd):/data iwgc-circos-tracks:latest ./iwgc-circos-tracks.sh <FASTA> [options]"
   echo
-  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat den
-sity is power"
+  echo "Note: For visualization/automation purposes, all density tracks are normalized, gene density is sqrt transformed, and repeat density is power"
   echo "3 transformed"
   exit 1
 }
