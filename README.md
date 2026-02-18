@@ -1,6 +1,6 @@
 # International Weed Genomics Consortium (IWGC) Genome Report Circos Plots
 ## About
-Quickly and easily generate Circos plots for commonly visualized genomic data.  
+Containerized shell scripts for quick Circos plots of commonly visualized genomic data.  
   
 ***Create tracks > Generate configs > Run Circos > Add legend***  
   
