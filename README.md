@@ -34,7 +34,6 @@ The below Circos plot illustrates all tracks producable by iwgc-circos. Select a
 The scripts are built to run with this repo structure by default. It will simplify things for you to do the same.
 ```
 git clone https://github.com/Scrumpis/iwgc-circos
-chmod -R 774 iwgc-circos/
 ```
 
 ## Setup
