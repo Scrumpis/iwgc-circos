@@ -220,7 +220,7 @@ Dynamically add legend characters (a., b., c., etc.) for each track present, cen
 ***Note: You may want to adjust ```angle_offset* =``` in ```iwgc_circos.conf``` if the gap looks off-center prior to adding legend characters.***  
   
 ```
-  Usage: ./create_configs.sh [options]
+  Usage: ./add_legend.sh [options]
   
    Optional:
      -conf            Path, including file name, to iwgc_circos.conf (default: iwgc_circos/iwgc_circos.conf)
