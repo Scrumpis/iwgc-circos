@@ -10,7 +10,7 @@ For additional information, the [Circos](https://circos.ca/) website offers very
   
 ### Example:
 The below Circos plot illustrates all tracks producable by iwgc-circos. Select as many of them as you would like for your output and **```iwgc-circos``` will dynamically increase track size accordingly**. All values are normalized, gene density is square-root transformed, and repeat density is power three transformed for automation and visualization purposes. Ideogram tick label units are the default 1Mb (50 = 50Mb). Windows are 1Mb, with sliding half steps (500Kbp). 
-- a. Karyotype illustrating chromosomes, chromosome position, and telomere presense (distal grey boxes)
+- a. Karyotype illustrating chromosomes, chromosome position, and telomere presence (distal grey boxes)
 - b. Gene density - more blue is more gene rich, more yellow is less gene rich
 - c. Repeat density - more red is more repeat rich, more yellow is less repeat rich
 - d. LTR insertion age - more purple are newer insertions, less purple are older, white contain no insertions
