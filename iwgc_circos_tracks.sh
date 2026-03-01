@@ -244,7 +244,7 @@ if [[ $INCLUDE_REPEAT == true ]]; then
   grep -v '#' ${REPEATS} | awk '{print $1,$4,$5}' OFS='\t' | sort -k1,1 -k2,2n > "${OUTPUT_DIR}/${FASTA_BASE}_repeat_coords.bed"
   TEMP_FILES+=("${OUTPUT_DIR}/${FASTA_BASE}_repeat_coords.bed")
   bedtools coverage -sorted -a "${OUTPUT_DIR}/${FASTA_BASE}_windows.bed" -b "${OUTPUT_DIR}/${FASTA_BASE}_repeat_coords.bed" | \
-  awk '{print $1,$2,$3,($7^3)}' | sort -k1,1 -k2,2n | \
+  awk '{print $1,$2,$3,sqrt($7)}' | sort -k1,1 -k2,2n | \
   awk '{v[NR]=$4; l[NR]=$0; if(NR==1||$4<m)m=$4; if(NR==1||$4>M)M=$4} END {for(i=1;i<=NR;i++) print l[i],(M==m?0:(v[i]-m)/(M-m))}' | \
   awk '{ print $1, $2, $3, $5}' > "${OUTPUT_DIR}/${FASTA_BASE}_repeat_coverage.circos"
 fi
