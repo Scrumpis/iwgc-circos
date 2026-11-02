@@ -1,0 +1,4 @@
+# LTR_retriever pass.list, column 12 is supplied age
+Chr1:1..4	pass	.	.	.	.	.	.	.	.	.	0
+Chr1:8..5	pass	.	.	.	.	.	.	.	.	.	10
+Chr1:9..12	pass	.	.	.	.	.	.	.	.	.	20

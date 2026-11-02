@@ -1,0 +1,4 @@
+# zero-based half-open, intentionally unsorted
+Chr1 7 10 Chr2 7 10
+Chr1 0 1 Chr2 0 1
+Chr1 3 5 Chr2 3 5

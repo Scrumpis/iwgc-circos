@@ -1,0 +1,143 @@
+{
+  "expected_biology": "The one-record 30 kb sequence contains 100 exact plant motif copies at each end. If detected, two marker bands are expected; missing detection is not biological absence.",
+  "expected_candidate_contract": "Retain the current detector. A missing report must cause nonzero exit and must be reported as unavailable; no fallback or duplicated biological input is introduced.",
+  "observations": [
+    {
+      "case": "minimal tidk explore",
+      "argv": [
+        "tidk",
+        "explore",
+        "-d",
+        "<scratch>/minimal-explore",
+        "-f",
+        "<scratch>/minimal.fa",
+        "-o",
+        "probe",
+        "-e",
+        "tsv",
+        "-l",
+        "7",
+        "-t",
+        "50"
+      ],
+      "rc": 0,
+      "stdout": "[+]\tExploring genome for potential telomeric repeats of length: 7\n[+]\tFinished searching genome\n[+]\tGenerating output\n",
+      "stderr": "",
+      "candidate_table": "telomeric_repeat\treverse_complement\tfrequency\n",
+      "candidate_locations": "id\tstart_pos\tend_pos\trepeat_number\trepeat_sequence\tsequence_length\nChr1\t7\t406\t57\tTTTAGGG\t7\n"
+    },
+    {
+      "case": "single tidk explore",
+      "argv": [
+        "tidk",
+        "explore",
+        "-d",
+        "<scratch>/single-explore",
+        "-f",
+        "<scratch>/single.fa",
+        "-o",
+        "probe",
+        "-e",
+        "tsv",
+        "-l",
+        "7",
+        "-t",
+        "50"
+      ],
+      "rc": 0,
+      "stdout": "[+]\tExploring genome for potential telomeric repeats of length: 7\n[+]\tFinished searching genome\n[+]\tGenerating output\n",
+      "stderr": "",
+      "candidate_table": "telomeric_repeat\treverse_complement\tfrequency\n",
+      "candidate_locations": "id\tstart_pos\tend_pos\trepeat_number\trepeat_sequence\tsequence_length\nChr1\t7\t686\t97\tTTTAGGG\t7\n"
+    },
+    {
+      "case": "double tidk explore",
+      "argv": [
+        "tidk",
+        "explore",
+        "-d",
+        "<scratch>/double-explore",
+        "-f",
+        "<scratch>/double.fa",
+        "-o",
+        "probe",
+        "-e",
+        "tsv",
+        "-l",
+        "7",
+        "-t",
+        "50"
+      ],
+      "rc": 0,
+      "stdout": "[+]\tExploring genome for potential telomeric repeats of length: 7\n[+]\tFinished searching genome\n[+]\tGenerating output\n[+]\tThe likely telomeric repeat is: AAACCCT, found 388 times.\n",
+      "stderr": "",
+      "candidate_table": "telomeric_repeat\treverse_complement\tfrequency\nAAACCCT\tAGGGTTT\t388\n",
+      "candidate_locations": "id\tstart_pos\tend_pos\trepeat_number\trepeat_sequence\tsequence_length\nChr1\t7\t686\t97\tTTTAGGG\t7\nChr2\t7\t686\t97\tTTTAGGG\t7\n"
+    },
+    {
+      "case": "single explicit known motif search",
+      "argv": [
+        "tidk",
+        "search",
+        "-d",
+        "<scratch>/search",
+        "-f",
+        "<scratch>/single.fa",
+        "-o",
+        "known",
+        "-e",
+        "csv",
+        "-s",
+        "TTTAGGG",
+        "-w",
+        "10000"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "[+]\tSearching genome for telomeric repeat: TTTAGGG\n[+]\tChromosome Chr1 processed\n[+]\tFinished searching genome.\n",
+      "window_counts": "id,window,forward_repeat_number,reverse_repeat_number,telomeric_repeat\nChr1,10000,100,0,TTTAGGG\nChr1,20000,0,0,TTTAGGG\nChr1,30000,0,100,TTTAGGG\n"
+    },
+    {
+      "case": "single iwgc-circos wrapper",
+      "argv": [
+        "bash",
+        "<repo>/iwgc_circos_tracks.sh",
+        "<scratch>/single.fa",
+        "-telomere",
+        "-keep-temp",
+        "-out",
+        "<scratch>/single-wrapper"
+      ],
+      "rc": 1,
+      "stdout": "[Info] Paramater: genomefile=input.fa, clade=plant, minrepeattimes=50, prefix=iwgc, noplot=True\n[Info] Running tidk explore...\n[Error] No telomere-like repeats found.\n",
+      "stderr": "[ERROR] quarTeT produced no telomere report; inspect its log\n",
+      "band_rows": []
+    },
+    {
+      "case": "double iwgc-circos wrapper",
+      "argv": [
+        "bash",
+        "<repo>/iwgc_circos_tracks.sh",
+        "<scratch>/double.fa",
+        "-telomere",
+        "-keep-temp",
+        "-out",
+        "<scratch>/double-wrapper"
+      ],
+      "rc": 0,
+      "stdout": "[Info] Paramater: genomefile=input.fa, clade=plant, minrepeattimes=50, prefix=iwgc, noplot=True\n[Info] Running tidk explore...\n[Info] Telomere repeat found is AAACCCT.\n[Info] Running tidk search...\n[Info] Analysising...\n[Output] Telomere information write to: iwgc.telo.info\n[Info] Complete!\n[Info] Time Cost: 0d, 0h, 0m, 0s\n",
+      "stderr": "",
+      "band_rows": [
+        "band Chr1 Chr1_T1 Chr1_T1 0 300 vdgrey",
+        "band Chr1 Chr1_T2 Chr1_T2 29700 30000 vdgrey",
+        "band Chr2 Chr2_T3 Chr2_T3 0 300 vdgrey",
+        "band Chr2 Chr2_T4 Chr2_T4 29700 30000 vdgrey"
+      ]
+    }
+  ],
+  "input_sha256": {
+    "single.fa": "9c8726e02f1eec0d5cdadf4ca69395e838cbf8fdd30b00154f9eac8442baadb3",
+    "double.fa": "4f2ef65ee16693a35531dd5cc6c595fb3f12ec9f29d20439e76e19e9ff099434",
+    "minimal.fa": "a3d59397c90ef5a7b989f122fb00927718e6e055ee1c886bd1bcef623884cd44"
+  }
+}

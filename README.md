@@ -1,4 +1,11 @@
 # International Weed Genomics Consortium (IWGC) Genome Report Circos Plots
+Candidate **0.4.0-rc.1** is under validation; it is not published. Start with the
+[human walkthrough](docs/getting-started.md), [audit findings](docs/validation/audit.md),
+[verification record](docs/validation/verification.md), and
+[release notes](docs/release-notes-0.4.0-rc.1.md).
+The optional [portable Agent Skill](skills/iwgc-circos/SKILL.md) supports AI agents;
+all workflows remain available directly from the terminal.
+
 ## About
 Containerized shell scripts for quick Circos plots of commonly visualized genomic data.  
   
@@ -37,7 +44,7 @@ git clone https://github.com/Scrumpis/iwgc-circos
 ```
 
 ## Setup
-Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos). You can use [Singularity](https://apptainer.org/) or [Docker](https://docs.docker.com/desktop/) to run these scripts. Both give the same results.  
+Pull container from [DockerHub](https://hub.docker.com/r/scrumpis/iwgc-circos). You can use [Singularity](https://apptainer.org/) or [Docker](https://docs.docker.com/desktop/) to run these scripts. Singularity was tested on Linux amd64; Docker execution has not been verified in this audit. Record an immutable image identity rather than relying on a moving tag.
    
 **Singularity** (Typically for HPC usage):
 ```
@@ -55,9 +62,9 @@ A genomic.fasta is the only required input file for every Circos. We include a c
 | File Name                             | Description                                                                 |
 |--------------------------------------|-----------------------------------------------------------------------------|
 | `genome.fasta`                       | Required input for karyotype, telomeres, and GC-content tracks. This is the only required file for the base script to run. |
-| `genome.gff3`                        | Gene annotation file used to generate the **total gene density track**. Accepts standard GFF3 format from any annotation pipeline. |
+| `genome.gff3`                        | Gene annotation file used to generate the **total gene density track**. Requires tab-separated GFF3 with exact `gene` features; mRNA/CDS-only annotations need preprocessing. |
 | `genome.fasta.mod.EDTA.TEanno.gff3`  | Repeat annotation file from EDTA used to create the **total repeat density track**. (EDTA default path: EDTA/genome.fasta.mod.EDTA.TEanno.gff3)|
-| `genome.fasta.mod.EDTA.intact.gff3`  | Intact repeat annotation from EDTA used to generate **intact repeat density tracks**. (EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)|
+| `genome.fasta.mod.EDTA.intact.gff3`  | Intact repeat GFF3 from EDTA used to generate **intact repeat density tracks** (`Classification=type/class`).|
 | `genome.fasta.mod.pass.list`         | LTR insertion age from EDTA used to generate **LTR age track**. (EDTA/genome.mod.EDTA.raw/LTR/genome.fasta.mod.pass.list)|
 | `genome.coords`                      | .coords alignment file from minimap2 or similar used to generate **links track**. |
 
@@ -135,7 +142,7 @@ docker run --rm -v "$PWD":/circos scrumpis/iwgc-circos:latest /circos/iwgc_circo
 This command will produce the following:
 - iwgc_circos/iwgc_circos.conf file containing plots for every included track data file contained in iwgc_circos_data. So, if iwgc_circos_data/genome.fasta_gene_coverage.circos exists, gene density plot will be created.
 - If the gap flag is invoked, iwgc_circos/ideogram.conf file will contain a legend gap between your last and first chromosomes in the pairwise header.
-- If 8 or less of the files associated with any of the plot tracks (excludes ideogram, labels, or links) are present in iwgc_circos_data, tracks will be dynamically resized to keep the inner most tracks r0 value near 0.5 and the gap between tracks is doubled (0.02 units instead of 0.01).
+- If 8 or less of the files associated with any of the plot tracks (excludes ideogram, labels, or links) are present in iwgc_circos_data, tracks will be dynamically resized to keep the inner most tracks r0 value near 0.5 and the gap between numeric tracks is 0.02r.
 - Dynamically adjusts tick amount and spacing based on genome length and chromosome amount.
   
 ### Setup
@@ -170,7 +177,7 @@ iwgc-circos/
    Optional:
      -template        Path, including file name, to iwgc_circos_template.config (default: ./iwgc_circos_template.config)
      -outdir          Path to output directory (default: ./iwgc_circos)
-     -ideogram        Path, indluding file name, to ideogram.conf (default: $OUTDIR/iwgc_circos.conf)
+     -ideogram        Path, indluding file name, to ideogram.conf (default: $OUTDIR/ideogram.conf)
      -gap             Adds gap to middle-top of plot, between last and first chromosomes (default: FALSE)
      -h | --help      List usage options
 ```
@@ -192,6 +199,7 @@ docker run --rm -v "$PWD":/data -w /data \
   
     
 ## 3. Circos Plot
+Create the output directory if needed: `mkdir -p iwgc_circos/tmp`. Source archives omit historical example renders.
 The below commands will generate a Circos plot in iwgc_circos/tmp/iwgc_circos.png (and .svg).  
    
 ***Run in ```iwgc-circos```, one level up from ```iwgc_circos``` and ```iwgc_circos_data```***       
@@ -202,15 +210,15 @@ singularity exec \
   --cleanenv \
   -B "$PWD":/data \
   iwgc-circos.sif \
-  circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp --noparanoid
+  circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp
 ```
   
 **Docker** (easier refinement - quickly view png/svg, tweak .conf files, and re-run):
 ```
 docker run --rm \
-  -v "$PWD:/data" \
+  -v "$PWD:/data" -w /data \
   scrumpis/iwgc-circos \
-  circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp -noparanoid
+  circos -conf /data/iwgc_circos/iwgc_circos.conf -outputdir /data/iwgc_circos/tmp
 ```
   
   
@@ -226,9 +234,9 @@ Dynamically add legend characters (a., b., c., etc.) for each track present, cen
      -conf            Path, including file name, to iwgc_circos.conf (default: iwgc_circos/iwgc_circos.conf)
      -svg             Path, including file name, to iwgc_circos.svg (default: iwgc_circos/tmp/iwgc_circos.svg)
      -out             Path, indluding file name, to output SVG file (default: iwgc_circos/tmp/iwgc_circos.labeled.svg)
-     -font            Path, indluding file name, to legend font file (default: fonts/ArialBold.ttf)
-     --dx-frac        Nudge legend characters left (+) or right (-) in fractions of total legend character size (default: 0)
-     --dy-frac        Nudge legend characters up (+) or down (-) in fractions of total legend character size (default: 0)
+     -font            Path, indluding file name, to legend font file (default: fonts/LiberationSans-Bold.ttf)
+     --dx-frac        Nudge legend characters left (+) or right (-) in fractions of font size (default: -0.15)
+     --dy-frac        Nudge legend characters down (+) or up (-) in fractions of font size (default: 0)
      --theta-deg      Pivot characters around the center of the Circos plot (default: -90)
      -h | --help      List usage options
 ```
@@ -255,7 +263,7 @@ If you are planning to include the Circos plot in a publication, you will likely
 - Change r1 and r0 values within each ```<plot>``` block to adjust height/thickness of individual plot tracks, the gaps between each track, or to change the order of tracks.
 - Change [plot type](https://circos.ca/documentation/tutorials/2d_tracks/), [colors of plots](https://circos.ca/documentation/tutorials/configuration/colors/images), plot background colors, reverse chromosomes, insert breaks into chromsomes, etc.
 - Uncomment ```chromosome_reverse =``` and add chromosomes in a list (Chr09D; Chr01B; Chr04C) to reverse chromosomes and all associated plots.
-- Syntenic links are very customizable. Change thresholds for sizes to hide or color differently, allow intrachromosomal links, add twists, flatten, etc. Defaults: 20Kbp<50Kbp blue, 50kbp<100Kbp green, 100Kbp>200Kbp yellow, 200Kbp>1Mbp orange, 1Mbp> red. 
+- Syntenic links are very customizable. Change thresholds for sizes to hide or color differently, allow intrachromosomal links, add twists, flatten, etc. Defaults hide intrachromosomal links and links with maximum side length <20 kb. Other links are blue; both sides must exceed 50 kb for green, 100 kb for yellow, 200 kb for orange, or 1 Mb for red (strict thresholds).
 
 **ideogram.label.conf**
 - Increase "150p" in ```label_radius``` to move chromosome labels further from ideogram, or decrease to bring them closer.
@@ -269,14 +277,42 @@ Use Inkspace or a similar SVG editing tool to manually edit or add any text.
    
 ## Notes
 - When visualizing multiple species, datasets, etc. in a single Circos plot, all files must be concatenated first
-- For automation and visualization purposes...
-  - Gene desity is sqrt transformed
-  - Repeat density is power 3 transformed
-  - All tracks are normalized
+- For automation and visualization purposes (full definitions: [input contracts and interpretation](skills/iwgc-circos/references/inputs-and-meaning.md))...
+  - Gene density is square-root transformed
+  - Total repeat density is square-root transformed
+  - Numeric tracks are min-max scaled per track across all retained windows; constant coverage/GC is 0. LTR age uses its own inverted [1,2] display scale with missing windows at 0. These are relative display values, not physical percentages.
 - In special situtations where you need to edit the housekeeping.conf, such as if you have more contigs than what is typically allowed, you can either run the container interactively and update the housekeeping.conf file or you can create a housekeeping.conf file in the /circos directory and map it to the container, see Fusarium paper
 
 ### Known Warnings:
 - (iwgc_circos_tracks.sh) ```File species.fasta_windows.bed has a record where naming convention (leading zero) is inconsistent with other files```
-  - Seems ignorable with no effects, happens at Chr10 or ChrChlr if previous are Chr01-09.
+  - Check exact chromosome IDs and retained windows. This warning alone does not establish that inputs are compatible.
 - (Circos) ```Use of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781```
-  - Seems ignorable.
+  - Inspect the complete log and rendered structure; do not treat a warning or file existence as validation.
+
+
+## Validation and portable skill
+
+Run `python3 -m unittest discover -s tests -v`, `python3 tools/validate_skill.py`,
+and `python3 tests/smoke.py` in the supported environment. The smoke test uses a
+fresh temporary directory and checks real Circos SVG/PNG structure, not just
+file existence. Exact container commands and executed results are in
+[verification](docs/validation/verification.md); input formulas and known limits
+are in [the input reference](skills/iwgc-circos/references/inputs-and-meaning.md).
+
+The canonical skill folder is `skills/iwgc-circos/`. A Claude discovery symlink
+is at `.claude/skills/iwgc-circos`; other compatible agents can explicitly load
+its `SKILL.md` or copy the **whole folder**, including `references`, into their
+supported skill directory. It does not require agentG or dndsR at runtime.
+No user-level agent settings are changed. See
+[skill verification](skills/iwgc-circos/references/verification.md) for tested
+and untested discovery claims. The candidate must be obtained separately until
+it is reviewed and released; do not assume a published 0.4.0 tag exists.
+
+The software is MIT licensed. The new default Liberation Sans font carries its
+own [SIL OFL notice](fonts/LICENSE.LiberationSans) and [attribution](fonts/NOTICE.md).
+The historical Arial binary is removed from the candidate; Git history and original figures are preserved.
+
+Clean build/test and versioned Docker Hub publication are prepared in the
+[automated release process](docs/release-process.md). GitHub execution and
+publication remain pending authorization; current status is in the
+[GO/NO-GO report](docs/validation/final-review/GO-NO-GO.md).

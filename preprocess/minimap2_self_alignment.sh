@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Usage:
 #   ./minimap2_self_alignment.sh -f genome.fa [-p output_prefix] [-t threads]
-# Removes rows where (qID==sID && qStart==sStart && qEnd==sEnd). - This needs to be tested before publishing
+# Removes rows where (qID==sID && qStart==sStart && qEnd==sEnd).
 
 set -euo pipefail
 
@@ -48,8 +48,8 @@ minimap2 -x asm5 -t "$threads" "$fasta" "$fasta" > "$paf"
 echo "📄 Converting PAF → coords and filtering exact self-diagonal hits..."
 awk 'BEGIN { OFS="\t" }
 {
-  qstart = $3 + 1;  qend = $4;
-  sstart = $8 + 1;  send = $9;
+  qstart = $3;  qend = $4;
+  sstart = $8;  send = $9;
 
   # Skip exact self hits: same contig and same interval
   if ($1 == $6 && qstart == sstart && qend == send) next;

@@ -1,0 +1,443 @@
+{
+  "date": "2026-11-02",
+  "candidate_version": "0.4.0-rc.1",
+  "branch": "audit/release-candidate-0.4.0",
+  "baseline_commit": "fe224c81c41e4aee5905e587ed01e0c1829ca0a3",
+  "candidate_committed": false,
+  "environment": {
+    "platform": "Linux amd64",
+    "singularity": "4.1.2-jammy",
+    "sif_sha256": "5067065f346b5233dc708bf032053a3287a38b7150ca12ca0900cb8419db7cb7",
+    "samtools": "1.13",
+    "bedtools": "2.30.0",
+    "circos": "0.69-8",
+    "python": "3.13.2",
+    "gawk": "5.1.0",
+    "quartet": "1.2.5",
+    "tidk": "0.2.0"
+  },
+  "reference_sources": {
+    "agentG": {
+      "repository": "https://github.com/Scrumpis/agentG",
+      "commit": "ca1632977b2399a51bffb56f9f1b1ca243cdcc6c",
+      "files": {
+        "VERSION": "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67",
+        "foundation/constitution.md": "d01c2c9b21a643cb0a65d697a184dce5c038ae571c3d15cc9441351fe8186066",
+        "foundation/roles/scientific-auditor.md": "c260675c960d7710083bb64064b21bfb00449b410a37c9f4e22bc2eb66547097",
+        "foundation/roles/software-auditor.md": "d6b7ae7ba08d7043e07879733376ae0c510a8c0d905d89bf3d055e712a1e6aa5",
+        "foundation/roles/validation-engineer.md": "deb6ef0ccaf3f89a87f3c8f27649d43c02ef7898fd96d067d6ddfa9a598e1701",
+        "foundation/roles/implementation-agent.md": "c959fb7b0737537bec4ea12475b78a20a297fd7200df2319b0327c3aa54774c2",
+        "skills/initialize-project/SKILL.md": "802951bec29aa836301e8866d9818f3b5e16f76df239aa663614998bf2850160",
+        "skills/independent-validation/SKILL.md": "532c7123f8bc742527a79077035875dfb4b290bb2f9b2c8a24caf15a6350d077",
+        "docs/validation.md": "11e09c0de88a9966f424ed14d60b5367fbc0ed5522b779ec0736f8205bf840c2",
+        "docs/architecture.md": "c7c991363eae358fa4ef05d309133d5413ff553ac81c124de10bb6e8e3e20a37"
+      }
+    },
+    "dndsR": {
+      "repository": "https://github.com/Scrumpis/dndsR",
+      "commit": "5983405287ed8ecc62feeaedb15f176ef09b9790",
+      "files": {
+        "AGENTS.md": "04f1dc03ee09207b688e2f493ca2c7fc6d0aac4cf7f85552d9d13fea268d5bcf",
+        "CLAUDE.md": "581121df3f26b7a2a694fee7ba7ffba67b97b369182db8ba890582c28ace425f",
+        "skills/dndsr/SKILL.md": "ad10fadcbcf62ba539dfefa66941ed1bf39c39bda7057c61fda692236de327f5",
+        "skills/dndsr/references/verification.md": "2cb26ac6c1d42caca6aa505e991263529fbf3350ad828cd3546b66929d4f24df",
+        "tests/testthat/test-statistics.R": "39da010a38323e1753d685feec608e6f6c9299454a6b674c5e1963ef4c4889c2",
+        "tests/testthat/test-gff.R": "fd00951a53d297d6cc3e55b3891b4d1aa933ec55a6a49195351d841e20721f65",
+        "tools/dev/test-agent.sh": "243195a9c911bf0644c79ea6c6d394844d2f5733c48ef16a6122917ac55108c2",
+        "INSTALL.md": "1c179de9a4d2a1a207bca268e564bde77518ef364be1f68125dcd7d594339294",
+        "docs/tutorials/getting-started.md": "e2d77102bb21bd85ef8040ab74359b599f2f743892e5719de0a1725bc0ad13de",
+        "docs/validation/criteria.md": "6a9c56e79dc385f1d5fd877cce979ef6745dd1472f6279d4d90e3e2d2a65792c",
+        "inst/fonts/LICENSE.LiberationSans": "93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b",
+        "inst/fonts/LiberationSans-Bold.ttf": "788abee4c806d660e8aee46689dd8540cd4bb98da03dcc9d171ce3efd99a9173"
+      }
+    },
+    "dndsR_release_automation": {
+      "repository": "https://github.com/Scrumpis/dndsR",
+      "commit": "5983405287ed8ecc62feeaedb15f176ef09b9790",
+      "inspection": "read-only local source; no reference repository modifications or workflow execution",
+      "files": {
+        ".github/workflows/publish.yaml": "dfc0c2619b2f3e5a311104e6ad6618e788ba2ef4a47b7269c9e71664de664576",
+        ".github/workflows/container.yaml": "b44d2d8d9af4e4e476cef650d27a8450b3da30a6e2d197e81b9cbff7a264de45",
+        "docs/dev/RELEASE.md": "0c5b294bf96692f04aca6011029bdf38ba954f38dff7416c33a209378f592b6f",
+        "docs/dev/GITHUB-SETUP.md": "5e6ec001b90dea34c18a80eaa06a3ec065be0fa1b08c43dc19b3b805437c18e9"
+      }
+    }
+  },
+  "note": "Final uncommitted candidate inventory, including retained historical evidence. Excludes this manifest to avoid self-hashing. Earlier source manifest is preserved verbatim in final-review/pre-review-manifest.json. Hashes identify content; they do not confer release approval or attest an executed clean Docker build.",
+  "checks": {
+    "unit_tests": {
+      "run": 62,
+      "passed": 62,
+      "skipped": 0,
+      "failures": 0,
+      "scope": "existing identified SIF; auxiliary regression, not a clean Docker build"
+    },
+    "independent_numerical": {
+      "checks": 24,
+      "passed": 24,
+      "scope": "independently constructed oracle; same implementation-author reviewer; existing SIF"
+    },
+    "circos_smoke": "initial structural smoke passed; SVG/native gap fidelity mismatch later reproduced in old runtime",
+    "font_render": "native old/new comparison executed; glyph/anchor differences recorded, plot paths identical",
+    "svg_rasterization": "conversion exits 0; old-runtime fidelity comparison fails (two colored gaps)",
+    "telomere": "one-record minimal and 30 kb discovery limitation reproduced; known-motif/two-record controls retained",
+    "baseline_observations": 15,
+    "fresh_agent": "earlier explicit skill-loading usability trial preserved; not independent scientific review",
+    "docker_build": {
+      "exit_code": 127,
+      "reason": "docker: command not found",
+      "new_image_id": null,
+      "registry_digest": null
+    },
+    "github_actions": "workflow definitions statically linted, not executed; pending authorized branch push",
+    "automatic_skill_discovery": "not tested",
+    "distribution_hygiene": "proposed source archive passed; see final-review/hygiene.json",
+    "release_decision": "NO-GO; see final-review/GO-NO-GO.md"
+  },
+  "files": {
+    ".claude/skills/iwgc-circos": {
+      "type": "symlink",
+      "target": "../../skills/iwgc-circos"
+    },
+    ".dockerignore": {
+      "sha256": "7ceb51dbfc539fe2112c858d1a386b732a370ecf0a090930ad89751f1bf0a358",
+      "bytes": 325
+    },
+    ".gitattributes": {
+      "sha256": "c15191fcf8d3131452bfbd18ff41316e1ef352797afe380183e07480586a5961",
+      "bytes": 129
+    },
+    ".github/workflows/container.yml": {
+      "sha256": "0aede6674de8ed558a66bd612316ccc13e007090c5bb036b9625864cb39bf165",
+      "bytes": 1612
+    },
+    ".github/workflows/publish.yml": {
+      "sha256": "b8166f95856abf093ad61b6cf862e35700a90f9134210d22afc2f2d0cf35c75e",
+      "bytes": 3870
+    },
+    ".github/workflows/validate.yml": {
+      "sha256": "94d8024c1297b0cf60452c6d70fe1b0e276831a5e5df82c7feff5fbed92de0ab",
+      "bytes": 709
+    },
+    ".gitignore": {
+      "sha256": "5faf69969bc35be14d5b06ed71954205b186ed3bc86a291e81689fd147adbe16",
+      "bytes": 37
+    },
+    "AGENTS.md": {
+      "sha256": "9485198331aee52735bb69502922b898e445fee699ca2e75cadac1089b402d02",
+      "bytes": 1392
+    },
+    "CLAUDE.md": {
+      "sha256": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+      "bytes": 11
+    },
+    "Dockerfile": {
+      "sha256": "a59050760fdc799a1e86300da8445e58f7843249835cd01affd7b355deaa4a87",
+      "bytes": 2558
+    },
+    "LICENSE": {
+      "sha256": "0b8984b700219d64e0cbcf15a7d94e5645af5fd0ba42be286021825ae8fce10b",
+      "bytes": 1069
+    },
+    "README.md": {
+      "sha256": "3dfce91ad7e9a6d8a3df4101c4a2a82b50303ac782dcb8c6398ffa421a58f816",
+      "bytes": 18746
+    },
+    "VERSION": {
+      "sha256": "6efb6ae82cca32df15976cba95312e30ea1b8d7668909072ea1a0b3ec93d25fa",
+      "bytes": 11
+    },
+    "add_legend.sh": {
+      "sha256": "d9cea0f6633c9dc1ce0615b1bb630e24965efef7e09ff35c3baf4b7140f0f938",
+      "bytes": 12272
+    },
+    "create_configs.sh": {
+      "sha256": "cd9b2a515031ff1c9ca14ae936e856782b36777b0fd5403157355dd0e159e71b",
+      "bytes": 22208
+    },
+    "docs/getting-started.md": {
+      "sha256": "ad49dc0ab02f6b6754363e14d01bc181ab122eee3ff887de9b70804c1721200a",
+      "bytes": 9190
+    },
+    "docs/release-notes-0.4.0-rc.1.md": {
+      "sha256": "5e1c68c2a09b1ed999c5a98534a2227880132e1c188fdcdda6a1a46dd1a1ac65",
+      "bytes": 3966
+    },
+    "docs/release-process.md": {
+      "sha256": "02839d7b3dd4e3581131625baf4fe16de772774884b7cb598312305d2dcd8431",
+      "bytes": 5753
+    },
+    "docs/validation/audit.md": {
+      "sha256": "71fa440ccad9302593cbd066ffd0c3822fd19a5a84298887aa376b306d9308bf",
+      "bytes": 12899
+    },
+    "docs/validation/baseline-probes.json": {
+      "sha256": "0197cc8b605fc28e7ec22421dad4a0d418c931961b4b153771f1ad94c43aceec",
+      "bytes": 9414
+    },
+    "docs/validation/baseline-reproduced.json": {
+      "sha256": "974e3e3283be30132868b52f5e081018913067d6125972d8ec297897249a6568",
+      "bytes": 14948
+    },
+    "docs/validation/container.md": {
+      "sha256": "49d23380d0338a654c682d71887944ab74a3ae69b28d4718c56d61528844664d",
+      "bytes": 5021
+    },
+    "docs/validation/detector-test-failure.txt": {
+      "sha256": "b3f2f6d239f1dab9ffe17344363eb38efd481a94b6d0acc8278040774cee32f5",
+      "bytes": 6394
+    },
+    "docs/validation/final-review/GO-NO-GO.md": {
+      "sha256": "8c5a098938a72352b2db9890c2ce5b7189920f2c5817e68ee1f4ed2df50dd677",
+      "bytes": 13477
+    },
+    "docs/validation/final-review/candidate-files.json": {
+      "sha256": "4022637ba8173bd3b712f7501837953ea3db1621f5ba93746f16c3d96f080fda",
+      "bytes": 4123
+    },
+    "docs/validation/final-review/commands.json": {
+      "sha256": "8f9d0b248220305d6bf10b3806c7a9b73947e61f1f5b9b8b779bc0d8f8b43a05",
+      "bytes": 3503
+    },
+    "docs/validation/final-review/font-metadata.json": {
+      "sha256": "9fc257281f22e1a76bf2c6292bda6fb9fa8cdc6fc366c490d627d4f3fa1fed46",
+      "bytes": 354
+    },
+    "docs/validation/final-review/font-rendering.json": {
+      "sha256": "73a8ef7cc3bf71c9e1081d119ea40fa53130f8ad417650fe352fdef8a69ca3ed",
+      "bytes": 17364
+    },
+    "docs/validation/final-review/hygiene.json": {
+      "sha256": "2ef690a161e131a3369d6ee2ece36bd77587a35e13643cf091ab5910707dde22",
+      "bytes": 1287
+    },
+    "docs/validation/final-review/independent-check.json": {
+      "sha256": "e937bec70c9ccdd18716cd142b07a86a8c819646cf0a2b77e91838513bed21e3",
+      "bytes": 33391
+    },
+    "docs/validation/final-review/pre-review-manifest.json": {
+      "sha256": "a7252a5a15cd6deea730a42ece471ce2ceb854b7e01167320f12fa8d2fcf7487",
+      "bytes": 13618
+    },
+    "docs/validation/final-review/regression-tests.txt": {
+      "sha256": "43f7c85265d1aa99fa0d6f9f8f5dd6676918f6106cfb25fd52dbfebce479d8da",
+      "bytes": 6432
+    },
+    "docs/validation/final-review/render-librsvg.py": {
+      "sha256": "0551c888b6463caa533575b7d827aff241512943726ae3719a672cd05727df4d",
+      "bytes": 1832
+    },
+    "docs/validation/final-review/telomere-check.json": {
+      "sha256": "a78787a45aeb5a6ab34ba22b7814fb124009f79320cc78cc672d1525a9989052",
+      "bytes": 5100
+    },
+    "docs/validation/final-review/telomere-probe.py": {
+      "sha256": "3a95f70922625c0617a295eabb541b2220c5be46c7c57368d73ed264d45cb153",
+      "bytes": 2976
+    },
+    "docs/validation/final-review/workflow-lint.txt": {
+      "sha256": "9f7cdb8210bfb91bba9338aadb9a032ffef9cf4a99fa016334a6b923d2942f76",
+      "bytes": 200
+    },
+    "docs/validation/initial-test-failures.txt": {
+      "sha256": "8204a69f8793f048a8fb4975e7735a10706a29c9595b63e4628f37170c9fadd4",
+      "bytes": 8248
+    },
+    "docs/validation/proposed-behavior-changes.md": {
+      "sha256": "86af202ea7226e85100cef17278a8d448388777268c1444e4a61de9acbde6e5d",
+      "bytes": 7091
+    },
+    "docs/validation/skill-trial-commands.txt": {
+      "sha256": "f411d976128f593bb5b61ac6734f11a64428a83bc5d5c810b3ec543364866c1f",
+      "bytes": 1711
+    },
+    "docs/validation/skill-trial-identities.sha256": {
+      "sha256": "43e26660fb0e626f5369d91237f1a0c95ea6ca743585cdaa3058ea1ac89b4ff2",
+      "bytes": 610
+    },
+    "docs/validation/skill-trial.md": {
+      "sha256": "248b878cf091525eaf07a187ad22ce2a5c6b305290f0f96fbaba963a7d36d4cc",
+      "bytes": 7479
+    },
+    "docs/validation/smoke-commands.json": {
+      "sha256": "36d73fd09da8338a3a5297a419c4df3c68ed63f3eb49e61bd12948737c0b2c15",
+      "bytes": 9382
+    },
+    "docs/validation/tests.txt": {
+      "sha256": "2e01e61f74dfa42dc541ded8e2486f30f8b59171c4e7e60f679de29f8d2ca66c",
+      "bytes": 6432
+    },
+    "docs/validation/verification.md": {
+      "sha256": "ba821615e8dc43a6cb81e372ba3fa452e78e920f339ccd75ac4e7f000646f7eb",
+      "bytes": 12692
+    },
+    "fonts/LICENSE.LiberationSans": {
+      "sha256": "93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b",
+      "bytes": 4414
+    },
+    "fonts/LiberationSans-Bold.ttf": {
+      "sha256": "788abee4c806d660e8aee46689dd8540cd4bb98da03dcc9d171ce3efd99a9173",
+      "bytes": 414456
+    },
+    "fonts/NOTICE.md": {
+      "sha256": "d9340778d7375a4b0d7dfae4743aa268ea37a28fa370bbf68c08bfe4e433c90b",
+      "bytes": 1396
+    },
+    "iwgc_circos/axis.conf": {
+      "sha256": "bd917159297073db7371832a908702f435f25422380b056f332f65b4f4574422",
+      "bytes": 84
+    },
+    "iwgc_circos/background.conf": {
+      "sha256": "c6b92c130d0231f6c9a267d057e44b97d51801fc2bc56392378ffc20ffd18fae",
+      "bytes": 102
+    },
+    "iwgc_circos/bands.conf": {
+      "sha256": "83239aeac4c954d682650d6d0ab42891e156f1f92bad66bbc21af6c90e5b368d",
+      "bytes": 138
+    },
+    "iwgc_circos/ideogram.conf": {
+      "sha256": "e5cee4a5fffdc3a78a608d491c3ecd21b9a76f5671b44a5c874da4ea734cc64a",
+      "bytes": 378
+    },
+    "iwgc_circos/ideogram.label.conf": {
+      "sha256": "6213a16c0abd7a3d5ee90f6454bac090305492f878c88282d1538e91ba40f6f9",
+      "bytes": 322
+    },
+    "iwgc_circos/ideogram.position.conf": {
+      "sha256": "04f55a380d0dfa8e6675ce52706e1dbee64c7b1b961555736ae73a413619fd00",
+      "bytes": 143
+    },
+    "iwgc_circos/iwgc_circos.conf": {
+      "sha256": "cba7ecbc874c221d8eb74e0e2c68d10a850db18766839ba947b29b576ad5fe90",
+      "bytes": 5938
+    },
+    "iwgc_circos/r0r1.conf": {
+      "sha256": "96d76fdad9d2229b4737a649fd69ff619cf43335ff9d4bbefac849c2167d215e",
+      "bytes": 257
+    },
+    "iwgc_circos/ticks.conf": {
+      "sha256": "4ec9a1deb2d3dd95f0ac042864e26da3515dbab01214c19a9aa2b06f272442f6",
+      "bytes": 435
+    },
+    "iwgc_circos/tmp/iwgc_circos.labeled.svg": {
+      "sha256": "579ac9819f6b9602426688affe820f7be3999262018759342e67fba3281c43fc",
+      "bytes": 12681101
+    },
+    "iwgc_circos/tmp/iwgc_circos.png": {
+      "sha256": "d1234718e26e444cca51fcd69fde976459d8bfe3bec4bbcc14c802b2e54d77a8",
+      "bytes": 1964289
+    },
+    "iwgc_circos/tmp/iwgc_circos.svg": {
+      "sha256": "6e8ae09b13a93e371f18523d7ad1d6819c0d2df61145b4f117db455ceac7f7b6",
+      "bytes": 12679158
+    },
+    "iwgc_circos_data/.placeholder": {
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "bytes": 1
+    },
+    "iwgc_circos_template.config": {
+      "sha256": "bccbd594d62fccf9bc25a4586a112b86ede0a051e6b111f4b7acc76b7e09fc16",
+      "bytes": 6760
+    },
+    "iwgc_circos_tracks.sh": {
+      "sha256": "7958435e8b336f4aa8c577752ccb7a5b515d8b1b098bab7e5d4f0b3e1b357484",
+      "bytes": 20019
+    },
+    "preprocess/EDTA.slurm": {
+      "sha256": "ef196221dc57cfe7766c8f365ff5d6429482a80f1516af926dda45c3474074cb",
+      "bytes": 650
+    },
+    "preprocess/minimap2_self_alignment.sh": {
+      "sha256": "1401ae250f2ef85f6309c498077d25489ab41922972c08b753311b2840276ea6",
+      "bytes": 1378
+    },
+    "skills/iwgc-circos/LICENSE": {
+      "sha256": "0b8984b700219d64e0cbcf15a7d94e5645af5fd0ba42be286021825ae8fce10b",
+      "bytes": 1069
+    },
+    "skills/iwgc-circos/SKILL.md": {
+      "sha256": "78ecb8ab8ccdd34f2d068d36a12280308e56498b6062d81d37cf98ab3e8196a6",
+      "bytes": 9631
+    },
+    "skills/iwgc-circos/references/inputs-and-meaning.md": {
+      "sha256": "3ee8496b9d20cdf519b92bf52163616c2281cff1df22d5b82c9bab9c01577312",
+      "bytes": 9068
+    },
+    "skills/iwgc-circos/references/verification.md": {
+      "sha256": "1a7544c54a8cd6e49bb695053e1858ca4f89b2ea69a716e6d0cdcb5f9045b1a0",
+      "bytes": 4445
+    },
+    "tests/check_render_gaps.py": {
+      "sha256": "019246c563c98dfe6495b90804c3f2ddd73bbddb743cc9d31e256cddcf94f899",
+      "bytes": 2255
+    },
+    "tests/fixtures/alignment.paf": {
+      "sha256": "cabfdbbef91faa21c80027ca45da3602b0129312d229da35377fe48f6c79f62d",
+      "bytes": 71
+    },
+    "tests/fixtures/features.bed": {
+      "sha256": "68702c8ae5dd9b0a8c9544447a723ff40c6c3df77410bc109fc851da50b68dac",
+      "bytes": 37
+    },
+    "tests/fixtures/genes.gff3": {
+      "sha256": "30b57673cf1891293afaed51ed1479b579d4e2c08abd0e47c2498ad1c8b9a197",
+      "bytes": 182
+    },
+    "tests/fixtures/genome.fa": {
+      "sha256": "7688241fd4e02cc4e24f336ec5c45aec4b295c5fb1a07293b9eeac6c24296a2a",
+      "bytes": 38
+    },
+    "tests/fixtures/links.coords": {
+      "sha256": "15a9ec39ca73372db1fed99cff4a4a5fc4cbe01ddf4361d57e0bee1491170fa8",
+      "bytes": 103
+    },
+    "tests/fixtures/ltr.pass.list": {
+      "sha256": "8846c60ab0ca122d1ab9fd685ea30df909f82f8e99675450e1e3213aac9d3a98",
+      "bytes": 161
+    },
+    "tests/fixtures/mummer.coords": {
+      "sha256": "ec9f56e0301a4d73da70b8df4b8670bbdd4641d0694c8afddc4dea6dd211eed3",
+      "bytes": 88
+    },
+    "tests/fixtures/repeats.gff3": {
+      "sha256": "ca08b40e78aa94b11943bff5dc5df5f3981cccd106556107242ba379e4c56f96",
+      "bytes": 296
+    },
+    "tests/independent_check.py": {
+      "sha256": "f85a0ccf805c863e9c6968092375f25f7a2b13d2604c6deb43a426f68c675d6c",
+      "bytes": 10824
+    },
+    "tests/reproduce_baseline.py": {
+      "sha256": "8b3cc2412024a2680c99aa83762c09e166063adc86bf987e0bba02e3410219fe",
+      "bytes": 6409
+    },
+    "tests/smoke.py": {
+      "sha256": "78ccf323c5df7c6d87a65fa0b7b1ecb4c49c2071fb9bc441ea464196570741b1",
+      "bytes": 5343
+    },
+    "tests/test_configs.py": {
+      "sha256": "4d798a432674511a727873fcbcb4ab893b2cef38272539efeee9ec935d7782e5",
+      "bytes": 4771
+    },
+    "tests/test_legend.py": {
+      "sha256": "3035262579a2183ae2f9ee2e606a05c363b05fa62eab3d96cd1f53ed3a0999a4",
+      "bytes": 1369
+    },
+    "tests/test_pipeline.py": {
+      "sha256": "ca4a5a44a8e40a81aaf46ef45e04a607866421cfc3d4c35d54c87a7ac85bdbdb",
+      "bytes": 17865
+    },
+    "tools/check_container.sh": {
+      "sha256": "594140ba56f8c5e44fe9dd3fa1169f3a11e485c8d3c1191ba51743d6010a2fdd",
+      "bytes": 3545
+    },
+    "tools/prepare_inputs.py": {
+      "sha256": "56f80209b6666bd6580efb12dd6fda5711731243e2950fdea2aede5ee3bd3bab",
+      "bytes": 5278
+    },
+    "tools/validate_skill.py": {
+      "sha256": "bd0ef84d83b95f384e8a7646fe18dc1a465ed87d6af9c5d181d3f58523ab732f",
+      "bytes": 2121
+    }
+  }
+}

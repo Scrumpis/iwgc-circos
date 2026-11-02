@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Exact post-escalation commands executed; record only. The prerequisite unit suite returned 1.
+# All other commands below returned 0. Runtime escalation was scoped to singularity exec.
+IWGC_REPO=<repo>
+IWGC_SIF=<existing-image>
+RUN_DIR=<trial>
+cd "$RUN_DIR"
+singularity exec --cleanenv --env PYTHONDONTWRITEBYTECODE=1 -B "$IWGC_REPO:$IWGC_REPO:ro" -B "$RUN_DIR:$RUN_DIR" --pwd "$IWGC_REPO" "$IWGC_SIF" python3 -m unittest discover -s tests -v > unittest.recovery.log 2>&1
+singularity exec --cleanenv --env PYTHONDONTWRITEBYTECODE=1 -B "$IWGC_REPO:$IWGC_REPO:ro" -B "$RUN_DIR:$RUN_DIR" --pwd "$IWGC_REPO" "$IWGC_SIF" python3 tests/smoke.py > smoke.log 2>&1
+singularity exec --cleanenv -B "$IWGC_REPO:$IWGC_REPO:ro" -B "$RUN_DIR:$RUN_DIR" --pwd "$RUN_DIR" "$IWGC_SIF" bash "$IWGC_REPO/iwgc_circos_tracks.sh" genome.fa -gene genes.gff3 -gc -window 4 -keep-temp -out iwgc_circos_data > tracks.log 2>&1
+singularity exec --cleanenv -B "$IWGC_REPO:$IWGC_REPO:ro" -B "$RUN_DIR:$RUN_DIR" --pwd "$RUN_DIR" "$IWGC_SIF" bash "$IWGC_REPO/create_configs.sh" -gap > config.log 2>&1
+singularity exec --cleanenv -B "$IWGC_REPO:$IWGC_REPO:ro" -B "$RUN_DIR:$RUN_DIR" --pwd "$RUN_DIR" "$IWGC_SIF" circos -conf iwgc_circos/iwgc_circos.conf -outputdir iwgc_circos/tmp > render.log 2>&1
+singularity exec --cleanenv -B "$IWGC_REPO:$IWGC_REPO:ro" -B "$RUN_DIR:$RUN_DIR" --pwd "$RUN_DIR" "$IWGC_SIF" bash "$IWGC_REPO/add_legend.sh" > labels.log 2>&1
+singularity exec --cleanenv -B "$IWGC_REPO:$IWGC_REPO:ro" -B "$RUN_DIR:$RUN_DIR" --pwd "$RUN_DIR" "$IWGC_SIF" bash -c 'samtools --version | head -n 2; bedtools --version; circos -version; gawk --version | head -n 1; python3 --version' > dependency-versions.log 2>&1

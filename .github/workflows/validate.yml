@@ -1,0 +1,32 @@
+name: Validate
+on:
+  push:
+    branches: [main, dev, 'feature/**', 'fix/**', 'audit/**']
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fast:
+    name: fast
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - run: sudo apt-get update && sudo apt-get install -y bedtools samtools gawk circos librsvg2-bin python3-yaml shellcheck
+      - name: Check every shell script
+        run: |
+          for script in iwgc_circos_tracks.sh create_configs.sh add_legend.sh preprocess/minimap2_self_alignment.sh tools/check_container.sh; do
+            bash -n "$script"
+          done
+      - run: python3 tests/check_workflows.py
+      - run: python3 tools/validate_skill.py
+      - run: python3 -m unittest discover -s tests -v
+      - run: python3 tests/smoke.py --output /tmp/iwgc-smoke
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke
+          path: /tmp/iwgc-smoke

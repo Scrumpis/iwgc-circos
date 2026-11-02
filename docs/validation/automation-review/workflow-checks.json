@@ -1,0 +1,92 @@
+{
+  "status": "passed",
+  "static_contract": "passed",
+  "guard_cases": [
+    {
+      "case": "approved stable new version",
+      "exit_code": 0,
+      "expected": "accept"
+    },
+    {
+      "case": "invalid stable tag: v0.4.0-rc.1",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "invalid stable tag: v00.4.0",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "invalid stable tag: v0.4",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "invalid stable tag: v0.4.0+build",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "invalid stable tag: v0.4.0/extra",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "VERSION mismatch",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "skill version mismatch",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "checkout identity mismatch",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "initial registry refusal: 200",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "pre-push registry refusal: 200",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "initial registry refusal: 500",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "pre-push registry refusal: 500",
+      "exit_code": 1,
+      "expected": "reject"
+    },
+    {
+      "case": "initial registry network error",
+      "exit_code": 28,
+      "expected": "reject"
+    },
+    {
+      "case": "pre-push registry network error",
+      "exit_code": 28,
+      "expected": "reject"
+    },
+    {
+      "case": "new version push invocation (fake Docker)",
+      "exit_code": 0,
+      "expected": "accept"
+    },
+    {
+      "case": "tag outside approved main history",
+      "exit_code": 1,
+      "expected": "reject"
+    }
+  ],
+  "scope": "offline workflow shell/control checks; no GitHub runner, Docker build, approval or registry publication"
+}

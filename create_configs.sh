@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export LC_ALL=C
 
 # Defaults
 TEMPLATE="iwgc_circos_template.config"
@@ -10,11 +11,15 @@ IDEO=""
 # Parse args (single-dash flags)
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -template|-outdir|-ideogram)
+      [[ $# -ge 2 && "$2" != -* ]] || { echo "[ERROR] $1 requires a value" >&2; exit 1; };;
+  esac
+  case "$1" in
     -template) TEMPLATE="$2"; shift 2;;
     -outdir)   OUTDIR="$2"; shift 2;;
     -ideogram) IDEO="$2"; shift 2;;   # optional override; default set after OUTFILE
     -gap)      GAP=true; shift;;
-    -h|-help)
+    -h|-help|--help)
       echo "Usage: $0 [-template FILE] [-outdir DIR] [-ideogram FILE] [-gap]"
       exit 0;;
     *)
@@ -24,6 +29,10 @@ done
 
 [[ -f "$TEMPLATE" ]] || { echo "[ERROR] Template not found: $TEMPLATE" >&2; exit 1; }
 mkdir -p "$OUTDIR"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+for include in ideogram.conf ideogram.position.conf ideogram.label.conf bands.conf; do
+  [[ -f "$OUTDIR/$include" ]] || cp "$SCRIPT_DIR/iwgc_circos/$include" "$OUTDIR/$include"
+done
 OUTFILE="${OUTDIR%/}/iwgc_circos.conf"
 
 # Default ideogram path: $OUTDIR/ideogram.conf unless -ideogram is provided
@@ -36,7 +45,7 @@ echo "[INFO] ideogram target: $IDEO"
 escape_sed_repl() { printf '%s' "$1" | sed -e 's/[&|\\]/\\&/g'; }
 
 block_file_pattern() {
-  awk 'match($0, /^[[:space:]]*file[[:space:]]*=[[:space:]]*(.*)$/, a){print a[1]}' "$1" | head -n1
+  gawk 'match($0, /^[[:space:]]*file[[:space:]]*=[[:space:]]*(.*)$/, a){print a[1]}' "$1" | head -n1
 }
 
 # Return 0 if any match exists (safe under set -e)
@@ -45,28 +54,31 @@ pattern_has_match() {
   pat="${pat%%#*}"
   # remove quotes and trim
   pat="$(echo "$pat" | sed -E 's/^["'\'' ]+|["'\'' ]+$//g')"
-  if compgen -G "$pat" >/dev/null 2>&1; then
-    return 0
-  else
-    return 1
-  fi
+  local file
+  while IFS= read -r file; do
+    [[ -s "$file" && -f "$file" ]] && return 0
+  done < <(compgen -G "$pat" || true)
+  return 1
 }
 
 # Resolve a glob to one concrete path (first in lexicographic order). Prints "" if none (safe).
 resolve_first_match() {
   local pat="$1"
-  local out
-  out="$(compgen -G "$pat" 2>/dev/null || true)"
-  if [[ -n "$out" ]]; then
-    printf '%s\n' "$out" | sort | head -n1
-  else
-    printf '%s' ""
+  local file
+  local matches=()
+  while IFS= read -r file; do
+    [[ -s "$file" && -f "$file" ]] && matches+=("$file")
+  done < <(compgen -G "$pat" || true)
+  if (( ${#matches[@]} > 1 )); then
+    echo "[ERROR] Ambiguous pattern: $pat (${#matches[@]} files). Combine inputs explicitly or use a clean data directory." >&2
+    return 1
   fi
+  printf '%s' "${matches[0]:-}"
 }
 
 rewrite_block_file_line() {
   local blk="$1" new="$2"
-  awk -v new="$new" '
+  gawk -v new="$new" '
     BEGIN{done=0}
     /^[[:space:]]*file[[:space:]]*=/ && !done { sub(/=.*/, "= " new); print; done=1; next }
     { print }
@@ -89,8 +101,8 @@ compute_tick_major() {
   fi
   [[ -f "$karyo" ]] || { echo "[ERROR] Karyotype not found." >&2; return 1; }
 
-  awk '
-    $1=="chr" && $3 !~ /_T[0-9]+/ {
+  gawk '
+    $1=="chr" {
       len = $6 - $5
       total += len
       N += 1
@@ -150,11 +162,11 @@ write_ticks_conf() {
 
   # minor = major / 2
   local minor
-  minor="$(awk -v m="$major" 'BEGIN{v=m/2; s=sprintf("%.6f",v); sub(/\.?0+$/,"",s); print s}')"
+  minor="$(gawk -v m="$major" 'BEGIN{v=m/2; s=sprintf("%.6f",v); sub(/\.?0+$/,"",s); print s}')"
 
   # clean major as well (already clean, but ensure)
   local major_clean
-  major_clean="$(awk -v m="$major" 'BEGIN{s=sprintf("%.6f",m); sub(/\.?0+$/,"",s); print s}')"
+  major_clean="$(gawk -v m="$major" 'BEGIN{s=sprintf("%.6f",m); sub(/\.?0+$/,"",s); print s}')"
 
   echo "[INFO] Using karyotype for ticks: ${KARYOTYPE:-auto}"
   echo "[INFO] Auto tick spacing: major=${major_clean}u, minor=${minor}u (${genomeGb} Gbp; ${nchr} chr)"
@@ -213,10 +225,23 @@ if [[ -z "${kary_file// /}" ]]; then
   exit 1
 fi
 echo "[INFO] Resolved karyotype: $kary_file"
+gawk '
+  /^[[:space:]]*(#|$)/ {next}
+  $1=="chr" {
+    if(NF!=7 || $2!="-" || $5!~/^[0-9]+$/ || $6!~/^[0-9]+$/ || $6<=$5 || ($3 in hi)) bad=1
+    lo[$3]=$5; hi[$3]=$6; n++; next
+  }
+  $1=="band" {bands++; id[bands]=$2; a[bands]=$5; b[bands]=$6; if(NF!=7 || $5!~/^[0-9]+$/ || $6!~/^[0-9]+$/)bad=1; next}
+  {bad=1}
+  END {
+    for(i=1;i<=bands;i++) if(!(id[i] in hi) || a[i]<lo[id[i]] || b[i]>hi[id[i]] || b[i]<a[i])bad=1
+    exit (bad || n==0)
+  }' "$kary_file" || { echo "[ERROR] Malformed karyotype or band coordinates: $kary_file" >&2; exit 1; }
 
-# --- Evaluate ${chrs} from the resolved karyotype (skip _T[0-9]+) ---
+
+# --- Evaluate ${chrs} from the resolved karyotype (chromosome records only) ---
 CHRS_EVAL="$(
-  awk '$1=="chr" && $0!~/^#/ && $3 !~ /_T[0-9]+/ {print $3}' "$kary_file" \
+  gawk '$1=="chr" && $0!~/^#/ {print $3}' "$kary_file" \
   | paste -sd';' - || true
 )"
 if [[ -z "${CHRS_EVAL// /}" ]]; then
@@ -231,14 +256,14 @@ sed -e "s|\${chrs}|$(escape_sed_repl "$CHRS_EVAL")|g" \
     "$TEMPLATE" > "$SUBBED"
 
 # Replace only the first karyotype line with the resolved concrete path
-awk -v newk="$kary_file" '
+gawk -v newk="$kary_file" '
   BEGIN{done=0}
   /^[[:space:]]*karyotype[[:space:]]*=/ && !done { print "karyotype   = " newk; done=1; next }
   { print }
 ' "$SUBBED" > "$SUBBED.k" && mv "$SUBBED.k" "$SUBBED"
 
 # --- Split into pre / plots body / post (exclude <plots> tags themselves) ---
-awk -v PRE="$PRE" -v BODY="$PLOTS_BODY" -v POST="$POST" '
+gawk -v PRE="$PRE" -v BODY="$PLOTS_BODY" -v POST="$POST" '
   BEGIN{sec="pre"}
   /<plots>/{sec="body"; next}
   /<\/plots>/{sec="post"; next}
@@ -246,7 +271,7 @@ awk -v PRE="$PRE" -v BODY="$PLOTS_BODY" -v POST="$POST" '
 ' "$SUBBED"
 
 # --- Extract each <plot>...</plot> block to its own file ---
-awk -v dir="$BLOCK_DIR" '
+gawk -v dir="$BLOCK_DIR" '
   BEGIN{inblock=0; n=0}
   /<plot>/{inblock=1; n++; fn=sprintf("%s/block_%03d.txt", dir, n); print > fn; next}
   /<\/plot>/{print >> fn; inblock=0; next}
@@ -273,9 +298,9 @@ DYN_REGEX=(
 
 # Geometry
 UNIT=0.01
-TRACK_WIDTH=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 4*u}')   # 0.04r
-TRACK_SPACING=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 3*u}') # 0.03r
-LINKS_GAP=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 0.5*u}')   # 0.005r
+TRACK_WIDTH=$(gawk -v u="$UNIT" 'BEGIN{printf "%.4f", 4*u}')   # 0.04r
+TRACK_SPACING=$(gawk -v u="$UNIT" 'BEGIN{printf "%.4f", 3*u}') # 0.03r
+LINKS_GAP=$(gawk -v u="$UNIT" 'BEGIN{printf "%.4f", 0.5*u}')   # 0.005r
 
 # Gather blocks (nullglob-safe; no early exit)
 shopt -s nullglob
@@ -318,10 +343,10 @@ for i in "${!DYN_KEYS[@]}"; do
   if [[ "${HAS_BLOCK[$i]}" -eq 1 ]]; then
     blk="${KEY_TO_BLOCK[${DYN_KEYS[$i]}]}"
     R1_DEFAULT[$i]="$(
-      awk 'match($0,/^[[:space:]]*r1[[:space:]]*=[[:space:]]*([0-9.]+)r/,a){print a[1]; exit}' "$blk"
+      gawk 'match($0,/^[[:space:]]*r1[[:space:]]*=[[:space:]]*([0-9.]+)r/,a){print a[1]; exit}' "$blk"
     )"
     R0_DEFAULT[$i]="$(
-      awk 'match($0,/^[[:space:]]*r0[[:space:]]*=[[:space:]]*([0-9.]+)r/,a){print a[1]; exit}' "$blk"
+      gawk 'match($0,/^[[:space:]]*r0[[:space:]]*=[[:space:]]*([0-9.]+)r/,a){print a[1]; exit}' "$blk"
     )"
   fi
 done
@@ -386,7 +411,7 @@ else
     fi
   done
   if [[ "$last_kept_before" -ge 0 && -n "${R0_DEFAULT[$last_kept_before]}" ]]; then
-    anchor_r1="$(awk -v r0="${R0_DEFAULT[$last_kept_before]}" -v s="$TRACK_SPACING" 'BEGIN{printf "%.4f", r0 - s}')"
+    anchor_r1="$(gawk -v r0="${R0_DEFAULT[$last_kept_before]}" -v s="$TRACK_SPACING" 'BEGIN{printf "%.4f", r0 - s}')"
   fi
 
   cur_r1="$anchor_r1"
@@ -412,16 +437,25 @@ else
 
     # assign packed radii
     r1="$cur_r1"
-    r0=$(awk -v r1="$r1" -v w="$TRACK_WIDTH" 'BEGIN{printf "%.4f", r1 - w}')
-    awk -v newr1="$r1" -v newr0="$r0" '
+    r0=$(gawk -v r1="$r1" -v w="$TRACK_WIDTH" 'BEGIN{printf "%.4f", r1 - w}')
+    gawk -v newr1="$r1" -v newr0="$r0" '
       BEGIN{r1done=0; r0done=0}
       /^[[:space:]]*r1[[:space:]]*=[[:space:]]*[0-9.]+r/ && !r1done { sub(/[0-9.]+r/, sprintf("%.4fr", newr1)); r1done=1 }
       /^[[:space:]]*r0[[:space:]]*=[[:space:]]*[0-9.]+r/ && !r0done { sub(/[0-9.]+r/, sprintf("%.4fr", newr0)); r0done=1 }
       {print}
     ' "$blk" > "$blk.tmp" && mv "$blk.tmp" "$blk"
 
-    cur_r1=$(awk -v r0="$r0" -v s="$TRACK_SPACING" 'BEGIN{printf "%.4f", r0 - s}')
+    cur_r1=$(gawk -v r0="$r0" -v s="$TRACK_SPACING" 'BEGIN{printf "%.4f", r0 - s}')
     INNERMOST_R0="$r0"
+  done
+fi
+
+# If every present track precedes the first missing one, no repack loop ran.
+if [[ -z "$INNERMOST_R0" ]]; then
+  for i in "${!DYN_KEYS[@]}"; do
+    if [[ "${HAS_BLOCK[$i]}" -eq 1 && "${PRESENT[$i]}" -eq 1 ]]; then
+      INNERMOST_R0="${R0_DEFAULT[$i]}"
+    fi
   done
 fi
 
@@ -445,13 +479,13 @@ apply_compact_layout() {
 
   # Use compact spacing = 0.02r
   local COMPACT_SPACING
-  COMPACT_SPACING=$(awk -v u="$UNIT" 'BEGIN{printf "%.4f", 2*u}')  # 0.02r
+  COMPACT_SPACING=$(gawk -v u="$UNIT" 'BEGIN{printf "%.4f", 2*u}')  # 0.02r
   local BASE_W="$TRACK_WIDTH"
 
   # Provisional inner r0 using base width + compact spacing
   local PROV_INNER_R0
   PROV_INNER_R0="$(
-    awk -v top="$TOP_R1" -v w="$BASE_W" -v s="$COMPACT_SPACING" -v n="$n" '
+    gawk -v top="$TOP_R1" -v w="$BASE_W" -v s="$COMPACT_SPACING" -v n="$n" '
       BEGIN{
         r1=top
         for(i=1;i<=n;i++){
@@ -465,7 +499,7 @@ apply_compact_layout() {
   # If inner r0 too far out (>0.50), enlarge each track height evenly
   local WIDTH_ADD_PER_TRACK
   WIDTH_ADD_PER_TRACK="$(
-    awk -v r0="$PROV_INNER_R0" -v tgt=0.50 -v n="$n" '
+    gawk -v r0="$PROV_INNER_R0" -v tgt=0.50 -v n="$n" '
       BEGIN{
         d = r0 - tgt
         if (d > 0 && n > 0) printf "%.6f", d/n; else printf "0"
@@ -473,7 +507,7 @@ apply_compact_layout() {
   )"
 
   local NEW_WIDTH
-  NEW_WIDTH="$(awk -v w="$BASE_W" -v a="$WIDTH_ADD_PER_TRACK" 'BEGIN{printf "%.6f", w + a}')"
+  NEW_WIDTH="$(gawk -v w="$BASE_W" -v a="$WIDTH_ADD_PER_TRACK" 'BEGIN{printf "%.6f", w + a}')"
 
   # Re-pack present dynamic tracks with COMPACT_SPACING and NEW_WIDTH
   local cur_r1="$TOP_R1"
@@ -493,15 +527,15 @@ apply_compact_layout() {
 
     local r1 r0
     r1="$cur_r1"
-    r0=$(awk -v r1="$r1" -v w="$NEW_WIDTH" 'BEGIN{printf "%.6f", r1 - w}')
-    awk -v newr1="$r1" -v newr0="$r0" '
+    r0=$(gawk -v r1="$r1" -v w="$NEW_WIDTH" 'BEGIN{printf "%.6f", r1 - w}')
+    gawk -v newr1="$r1" -v newr0="$r0" '
       BEGIN{r1done=0; r0done=0}
       /^[[:space:]]*r1[[:space:]]*=[[:space:]]*[0-9.]+r/ && !r1done { sub(/[0-9.]+r/, sprintf("%.4fr", newr1)); r1done=1 }
       /^[[:space:]]*r0[[:space:]]*=[[:space:]]*[0-9.]+r/ && !r0done { sub(/[0-9.]+r/, sprintf("%.4fr", newr0)); r0done=1 }
       {print}
     ' "$blk" > "$blk.tmp" && mv "$blk.tmp" "$blk"
 
-    cur_r1=$(awk -v r0="$r0" -v s="$COMPACT_SPACING" 'BEGIN{printf "%.6f", r0 - s}')
+    cur_r1=$(gawk -v r0="$r0" -v s="$COMPACT_SPACING" 'BEGIN{printf "%.6f", r0 - s}')
     INNERMOST_R0="$r0"
   done
 
@@ -531,7 +565,7 @@ PLOTS_REBUILT="$WORKDIR/plots_rebuilt.txt"
 cat "$PRE" "$PLOTS_REBUILT" "$POST" > "$WORKDIR/stitched.conf"
 
 # === Resolve <links> file and adjust radius (or drop links if no file) ===
-links_pat="$(awk '
+links_pat="$(gawk '
   BEGIN{inlinks=0}
   /<links>/{inlinks=1; next}
   /<\/links>/{inlinks=0}
@@ -547,7 +581,7 @@ if [[ -n "${links_pat// /}" ]]; then
   links_file="$(resolve_first_match "$links_pat")"
   if [[ -z "${links_file// /}" ]]; then
     # No links file -> drop entire <links>...</links> block
-    awk '
+    gawk '
       BEGIN{inlinks=0}
       /<links>/{inlinks=1; next}
       /<\/links>/{inlinks=0; next}
@@ -557,7 +591,7 @@ if [[ -n "${links_pat// /}" ]]; then
     cp "$WORKDIR/stitched.conf" "$OUTFILE"
   else
     # Rewrite file= and adjust radius if INNERMOST_R0 known
-    awk -v newfile="$links_file" -v have_r0="${INNERMOST_R0:-}" -v gap="$LINKS_GAP" '
+    gawk -v newfile="$links_file" -v have_r0="${INNERMOST_R0:-}" -v gap="$LINKS_GAP" '
       BEGIN{inlinks=0; file_done=0; radius_done=0}
       /<links>/{inlinks=1}
       /<\/links>/{inlinks=0}
@@ -589,8 +623,8 @@ if $GAP; then
     echo "[INFO] using karyotype: $kary_file"
 
     # Robustly derive FIRST (first 'chr' row col3) and LAST (last 'chr' row col3)
-    FIRST_ID="$(awk 'BEGIN{IGNORECASE=1} {sub(/\r$/,"")} $1=="chr" && $0!~/^#/ && NF>=3 {print $3; exit}' "$kary_file" || true)"
-    LAST_ID="$(awk  'BEGIN{IGNORECASE=1} {sub(/\r$/,"")} $1=="chr" && $0!~/^#/ && NF>=3 {id=$3} END{if(id!="") print id}' "$kary_file" || true)"
+    FIRST_ID="$(gawk 'BEGIN{IGNORECASE=1} {sub(/\r$/,"")} $1=="chr" && $0!~/^#/ && NF>=3 {print $3; exit}' "$kary_file" || true)"
+    LAST_ID="$(gawk  'BEGIN{IGNORECASE=1} {sub(/\r$/,"")} $1=="chr" && $0!~/^#/ && NF>=3 {id=$3} END{if(id!="") print id}' "$kary_file" || true)"
 
     if [[ -z "${FIRST_ID:-}" || -z "${LAST_ID:-}" ]]; then
       echo "[ERROR] Could not derive chromosome IDs from: $kary_file" >&2
@@ -609,7 +643,7 @@ EOF
     )"
 
     # Idempotent patch: replace or insert inside <spacing>. If no <spacing>, append a minimal one.
-    awk -v block="$pairwise_block" '
+    gawk -v block="$pairwise_block" '
       { sub(/\r$/, "", $0) }                               # normalize CRLF
       BEGIN{ in_spacing=0; in_pair=0; replaced=0; saw_spacing=0 }
       /<spacing[^>]*>/ { in_spacing=1; saw_spacing=1 }
@@ -638,7 +672,7 @@ EOF
       echo "[OK] Patched $IDEO with pairwise: ${LAST_ID:-NA} ${FIRST_ID:-NA}"
     else
       echo "[WARN] Pairwise block not found after patch. Dumping <spacing> for debug:"
-      awk '{
+      gawk '{
         sub(/\r$/,"",$0)
         if ($0 ~ /<spacing[^>]*>/) {show=1}
         if (show) print

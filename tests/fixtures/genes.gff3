@@ -1,0 +1,5 @@
+##gff-version 3
+Chr1	synthetic	gene	2	4	.	+	.	ID=a
+Chr1	synthetic	gene	5	8	.	-	.	ID=b
+Chr1	synthetic	gene	10	11	.	+	.	ID=c
+Chr1	synthetic	mRNA	1	12	.	+	.	ID=transcript;Parent=gene-a

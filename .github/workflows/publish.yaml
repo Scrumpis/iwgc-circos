@@ -1,0 +1,84 @@
+# Stable releases only. Required reviewers MUST be configured on dockerhub-release.
+# Builds and tests the exact image before pushing that version; never moves latest.
+name: Publish versioned image
+on:
+  push:
+    tags: ['v[0-9]*']
+permissions:
+  contents: read
+concurrency:
+  group: dockerhub-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  IMAGE: scrumpis/iwgc-circos
+jobs:
+  publish:
+    name: publish
+    if: vars.DOCKERHUB_PUBLISH_ENABLED == 'true'
+    runs-on: ubuntu-22.04
+    environment: dockerhub-release
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check version, reviewed ancestry, and new registry tag
+        run: |
+          [[ "$GITHUB_REF_NAME" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || exit 1
+          version=$(cat VERSION)
+          [[ "v$version" = "$GITHUB_REF_NAME" ]] || { echo 'Tag/VERSION mismatch' >&2; exit 1; }
+          python3 tools/validate_skill.py
+          [[ "$(git rev-parse HEAD)" = "$GITHUB_SHA" ]] || { echo 'Checkout/SHA mismatch' >&2; exit 1; }
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          git merge-base --is-ancestor "$GITHUB_SHA" refs/remotes/origin/main
+          code=$(curl --silent --show-error --retry 3 --connect-timeout 15 --max-time 60 \
+            -o /dev/null -w '%{http_code}' "https://hub.docker.com/v2/repositories/$IMAGE/tags/$GITHUB_REF_NAME")
+          [[ "$code" = 404 ]] || { echo "Tag exists or registry lookup failed ($code); refusing publication" >&2; exit 1; }
+      - name: Build the release image without cache
+        run: |
+          docker build --pull --no-cache --platform linux/amd64 --progress=plain \
+            --label "org.opencontainers.image.version=$GITHUB_REF_NAME" \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+            -t "$IMAGE:$GITHUB_REF_NAME" .
+          mkdir -p "$RUNNER_TEMP/iwgc-validation"
+          docker image inspect "$IMAGE:$GITHUB_REF_NAME" > "$RUNNER_TEMP/image-inspect.json"
+      - name: Test that exact image before publishing
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -e PYTHONDONTWRITEBYTECODE=1 \
+            -v "$PWD":/repo:ro -v "$RUNNER_TEMP/iwgc-validation":/validation -w /repo \
+            "$IMAGE:$GITHUB_REF_NAME" bash tools/check_container.sh /validation
+      - name: Push the tested version tag
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          # Recheck after the build/test interval. Registry immutability is also
+          # required: a lookup alone cannot prevent an external publisher race.
+          code=$(curl --silent --show-error --retry 3 --connect-timeout 15 --max-time 60 \
+            -o /dev/null -w '%{http_code}' "https://hub.docker.com/v2/repositories/$IMAGE/tags/$GITHUB_REF_NAME")
+          [[ "$code" = 404 ]] || { echo "Tag exists or registry lookup failed ($code); refusing publication" >&2; exit 1; }
+          config=$(mktemp -d "$RUNNER_TEMP/docker-login.XXXXXX")
+          trap 'docker --config "$config" logout || true; rm -rf "$config"' EXIT
+          printf '%s' "$DOCKERHUB_TOKEN" | docker --config "$config" login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker --config "$config" push "$IMAGE:$GITHUB_REF_NAME"
+      - name: Record the image identity and versioned skill
+        run: |
+          digest=$(docker image inspect --format '{{index .RepoDigests 0}}' "$IMAGE:$GITHUB_REF_NAME")
+          test -n "$digest"
+          tar -czf "$RUNNER_TEMP/iwgc-circos-skill-$GITHUB_REF_NAME.tar.gz" -C skills iwgc-circos
+          skill=$(sha256sum "$RUNNER_TEMP/iwgc-circos-skill-$GITHUB_REF_NAME.tar.gz" | cut -d' ' -f1)
+          printf '{"tag":"%s","commit":"%s","image":"%s","skill_sha256":"%s"}\n' \
+            "$GITHUB_REF_NAME" "$GITHUB_SHA" "$digest" "$skill" > "$RUNNER_TEMP/release-manifest.json"
+          printf 'Published tested image: `%s`\nCommit: `%s`\n' "$digest" "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-evidence
+          path: |
+            ${{ runner.temp }}/iwgc-validation
+            ${{ runner.temp }}/image-inspect.json
+            ${{ runner.temp }}/release-manifest.json
+            ${{ runner.temp }}/iwgc-circos-skill-*.tar.gz
+          retention-days: 90

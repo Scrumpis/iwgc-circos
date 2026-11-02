@@ -1,0 +1,272 @@
+{
+  "inspection": "Read-only GitHub connector GET; no settings modified. Snapshot of visible rulesets only; environment reviewers, secrets, variable and Docker Hub immutability not verified.",
+  "snapshots": {
+    "https://api.github.com/repos/Scrumpis/iwgc-circos/rulesets/26406147": {
+      "id": 26406147,
+      "name": "protect_main",
+      "target": "branch",
+      "source_type": "Repository",
+      "source": "Scrumpis/iwgc-circos",
+      "enforcement": "active",
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/heads/main"
+          ]
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        },
+        {
+          "type": "pull_request",
+          "parameters": {
+            "required_approving_review_count": 0,
+            "dismiss_stale_reviews_on_push": false,
+            "required_reviewers": [],
+            "require_code_owner_review": false,
+            "require_last_push_approval": false,
+            "required_review_thread_resolution": false,
+            "require_extra_approval_for_unattributed_changes": true,
+            "allowed_merge_methods": [
+              "merge",
+              "squash",
+              "rebase"
+            ]
+          }
+        }
+      ],
+      "node_id": "RRS_lACqUmVwb3NpdG9yec48Eu0fzgGS7QM",
+      "created_at": "2026-11-02T18:00:40.629-05:00",
+      "updated_at": "2026-11-02T18:00:40.687-05:00",
+      "bypass_actors": [],
+      "current_user_can_bypass": "never",
+      "_links": {
+        "self": {
+          "href": "https://api.github.com/repos/Scrumpis/iwgc-circos/rulesets/26406147"
+        },
+        "html": {
+          "href": "https://github.com/Scrumpis/iwgc-circos/rules/26406147"
+        }
+      }
+    },
+    "https://api.github.com/repos/Scrumpis/iwgc-circos/rulesets/26406246": {
+      "id": 26406246,
+      "name": "protect_tags",
+      "target": "tag",
+      "source_type": "Repository",
+      "source": "Scrumpis/iwgc-circos",
+      "enforcement": "active",
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/tags/v*"
+          ]
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        },
+        {
+          "type": "creation"
+        },
+        {
+          "type": "update"
+        }
+      ],
+      "node_id": "RRS_lACqUmVwb3NpdG9yec48Eu0fzgGS7WY",
+      "created_at": "2026-11-02T18:03:04.337-05:00",
+      "updated_at": "2026-11-02T18:03:04.403-05:00",
+      "bypass_actors": [
+        {
+          "actor_id": 5,
+          "actor_type": "RepositoryRole",
+          "bypass_mode": "always"
+        }
+      ],
+      "current_user_can_bypass": "always",
+      "_links": {
+        "self": {
+          "href": "https://api.github.com/repos/Scrumpis/iwgc-circos/rulesets/26406246"
+        },
+        "html": {
+          "href": "https://github.com/Scrumpis/iwgc-circos/rules/26406246"
+        }
+      }
+    },
+    "https://api.github.com/repos/Scrumpis/dndsR/rulesets/26349238": {
+      "id": 26349238,
+      "name": "protect_dev",
+      "target": "branch",
+      "source_type": "Repository",
+      "source": "Scrumpis/dndsR",
+      "enforcement": "active",
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/heads/dev"
+          ]
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        }
+      ],
+      "node_id": "RRS_lACqUmVwb3NpdG9yec43RtkizgGSDrY",
+      "created_at": "2026-11-02T02:10:54.988-05:00",
+      "updated_at": "2026-11-02T02:10:55.014-05:00",
+      "bypass_actors": [],
+      "current_user_can_bypass": "never",
+      "_links": {
+        "self": {
+          "href": "https://api.github.com/repos/Scrumpis/dndsR/rulesets/26349238"
+        },
+        "html": {
+          "href": "https://github.com/Scrumpis/dndsR/rules/26349238"
+        }
+      }
+    },
+    "https://api.github.com/repos/Scrumpis/dndsR/rulesets/12110894": {
+      "id": 12110894,
+      "name": "protect_main",
+      "target": "branch",
+      "source_type": "Repository",
+      "source": "Scrumpis/dndsR",
+      "enforcement": "active",
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/heads/main"
+          ]
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        },
+        {
+          "type": "pull_request",
+          "parameters": {
+            "required_approving_review_count": 0,
+            "dismiss_stale_reviews_on_push": true,
+            "required_reviewers": [],
+            "require_code_owner_review": false,
+            "require_last_push_approval": false,
+            "required_review_thread_resolution": true,
+            "require_extra_approval_for_unattributed_changes": true,
+            "allowed_merge_methods": [
+              "merge",
+              "squash",
+              "rebase"
+            ]
+          }
+        },
+        {
+          "type": "required_status_checks",
+          "parameters": {
+            "strict_required_status_checks_policy": true,
+            "do_not_enforce_on_create": false,
+            "required_status_checks": [
+              {
+                "context": "R-CMD-check"
+              },
+              {
+                "context": "validate",
+                "integration_id": 15368
+              },
+              {
+                "context": "conda",
+                "integration_id": 15368
+              },
+              {
+                "context": "build-and-test",
+                "integration_id": 15368
+              }
+            ]
+          }
+        }
+      ],
+      "node_id": "RRS_lACqUmVwb3NpdG9yec43RtkizgC4zC4",
+      "created_at": "2026-01-24T14:35:25.072-05:00",
+      "updated_at": "2026-11-02T02:09:23.474-05:00",
+      "bypass_actors": [],
+      "current_user_can_bypass": "never",
+      "_links": {
+        "self": {
+          "href": "https://api.github.com/repos/Scrumpis/dndsR/rulesets/12110894"
+        },
+        "html": {
+          "href": "https://github.com/Scrumpis/dndsR/rules/12110894"
+        }
+      }
+    },
+    "https://api.github.com/repos/Scrumpis/dndsR/rulesets/26349426": {
+      "id": 26349426,
+      "name": "protect_tags",
+      "target": "tag",
+      "source_type": "Repository",
+      "source": "Scrumpis/dndsR",
+      "enforcement": "active",
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/tags/v*"
+          ]
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        },
+        {
+          "type": "creation"
+        },
+        {
+          "type": "update"
+        }
+      ],
+      "node_id": "RRS_lACqUmVwb3NpdG9yec43RtkizgGSD3I",
+      "created_at": "2026-11-02T02:16:31.381-05:00",
+      "updated_at": "2026-11-02T02:16:31.427-05:00",
+      "bypass_actors": [
+        {
+          "actor_id": 91402988,
+          "actor_type": "User",
+          "bypass_mode": "always"
+        }
+      ],
+      "current_user_can_bypass": "always",
+      "_links": {
+        "self": {
+          "href": "https://api.github.com/repos/Scrumpis/dndsR/rulesets/26349426"
+        },
+        "html": {
+          "href": "https://github.com/Scrumpis/dndsR/rules/26349426"
+        }
+      }
+    }
+  }
+}
