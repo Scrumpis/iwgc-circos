@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - run: sudo apt-get update && sudo apt-get install -y bedtools samtools gawk circos librsvg2-bin python3-yaml shellcheck
+      - run: sudo apt-get update && sudo apt-get install -y bedtools samtools gawk circos liblist-moreutils-perl librsvg2-bin python3-yaml shellcheck
       - name: Check every shell script
         run: |
           for script in iwgc_circos_tracks.sh create_configs.sh add_legend.sh preprocess/minimap2_self_alignment.sh tools/check_container.sh; do

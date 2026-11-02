@@ -19,11 +19,14 @@ ROOT=Path(__file__).resolve().parents[1]
 NS='{http://www.w3.org/2000/svg}'
 
 
-def run(work, args, log):
+def run(work, args, log, required_outputs=()):
     p=subprocess.run(list(map(str,args)),cwd=work,text=True,capture_output=True,timeout=120)
     log.append(dict(argv=list(map(str,args)),rc=p.returncode,stdout=p.stdout,stderr=p.stderr))
     if p.returncode:
         raise RuntimeError(f'{args[0]} exited {p.returncode}:\n{p.stdout}\n{p.stderr}')
+    missing=[str(path) for path in required_outputs if not Path(path).is_file() or not Path(path).stat().st_size]
+    if missing:
+        raise RuntimeError(f'{args[0]} exited 0 without required output: {", ".join(missing)}\n{p.stdout}\n{p.stderr}')
     return p
 
 
@@ -63,10 +66,10 @@ def smoke(work, legend=True):
         run(work,['bash',ROOT/'iwgc_circos_tracks.sh','genome.fa','-gene','genes.gff3','-repeat','repeats.gff3',
                   '-intact','repeats.gff3','-ltr-dating','ages.list','-links','links.coords','-gc','-window',40000,'-out','iwgc_circos_data'],log)
         run(work,['bash',ROOT/'create_configs.sh','-gap'],log)
-        run(work,['circos','-conf','iwgc_circos/iwgc_circos.conf','-outputdir','iwgc_circos/tmp'],log)
         svg=work/'iwgc_circos/tmp/iwgc_circos.svg'
-        root,groups=check_svg(svg,6)
         png=work/'iwgc_circos/tmp/iwgc_circos.png'
+        run(work,['circos','-conf','iwgc_circos/iwgc_circos.conf','-outputdir','iwgc_circos/tmp'],log,required_outputs=(svg,png))
+        root,groups=check_svg(svg,6)
         data=png.read_bytes(); assert data[:8]==b'\x89PNG\r\n\x1a\n'
         assert struct.unpack('>II',data[16:24])==(3000,3000)
         if legend:

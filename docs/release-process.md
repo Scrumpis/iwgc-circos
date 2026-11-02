@@ -5,8 +5,14 @@ initial release. Temporary work uses `feature/*`, `fix/*` or `audit/*`, includin
 the current `audit/release-candidate-0.4.0` branch. The default branch stays `main`.
 This follows dndsR's branch, environment and versioned publication conventions.
 
+First CI update: the initial push of `a5940bc` ran both checking workflows;
+both failed on missing environment dependencies. See the
+[first-run diagnosis and bounded corrections](validation/ci-first-run.md).
+The corrected clean Docker build still needs its next authorized push/run.
+
 The workflows are prepared locally. No push, merge, tag, publication or live
-settings change was made by this audit. The candidate remains `0.4.0-rc.1`:
+settings change was made by the automation audit. The paragraphs below record
+that pre-CI setup state. The candidate remains `0.4.0-rc.1`:
 **ready for its first CI run after an authorized freeze/push, not for release**.
 The clean image has not been built here; the recorded SVG/native rendering
 mismatch remains a required failing gate until resolved in the new image.

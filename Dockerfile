@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # direct tarball download or unversioned CPAN installations.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates wget bzip2 git curl \
-    python3 gawk samtools bedtools circos minimap2 librsvg2-bin fontconfig \
+    python3 gawk samtools bedtools circos liblist-moreutils-perl minimap2 librsvg2-bin fontconfig \
     && rm -rf /var/lib/apt/lists/*
 
 # Make the exact licensed fallback available to SVG rasterizers as well as Circos.
@@ -23,11 +23,13 @@ CMD ["bash"]
 FROM core AS full
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip python3-setuptools mummer trf cd-hit ncbi-blast+ \
-    gnuplot r-base r-cran-ggplot2 \
+    gnuplot r-base r-base-dev r-cran-ggplot2 libxml2-dev librsvg2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Optional quarTeT plotting dependency, retained for compatibility. te --noplot
 # is the path used by iwgc-circos. Stop on install errors rather than R exit 0.
+# r-base-dev supplies make/compilers, pkg-config and PNG/JPEG/ICU headers;
+# XML and rsvg additionally need their development libraries above.
 RUN Rscript -e 'install.packages("RIdeogram", repos="https://cloud.r-project.org"); stopifnot(requireNamespace("RIdeogram", quietly=TRUE))'
 
 ARG MINICONDA=Miniconda3-py312_25.1.1-2-Linux-x86_64.sh
