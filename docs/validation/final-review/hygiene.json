@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "candidate_file_count": 87,
+  "candidate_bundled_fonts": [
+    "fonts/LiberationSans-Bold.ttf"
+  ],
+  "candidate_embedded_font_binaries_in_historical_svg": [],
+  "private_path_or_secret_patterns": [],
+  "source_archive_bundled_fonts": [
+    "iwgc-circos/fonts/LiberationSans-Bold.ttf"
+  ],
+  "source_archive_has_font_notice": true,
+  "source_archive_excludes_historical_renders": true,
+  "source_archive_excludes_generated_runs_caches_and_containers": true,
+  "docker_context_allowlist": [
+    "Dockerfile",
+    "fonts/LiberationSans-Bold.ttf",
+    "fonts/LICENSE.LiberationSans"
+  ],
+  "baseline_capture_sha256": {
+    "docs/validation/baseline-probes.json": "0197cc8b605fc28e7ec22421dad4a0d418c931961b4b153771f1ad94c43aceec",
+    "docs/validation/baseline-reproduced.json": "974e3e3283be30132868b52f5e081018913067d6125972d8ec297897249a6568",
+    "tests/reproduce_baseline.py": "8b3cc2412024a2680c99aa83762c09e166063adc86bf987e0bba02e3410219fe"
+  },
+  "note": "Curated verification records and synthetic fixtures are intentional source files. Generated validation workspaces/figures are separate CI evidence, not part of the software source/image/skill distributions. Historical Git objects are preserved. No target repository index, commit or tag changed."
+}

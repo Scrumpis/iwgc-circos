@@ -1,0 +1,77 @@
+[
+  {
+    "argv": [
+      "bash",
+      "<repo>/iwgc_circos_tracks.sh",
+      "genome.fa",
+      "-gene",
+      "genes.gff3",
+      "-repeat",
+      "repeats.gff3",
+      "-intact",
+      "repeats.gff3",
+      "-ltr-dating",
+      "ages.list",
+      "-links",
+      "links.coords",
+      "-gc",
+      "-window",
+      "40000",
+      "-out",
+      "iwgc_circos_data"
+    ],
+    "rc": 0,
+    "stdout": "Generating fixed windows with size 40000\nPreparing links from links.coords\nGenerating syntenic links (normalized) from iwgc_circos_data/genome.fa_links_input.sixcol\nCleaning up intermediate files...\n",
+    "stderr": "***** WARNING: File iwgc_circos_data/genome.fa_windows.bed has inconsistent naming convention for record:\nscaffold_T1\t0\t40000\n\n***** WARNING: File iwgc_circos_data/genome.fa_windows.bed has inconsistent naming convention for record:\nscaffold_T1\t0\t40000\n\n***** WARNING: File iwgc_circos_data/genome.fa_windows.bed has inconsistent naming convention for record:\nscaffold_T1\t0\t40000\n\n***** WARNING: File iwgc_circos_data/genome.fa_windows.bed has inconsistent naming convention for record:\nscaffold_T1\t0\t40000\n\n"
+  },
+  {
+    "argv": [
+      "bash",
+      "<repo>/create_configs.sh",
+      "-gap"
+    ],
+    "rc": 0,
+    "stdout": "[INFO] ideogram target: iwgc_circos/ideogram.conf\n[INFO] Resolved karyotype: iwgc_circos_data/genome.fa_karyotype.circos\n[INFO] Compact layout active: 6 dynamic tracks\n[INFO]  spacing=0.0200r, per-track height=0.063333r\n[INFO]  provisional inner r0=0.640000 -> final inner r0=0.500002\n[OK] Wrote iwgc_circos/iwgc_circos.conf\n[INFO] -gap set: patching pairwise into: iwgc_circos/ideogram.conf\n[INFO] using karyotype: iwgc_circos_data/genome.fa_karyotype.circos\n[INFO] pairwise will be: <pairwise scaffold_T1 Chr1>\n[OK] Patched iwgc_circos/ideogram.conf with pairwise: scaffold_T1 Chr1\n[INFO] Using karyotype for ticks: iwgc_circos_data/genome.fa_karyotype.circos\n[INFO] Auto tick spacing: major=1u, minor=0.5u (0.00024 Gbp; 2 chr)\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "circos",
+      "-conf",
+      "iwgc_circos/iwgc_circos.conf",
+      "-outputdir",
+      "iwgc_circos/tmp"
+    ],
+    "rc": 0,
+    "stdout": "debuggroup summary 0.22s welcome to circos v0.69-8 15 Jun 2019 on Perl 5.034000\ndebuggroup summary 0.22s current working directory <smoke>\ndebuggroup summary 0.22s command /opt/circos/bin/circos -conf iwgc_circos/iwgc_circos.conf -outputdir iwgc_circos/tmp\ndebuggroup summary 0.22s loading configuration from file iwgc_circos/iwgc_circos.conf\ndebuggroup summary 0.22s found conf file iwgc_circos/iwgc_circos.conf\ndebuggroup summary 0.29s debug will appear for these features: output,summary\ndebuggroup summary 0.29s bitmap output image iwgc_circos/tmp/iwgc_circos.png\ndebuggroup summary 0.29s SVG output image iwgc_circos/tmp/iwgc_circos.svg\ndebuggroup summary 0.29s parsing karyotype and organizing ideograms\ndebuggroup summary 0.29s karyotype has 2 chromosomes of total size 240,002\ndebuggroup summary 0.29s applying global and local scaling\ndebuggroup summary 0.29s allocating image, colors and brushes\ndebuggroup summary 0.95s drawing 2 ideograms of total size 240,002\ndebuggroup summary 0.95s drawing highlights and ideograms\ndebuggroup summary 0.97s found conf file /opt/circos/bin/../etc/tracks/link.conf\ndebuggroup summary 0.97s process track_0 link <smoke>/iwgc_circos_data/genome.fa_links.circos\ndebuggroup summary 0.97s drawing link track_0 z 0\ndebuggroup summary 0.98s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.98s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.98s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.98s found conf file /opt/circos/bin/../etc/tracks/histogram.conf\ndebuggroup summary 0.98s found conf file /opt/circos/bin/../etc/tracks/histogram.conf\ndebuggroup summary 0.98s found conf file /opt/circos/bin/../etc/tracks/line.conf\ndebuggroup summary 0.98s processing track_0 heatmap <smoke>/iwgc_circos_data/genome.fa_gene_coverage.circos\ndebuggroup summary 0.98s processing track_1 heatmap <smoke>/iwgc_circos_data/genome.fa_repeat_coverage.circos\ndebuggroup summary 0.98s processing track_2 heatmap <smoke>/iwgc_circos_data/genome.fa_LTRdating_coverage.circos\ndebuggroup summary 0.98s processing track_3 histogram <smoke>/iwgc_circos_data/genome.fa_Gypsy_intactTE_coverage.circos\ndebuggroup summary 0.98s processing track_4 histogram <smoke>/iwgc_circos_data/genome.fa_Copia_intactTE_coverage.circos\ndebuggroup summary 0.98s processing track_5 line <smoke>/iwgc_circos_data/genome.fa_gc.circos\ndebuggroup summary 0.98s drawing track_0 heatmap z 0 genome.fa_gene_coverage.circos \ndebuggroup summary 0.98s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.99s drawing track_1 heatmap z 0 genome.fa_repeat_coverage.circos \ndebuggroup summary 0.99s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 1.00s drawing track_2 heatmap z 0 genome.fa_LTRdating_coverage.circos \ndebuggroup summary 1.00s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 1.01s drawing track_3 histogram z 0 genome.fa_Gypsy_intactTE_coverage.circos orient out\ndebuggroup summary 1.01s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 1.02s drawing track_4 histogram z 0 genome.fa_Copia_intactTE_coverage.circos orient out\ndebuggroup summary 1.02s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 1.03s drawing track_5 line z 0 genome.fa_gc.circos orient out\ndebuggroup summary 1.03s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup output 1.05s generating output\ndebuggroup output 1.29s created PNG image iwgc_circos/tmp/iwgc_circos.png (363 kb)\ndebuggroup output 1.29s created SVG image iwgc_circos/tmp/iwgc_circos.svg (21 kb)\n",
+    "stderr": "Use of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781, <F> line 1.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781, <F> line 37.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\n"
+  },
+  {
+    "argv": [
+      "bash",
+      "<repo>/add_legend.sh",
+      "-svg",
+      "<smoke>/iwgc_circos/tmp/iwgc_circos.svg",
+      "-out",
+      "<smoke>/iwgc_circos/tmp/labeled.svg"
+    ],
+    "rc": 0,
+    "stdout": "[WARN] Could not solve ideogram center; using root center (1500.000000,1500.000000)\n[INFO] Ideogram mid/thickness (px): 1222.500000 / 30.000000\n[INFO] Plot mids/thickness:\n0\t1145.132500\t76.435000\n1\t1044.487500\t76.555000\n2\t943.842500\t76.435000\n3\t843.260000\t76.440000\n4\t742.610000\t76.560000\n5\t641.967500\t76.435000\n[INFO] Gap angle defaulting to -90\u00b0: -1.5707963268\n[INFO] Gap endpoints: first-start=(1636.693000,300.262000) last-end=(1324.389000,305.338000); Xmid=1480.541000\n[OK] Wrote labeled SVG -> <smoke>/iwgc_circos/tmp/labeled.svg\n",
+    "stderr": "[WARN] No SVG->PNG converter found (install rsvg-convert, inkscape, or ImageMagick).\n[WARN] PNG export unavailable or failed.\n"
+  },
+  {
+    "argv": [
+      "bash",
+      "<repo>/add_legend.sh",
+      "-svg",
+      "<smoke>/iwgc_circos/tmp/iwgc_circos.svg",
+      "-out",
+      "<smoke>/iwgc_circos/tmp/angle.svg",
+      "--theta-deg",
+      "0"
+    ],
+    "rc": 0,
+    "stdout": "[WARN] Could not solve ideogram center; using root center (1500.000000,1500.000000)\n[INFO] Ideogram mid/thickness (px): 1222.500000 / 30.000000\n[INFO] Plot mids/thickness:\n0\t1145.132500\t76.435000\n1\t1044.487500\t76.555000\n2\t943.842500\t76.435000\n3\t843.260000\t76.440000\n4\t742.610000\t76.560000\n5\t641.967500\t76.435000\n[INFO] Gap angle override (deg): 0 -> 0.0000000000\n[INFO] Gap endpoints: first-start=(1636.693000,300.262000) last-end=(1324.389000,305.338000); Xmid=1480.541000\n[OK] Wrote labeled SVG -> <smoke>/iwgc_circos/tmp/angle.svg\n",
+    "stderr": "[WARN] No SVG->PNG converter found (install rsvg-convert, inkscape, or ImageMagick).\n[WARN] PNG export unavailable or failed.\n"
+  }
+]

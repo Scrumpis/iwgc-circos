@@ -1,0 +1,198 @@
+{
+  "native_circos_render": "both returned 0",
+  "plot_path_geometry_identical": true,
+  "legend_positions_identical": true,
+  "legend_count": 7,
+  "legend_positions": [
+    {
+      "x": "1480.541000",
+      "y": "277.500000",
+      "dx": "6.879",
+      "dy": "0.000",
+      "font-size": "45.86"
+    },
+    {
+      "x": "1480.541000",
+      "y": "354.867500",
+      "dx": "6.879",
+      "dy": "0.000",
+      "font-size": "45.86"
+    },
+    {
+      "x": "1480.541000",
+      "y": "455.512500",
+      "dx": "6.889",
+      "dy": "0.000",
+      "font-size": "45.93"
+    },
+    {
+      "x": "1480.541000",
+      "y": "556.157500",
+      "dx": "6.879",
+      "dy": "0.000",
+      "font-size": "45.86"
+    },
+    {
+      "x": "1480.541000",
+      "y": "656.740000",
+      "dx": "6.879",
+      "dy": "0.000",
+      "font-size": "45.86"
+    },
+    {
+      "x": "1480.541000",
+      "y": "757.390000",
+      "dx": "6.891",
+      "dy": "0.000",
+      "font-size": "45.94"
+    },
+    {
+      "x": "1480.541000",
+      "y": "858.032500",
+      "dx": "6.879",
+      "dy": "0.000",
+      "font-size": "45.86"
+    }
+  ],
+  "embedded_candidate_font_sha256": "788abee4c806d660e8aee46689dd8540cd4bb98da03dcc9d171ce3efd99a9173",
+  "commands": [
+    {
+      "case": "liberation",
+      "argv": [
+        "circos",
+        "-conf",
+        "iwgc_circos/iwgc_circos.conf",
+        "-outputdir",
+        "iwgc_circos/tmp"
+      ],
+      "rc": 0,
+      "stdout": "debuggroup summary 0.22s welcome to circos v0.69-8 15 Jun 2019 on Perl 5.034000\ndebuggroup summary 0.22s current working directory <scratch>/liberation\ndebuggroup summary 0.22s command /opt/circos/bin/circos -conf iwgc_circos/iwgc_circos.conf -outputdir iwgc_circos/tmp\ndebuggroup summary 0.22s loading configuration from file iwgc_circos/iwgc_circos.conf\ndebuggroup summary 0.22s found conf file iwgc_circos/iwgc_circos.conf\ndebuggroup summary 0.29s debug will appear for these features: output,summary\ndebuggroup summary 0.29s bitmap output image iwgc_circos/tmp/iwgc_circos.png\ndebuggroup summary 0.29s SVG output image iwgc_circos/tmp/iwgc_circos.svg\ndebuggroup summary 0.29s parsing karyotype and organizing ideograms\ndebuggroup summary 0.29s karyotype has 2 chromosomes of total size 240,002\ndebuggroup summary 0.29s applying global and local scaling\ndebuggroup summary 0.29s allocating image, colors and brushes\ndebuggroup summary 0.93s drawing 2 ideograms of total size 240,002\ndebuggroup summary 0.93s drawing highlights and ideograms\ndebuggroup summary 0.95s found conf file /opt/circos/bin/../etc/tracks/link.conf\ndebuggroup summary 0.95s process track_0 link <scratch>/liberation/iwgc_circos_data/genome.fa_links.circos\ndebuggroup summary 0.95s drawing link track_0 z 0\ndebuggroup summary 0.96s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.96s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.96s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.96s found conf file /opt/circos/bin/../etc/tracks/histogram.conf\ndebuggroup summary 0.96s found conf file /opt/circos/bin/../etc/tracks/histogram.conf\ndebuggroup summary 0.96s found conf file /opt/circos/bin/../etc/tracks/line.conf\ndebuggroup summary 0.96s processing track_0 heatmap <scratch>/liberation/iwgc_circos_data/genome.fa_gene_coverage.circos\ndebuggroup summary 0.96s processing track_1 heatmap <scratch>/liberation/iwgc_circos_data/genome.fa_repeat_coverage.circos\ndebuggroup summary 0.96s processing track_2 heatmap <scratch>/liberation/iwgc_circos_data/genome.fa_LTRdating_coverage.circos\ndebuggroup summary 0.96s processing track_3 histogram <scratch>/liberation/iwgc_circos_data/genome.fa_Gypsy_intactTE_coverage.circos\ndebuggroup summary 0.96s processing track_4 histogram <scratch>/liberation/iwgc_circos_data/genome.fa_Copia_intactTE_coverage.circos\ndebuggroup summary 0.96s processing track_5 line <scratch>/liberation/iwgc_circos_data/genome.fa_gc.circos\ndebuggroup summary 0.96s drawing track_0 heatmap z 0 genome.fa_gene_coverage.circos \ndebuggroup summary 0.97s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.97s drawing track_1 heatmap z 0 genome.fa_repeat_coverage.circos \ndebuggroup summary 0.97s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.98s drawing track_2 heatmap z 0 genome.fa_LTRdating_coverage.circos \ndebuggroup summary 0.98s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.99s drawing track_3 histogram z 0 genome.fa_Gypsy_intactTE_coverage.circos orient out\ndebuggroup summary 0.99s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 1.00s drawing track_4 histogram z 0 genome.fa_Copia_intactTE_coverage.circos orient out\ndebuggroup summary 1.00s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 1.01s drawing track_5 line z 0 genome.fa_gc.circos orient out\ndebuggroup summary 1.01s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup output 1.03s generating output\ndebuggroup output 1.28s created PNG image iwgc_circos/tmp/iwgc_circos.png (363 kb)\ndebuggroup output 1.28s created SVG image iwgc_circos/tmp/iwgc_circos.svg (21 kb)\n",
+      "stderr": "Use of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781, <F> line 1.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781, <F> line 37.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\n"
+    },
+    {
+      "case": "liberation",
+      "argv": [
+        "bash",
+        "<repo>/add_legend.sh",
+        "-font",
+        "fonts/LiberationSans-Bold.ttf"
+      ],
+      "rc": 0,
+      "stdout": "[WARN] Could not solve ideogram center; using root center (1500.000000,1500.000000)\n[INFO] Ideogram mid/thickness (px): 1222.500000 / 30.000000\n[INFO] Plot mids/thickness:\n0\t1145.132500\t76.435000\n1\t1044.487500\t76.555000\n2\t943.842500\t76.435000\n3\t843.260000\t76.440000\n4\t742.610000\t76.560000\n5\t641.967500\t76.435000\n[INFO] Gap angle defaulting to -90\u00b0: -1.5707963268\n[INFO] Gap endpoints: first-start=(1636.693000,300.262000) last-end=(1324.389000,305.338000); Xmid=1480.541000\n[OK] Wrote labeled SVG -> iwgc_circos/tmp/iwgc_circos.labeled.svg\n",
+      "stderr": "[WARN] No SVG->PNG converter found (install rsvg-convert, inkscape, or ImageMagick).\n[WARN] PNG export unavailable or failed.\n"
+    },
+    {
+      "case": "historical",
+      "argv": [
+        "circos",
+        "-conf",
+        "iwgc_circos/iwgc_circos.conf",
+        "-outputdir",
+        "iwgc_circos/tmp"
+      ],
+      "rc": 0,
+      "stdout": "debuggroup summary 0.09s welcome to circos v0.69-8 15 Jun 2019 on Perl 5.034000\ndebuggroup summary 0.09s current working directory <scratch>/historical\ndebuggroup summary 0.09s command /opt/circos/bin/circos -conf iwgc_circos/iwgc_circos.conf -outputdir iwgc_circos/tmp\ndebuggroup summary 0.09s loading configuration from file iwgc_circos/iwgc_circos.conf\ndebuggroup summary 0.09s found conf file iwgc_circos/iwgc_circos.conf\ndebuggroup summary 0.16s debug will appear for these features: output,summary\ndebuggroup summary 0.16s bitmap output image iwgc_circos/tmp/iwgc_circos.png\ndebuggroup summary 0.16s SVG output image iwgc_circos/tmp/iwgc_circos.svg\ndebuggroup summary 0.16s parsing karyotype and organizing ideograms\ndebuggroup summary 0.16s karyotype has 2 chromosomes of total size 240,002\ndebuggroup summary 0.16s applying global and local scaling\ndebuggroup summary 0.16s allocating image, colors and brushes\ndebuggroup summary 0.78s drawing 2 ideograms of total size 240,002\ndebuggroup summary 0.78s drawing highlights and ideograms\ndebuggroup summary 0.80s found conf file /opt/circos/bin/../etc/tracks/link.conf\ndebuggroup summary 0.80s process track_0 link <scratch>/historical/iwgc_circos_data/genome.fa_links.circos\ndebuggroup summary 0.80s drawing link track_0 z 0\ndebuggroup summary 0.80s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.81s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.81s found conf file /opt/circos/bin/../etc/tracks/heatmap.conf\ndebuggroup summary 0.81s found conf file /opt/circos/bin/../etc/tracks/histogram.conf\ndebuggroup summary 0.81s found conf file /opt/circos/bin/../etc/tracks/histogram.conf\ndebuggroup summary 0.81s found conf file /opt/circos/bin/../etc/tracks/line.conf\ndebuggroup summary 0.81s processing track_0 heatmap <scratch>/historical/iwgc_circos_data/genome.fa_gene_coverage.circos\ndebuggroup summary 0.81s processing track_1 heatmap <scratch>/historical/iwgc_circos_data/genome.fa_repeat_coverage.circos\ndebuggroup summary 0.81s processing track_2 heatmap <scratch>/historical/iwgc_circos_data/genome.fa_LTRdating_coverage.circos\ndebuggroup summary 0.81s processing track_3 histogram <scratch>/historical/iwgc_circos_data/genome.fa_Gypsy_intactTE_coverage.circos\ndebuggroup summary 0.81s processing track_4 histogram <scratch>/historical/iwgc_circos_data/genome.fa_Copia_intactTE_coverage.circos\ndebuggroup summary 0.81s processing track_5 line <scratch>/historical/iwgc_circos_data/genome.fa_gc.circos\ndebuggroup summary 0.81s drawing track_0 heatmap z 0 genome.fa_gene_coverage.circos \ndebuggroup summary 0.81s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.82s drawing track_1 heatmap z 0 genome.fa_repeat_coverage.circos \ndebuggroup summary 0.82s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.83s drawing track_2 heatmap z 0 genome.fa_LTRdating_coverage.circos \ndebuggroup summary 0.83s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.84s drawing track_3 histogram z 0 genome.fa_Gypsy_intactTE_coverage.circos orient out\ndebuggroup summary 0.84s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.85s drawing track_4 histogram z 0 genome.fa_Copia_intactTE_coverage.circos orient out\ndebuggroup summary 0.85s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup summary 0.86s drawing track_5 line z 0 genome.fa_gc.circos orient out\ndebuggroup summary 0.86s found conf file /opt/circos/bin/../etc/tracks/axis.conf\ndebuggroup output 0.88s generating output\ndebuggroup output 1.12s created PNG image iwgc_circos/tmp/iwgc_circos.png (363 kb)\ndebuggroup output 1.12s created SVG image iwgc_circos/tmp/iwgc_circos.svg (21 kb)\n",
+      "stderr": "Use of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781, <F> line 1.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781, <F> line 37.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\nUse of uninitialized value in subroutine entry at /opt/circos/bin/../lib/Circos/Configuration.pm line 781.\n"
+    },
+    {
+      "case": "historical",
+      "argv": [
+        "bash",
+        "<repo>/add_legend.sh",
+        "-font",
+        "fonts/ArialBold.ttf"
+      ],
+      "rc": 0,
+      "stdout": "[WARN] Could not solve ideogram center; using root center (1500.000000,1500.000000)\n[INFO] Ideogram mid/thickness (px): 1222.500000 / 30.000000\n[INFO] Plot mids/thickness:\n0\t1145.132500\t76.435000\n1\t1044.487500\t76.555000\n2\t943.842500\t76.435000\n3\t843.260000\t76.440000\n4\t742.610000\t76.560000\n5\t641.967500\t76.435000\n[INFO] Gap angle defaulting to -90\u00b0: -1.5707963268\n[INFO] Gap endpoints: first-start=(1636.693000,300.262000) last-end=(1324.389000,305.338000); Xmid=1480.541000\n[OK] Wrote labeled SVG -> iwgc_circos/tmp/iwgc_circos.labeled.svg\n",
+      "stderr": "[WARN] No SVG->PNG converter found (install rsvg-convert, inkscape, or ImageMagick).\n[WARN] PNG export unavailable or failed.\n"
+    }
+  ],
+  "native_png_absolute_error_pixels": "15875",
+  "comparison_exit_code": 1,
+  "auxiliary_host_svg_rasterization": {
+    "command": [
+      "/usr/bin/convert",
+      "<scratch>/liberation/iwgc_circos/tmp/iwgc_circos.labeled.svg",
+      "<scratch>/licensed-labeled-host.png"
+    ],
+    "rc": 0,
+    "stderr": "",
+    "backend": "ImageMagick 6.9.11-60; not the candidate Docker image",
+    "png_dimensions": [
+      3000,
+      3000
+    ],
+    "sha256": "e735a45042fc8043065fe78602fb760f058625a6f42bea89479d3a7cae9d8fa1",
+    "font_match_caveat": "Host Fontconfig matches the queried family names to Helvetica; this host conversion checks readable SVG/PNG output, not that the intended embedded font was selected by that backend. The candidate Dockerfile installs/caches the exact licensed font for its rasterizer; clean-image validation is pending.",
+    "visual_result": "ImageMagick internal SVG conversion is not accepted: the visual inspection shows clipped/misplaced chromosome text and histogram artifacts. It does not validate intended font selection or SVG fidelity."
+  },
+  "all_native_svg_text_anchors_identical": false,
+  "native_svg_text_anchor_differences": [
+    {
+      "historical": {
+        "text": "0",
+        "x": "1650.9",
+        "y": "246.5",
+        "font-size": "23.4px",
+        "style": "text-anchor:start;fill:rgb(0,0,0);",
+        "transform": "rotate(276.5,1650.9,246.5)"
+      },
+      "licensed": {
+        "text": "0",
+        "x": "1650.4",
+        "y": "246.5",
+        "font-size": "23.4px",
+        "style": "text-anchor:start;fill:rgb(0,0,0);",
+        "transform": "rotate(276.5,1650.4,246.5)"
+      }
+    },
+    {
+      "historical": {
+        "text": "scaffoldT1",
+        "x": "55.7",
+        "y": "1523.5",
+        "font-size": "93.6px",
+        "style": "text-anchor:middle;fill:rgb(0,0,0);",
+        "transform": "rotate(89.1,55.7,1523.5)"
+      },
+      "licensed": {
+        "text": "scaffoldT1",
+        "x": "63.7",
+        "y": "1523.3",
+        "font-size": "93.6px",
+        "style": "text-anchor:middle;fill:rgb(0,0,0);",
+        "transform": "rotate(89.1,63.7,1523.3)"
+      }
+    },
+    {
+      "historical": {
+        "text": "0",
+        "x": "1365.0",
+        "y": "2755.3",
+        "font-size": "23.4px",
+        "style": "text-anchor:end;fill:rgb(0,0,0);",
+        "transform": "rotate(-83.5,1365.0,2755.3)"
+      },
+      "licensed": {
+        "text": "0",
+        "x": "1364.5",
+        "y": "2755.2",
+        "font-size": "23.4px",
+        "style": "text-anchor:end;fill:rgb(0,0,0);",
+        "transform": "rotate(-83.5,1364.5,2755.2)"
+      }
+    }
+  ],
+  "changed_native_pixels_fraction": 0.0017638888888888888,
+  "auxiliary_librsvg_api": {
+    "rc": 0,
+    "font_registration": "candidate LiberationSans-Bold.ttf added with Fontconfig in this process only",
+    "png_dimensions": [
+      3000,
+      3000
+    ],
+    "sha256": "28c18c568075173af0c1a4d846bb1cc70c596131460a7158a58eead44c224007",
+    "scope": "Actual librsvg API render, not installed rsvg-convert CLI or new Docker image",
+    "script": "render-librsvg.py"
+  }
+}

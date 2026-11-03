@@ -1,0 +1,39 @@
+# Clean validation on code/dependency updates. No registry login or publication.
+name: Clean container
+on:
+  push:
+    branches: [main, dev, 'feature/**', 'fix/**', 'audit/**']
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    name: build-and-test
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Build a new full image from this checkout
+        run: |
+          docker build --pull --no-cache --platform linux/amd64 --progress=plain \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            -t iwgc-circos:ci .
+          mkdir -p "$RUNNER_TEMP/iwgc-validation"
+          docker image inspect iwgc-circos:ci > "$RUNNER_TEMP/iwgc-image-inspect.json"
+      - name: Run tests, scientific checks, and the human example in that image
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -e PYTHONDONTWRITEBYTECODE=1 \
+            -v "$PWD":/repo:ro -v "$RUNNER_TEMP/iwgc-validation":/validation -w /repo \
+            iwgc-circos:ci bash tools/check_container.sh /validation
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clean-container-evidence
+          path: |
+            ${{ runner.temp }}/iwgc-validation
+            ${{ runner.temp }}/iwgc-image-inspect.json
+          retention-days: 30

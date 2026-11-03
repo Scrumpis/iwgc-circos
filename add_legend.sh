@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export LC_ALL=C
+PNG_REQUIRED=false
 
 # ---- Inputs ----
 CONF="iwgc_circos/iwgc_circos.conf"
@@ -7,10 +9,10 @@ SVG="iwgc_circos/tmp/iwgc_circos.svg"
 IDEO="iwgc_circos/ideogram.conf"
 OUT="iwgc_circos/tmp/iwgc_circos.labeled.svg"
 PNG_OUT=""
-FONT_TTF="fonts/ArialBold.ttf"
+FONT_TTF="fonts/LiberationSans-Bold.ttf"
 
 # Placement & sizing
-DX_FRAC="-0.15"        # left nudge as fraction of font-size
+DX_FRAC="-0.15"        # SVG dx = -DX_FRAC * font-size
 DY_FRAC="0"        # down nudge as fraction of font-size
 THETA_DEG=""          # if empty, default to -90° (top)
 
@@ -22,11 +24,15 @@ exit 0; }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -conf|-svg|-ideo|-out|-png|-font|--dx-frac|--dy-frac|--theta-deg)
+      [[ $# -ge 2 ]] || { echo "[ERROR] $1 requires a value" >&2; exit 1; };;
+  esac
+  case "$1" in
     -conf) CONF="$2"; shift 2;;
     -svg)  SVG="$2"; shift 2;;
     -ideo) IDEO="$2"; shift 2;;
     -out)  OUT="$2"; shift 2;;
-    -png)  PNG_OUT="$2"; shift 2;;
+    -png)  PNG_REQUIRED=true; PNG_OUT="$2"; shift 2;;
     -font) FONT_TTF="$2"; shift 2;;
     --dx-frac) DX_FRAC="$2"; shift 2;;
     --dy-frac) DY_FRAC="$2"; shift 2;;
@@ -35,18 +41,34 @@ while [[ $# -gt 0 ]]; do
     *) echo "[ERROR] Unknown arg: $1" >&2; exit 1;;
   esac
 done
+for number in "$DX_FRAC" "$DY_FRAC" "${THETA_DEG:--90}"; do
+  [[ "$number" =~ ^[-+]?[0-9]+([.][0-9]+)?$ ]] || { echo "[ERROR] label offsets/angle must be numeric" >&2; exit 1; }
+done
+[[ "$SVG" != "$OUT" ]] || { echo "[ERROR] SVG input and output must differ" >&2; exit 1; }
 [[ -f "$SVG"  ]] || { echo "[ERROR] SVG not found: $SVG" >&2; exit 1; }
-[[ -f "$FONT_TTF" ]] || echo "[WARN] Font not found at $FONT_TTF — falling back to Arial/sans-serif."
+python3 - "$SVG" "$OUT" <<'PYXML'
+import sys
+from pathlib import Path
+import xml.etree.ElementTree as ET
+if Path(sys.argv[1]).resolve() == Path(sys.argv[2]).resolve():
+    raise SystemExit('[ERROR] SVG input and output resolve to the same file')
+root=ET.parse(sys.argv[1]).getroot()
+if root.tag != '{http://www.w3.org/2000/svg}svg':
+    raise SystemExit('[ERROR] Input must be an SVG document')
+if any(x.get('id') == 'iwgc-gap-labels' for x in root.iter()):
+    raise SystemExit('[ERROR] Input SVG already contains gap labels; use the original')
+PYXML
+[[ -f "$FONT_TTF" ]] || echo "[WARN] Font not found at $FONT_TTF — falling back to Liberation Sans/sans-serif."
 [[ -n "${PNG_OUT:-}" ]] || PNG_OUT="${OUT%.svg}.png"
 
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 numonly(){ sed -E 's/[^0-9.+-eE]//g'; }
-one_line(){ tr -d '\r' | awk 'NR==1{print; exit}'; }
+one_line(){ tr -d '\r' | gawk 'NR==1{print; exit}'; }
 
 # ---------- Solve true center from two ideogram chords ----------
 center_from_ideogram_chords(){
   local svg="$1"
-  awk '
+  gawk '
     BEGIN{RS="</g>"; ORS=""}
     {
       blk=$0
@@ -81,7 +103,7 @@ center_from_ideogram_chords(){
 # ---------- Read ideogram radii (px) from A rx,ry in <g id="ideograms"> ----------
 ideo_mid_thick_from_svg(){
   local svg="$1"
-  awk '
+  gawk '
     BEGIN{RS="</g>"; ORS=""; have=0; minr=1e18; maxr=0}
     {
       blk=$0
@@ -103,7 +125,7 @@ ideo_mid_thick_from_svg(){
 # ---------- NEW: Read all plot ring mids/thickness (px) from <g id="plotN"> ----------
 extract_plot_mids_from_svg(){
   local svg="$1"
-  awk '
+  gawk '
     function upd_r(line,  a) {
       while (match(line, /[aA][[:space:]]*([-0-9.+eE]+)[ ,]([-0-9.+eE]+)/, a)) {
         r=a[1]+0
@@ -163,7 +185,7 @@ extract_plot_mids_from_svg(){
 # ---------- Get gap endpoints (first ideogram start, last ideogram end) ----------
 gap_endpoints_from_svg(){
   local svg="$1"
-  awk '
+  gawk '
     BEGIN{ingrp=0; have_first=0; x2=""; y2=""}
     /<g[^>]*id="ideograms"/ {ingrp=1}
     ingrp && /<\/g>/ {ingrp=0}
@@ -207,8 +229,8 @@ if [[ -z "${CX:-}" || "$CX" == "NaN" ]]; then
   root="$(grep -m1 -oE '<svg[^>]*>' "$SVG" || true)"
   W="$(printf '%s' "$root" | grep -oE 'width="[^"]*"'  -m1 | cut -d'"' -f2 | numonly)"
   H="$(printf '%s' "$root" | grep -oE 'height="[^"]*"' -m1 | cut -d'"' -f2 | numonly)"
-  CX="$(awk -v w="$W" 'BEGIN{printf "%.6f", (w==""?3000:w)/2}')"
-  CY="$(awk -v h="$H" 'BEGIN{printf "%.6f", (h==""?3000:h)/2}')"
+  CX="$(gawk -v w="$W" 'BEGIN{printf "%.6f", (w==""?3000:w)/2}')"
+  CY="$(gawk -v h="$H" 'BEGIN{printf "%.6f", (h==""?3000:h)/2}')"
   echo "[WARN] Could not solve ideogram center; using root center ($CX,$CY)"
 else
   echo "[INFO] Center from ideograms: ($CX,$CY)"
@@ -237,19 +259,19 @@ ALL_H_PX="$WORK/heights_px.txt"
 # ideogram mid goes first
 printf "%.6f\n" "$IDEO_MID_PX" > "$ALL_MIDS_PX"
 # size of a.: use OUTERMOST plot thickness so it matches others
-OUTER_TH_PX="$(awk 'NR==1{print $3; exit}' "$PLOTS_TXT")"
+OUTER_TH_PX="$(gawk 'NR==1{print $3; exit}' "$PLOTS_TXT")"
 printf "%.6f\n" "$OUTER_TH_PX" > "$ALL_H_PX"
 
 # then each plot mid & its own thickness
-awk '{printf "%.6f\n", $2}' "$PLOTS_TXT" >> "$ALL_MIDS_PX"
-awk '{printf "%.6f\n", $3}' "$PLOTS_TXT" >> "$ALL_H_PX"
+gawk '{printf "%.6f\n", $2}' "$PLOTS_TXT" >> "$ALL_MIDS_PX"
+gawk '{printf "%.6f\n", $3}' "$PLOTS_TXT" >> "$ALL_H_PX"
 
 # 5) Angle
 if [[ -n "$THETA_DEG" ]]; then
-  GAP_THETA="$(awk -v d="$THETA_DEG" 'BEGIN{pi=atan2(0,-1); printf "%.10f", d*pi/180.0}')"
+  GAP_THETA="$(gawk -v d="$THETA_DEG" 'BEGIN{pi=atan2(0,-1); printf "%.10f", d*pi/180.0}')"
   echo "[INFO] Gap angle override (deg): $THETA_DEG -> $GAP_THETA"
 else
-  GAP_THETA="$(awk 'BEGIN{pi=atan2(0,-1); printf "%.10f", -90*pi/180.0}')"
+  GAP_THETA="$(gawk 'BEGIN{pi=atan2(0,-1); printf "%.10f", -90*pi/180.0}')"
   echo "[INFO] Gap angle defaulting to -90°: $GAP_THETA"
 fi
 
@@ -259,7 +281,7 @@ if [[ -z "${X1:-}" || "$X1" == "NaN" || -z "${X2:-}" || "$X2" == "NaN" ]]; then
   echo "[WARN] Could not parse ideogram gap endpoints; falling back to radial X."
   XGAP_MID=""
 else
-  XGAP_MID="$(awk -v a="$X1" -v b="$X2" 'BEGIN{printf "%.6f", (a+b)/2.0}')"
+  XGAP_MID="$(gawk -v a="$X1" -v b="$X2" 'BEGIN{printf "%.6f", (a+b)/2.0}')"
   echo "[INFO] Gap endpoints: first-start=($X1,$Y1) last-end=($X2,$Y2); Xmid=$XGAP_MID"
 fi
 
@@ -267,27 +289,30 @@ fi
 INJ="$WORK/inject.svgfrag"
 {
   echo '<style type="text/css"><![CDATA['
-  echo "  @font-face { font-family: 'GapLabelBold'; src: url('$(printf "%s" "$FONT_TTF" | sed "s/[&<>\"]/\\&/g")') format('truetype'); font-weight: bold; }"
-  echo '  .iwgc-gap-label { font-family: "GapLabelBold", Arial, sans-serif; text-anchor: middle; dominant-baseline: middle; }'
+  if [[ -f "$FONT_TTF" ]]; then
+    FONT_DATA=$(base64 < "$FONT_TTF" | tr -d '\n')
+    echo "  @font-face { font-family: 'GapLabelBold'; src: url('data:font/ttf;base64,$FONT_DATA') format('truetype'); font-weight: bold; }"
+  fi
+  echo '  .iwgc-gap-label { font-family: "GapLabelBold", "Liberation Sans", sans-serif; text-anchor: middle; dominant-baseline: middle; }'
   echo ']]></style>'
   echo '<g id="iwgc-gap-labels" aria-label="interior track labels" role="group">'
 
   idx=0
   paste "$ALL_MIDS_PX" "$ALL_H_PX" | while read -r mid_px h_px; do
-    fsz="$(awk -v h="$h_px" 'BEGIN{v=h*0.6; if(v<10)v=10; if(v>48)v=48; printf "%.2f", v}')"
+    fsz="$(gawk -v h="$h_px" 'BEGIN{v=h*0.6; if(v<10)v=10; if(v>48)v=48; printf "%.2f", v}')"
 
     # y stays dynamic per ring (unchanged)
-    ypix="$(awk -v cy="$CY" -v r="$mid_px" -v th="$GAP_THETA" 'BEGIN{printf "%.6f", cy + r*sin(th)}')"
+    ypix="$(gawk -v cy="$CY" -v r="$mid_px" -v th="$GAP_THETA" 'BEGIN{printf "%.6f", cy + r*sin(th)}')"
 
     # x is dynamic gap-midpoint (if available), else previous radial fallback
-    if [[ -n "${XGAP_MID:-}" ]]; then
+    if [[ -n "${XGAP_MID:-}" && -z "$THETA_DEG" ]]; then
       xpix="$XGAP_MID"
     else
-      xpix="$(awk -v cx="$CX" -v r="$mid_px" -v th="$GAP_THETA" 'BEGIN{printf "%.6f", cx + r*cos(th)}')"
+      xpix="$(gawk -v cx="$CX" -v r="$mid_px" -v th="$GAP_THETA" 'BEGIN{printf "%.6f", cx + r*cos(th)}')"
     fi
 
-    dxpx="$(awk -v f="$fsz" -v frac="$DX_FRAC" 'BEGIN{printf "%.3f", -frac*f}')"
-    dypx="$(awk -v f="$fsz" -v frac="$DY_FRAC" 'BEGIN{printf "%.3f",  frac*f}')"
+    dxpx="$(gawk -v f="$fsz" -v frac="$DX_FRAC" 'BEGIN{printf "%.3f", -frac*f}')"
+    dypx="$(gawk -v f="$fsz" -v frac="$DY_FRAC" 'BEGIN{printf "%.3f",  frac*f}')"
     printf '  <text class="iwgc-gap-label" x="%.6f" y="%.6f" dx="%.3f" dy="%.3f" font-size="%s">%s</text>\n' \
       "$xpix" "$ypix" "$dxpx" "$dypx" "$fsz" "$(alpha_label "$idx")"
     idx=$((idx+1))
@@ -296,7 +321,7 @@ INJ="$WORK/inject.svgfrag"
   echo '</g>'
 } > "$INJ"
 
-awk -v injfile="$INJ" '
+gawk -v injfile="$INJ" '
   BEGIN{ while ((getline l < injfile) > 0) inj = inj l "\n"; close(injfile) }
   /<\/svg>/ { print inj; print; next }
   { print }
@@ -308,5 +333,6 @@ echo "[OK] Wrote labeled SVG -> $OUT"
 if svg_to_png "$OUT" "$PNG_OUT"; then
   echo "[OK] Wrote PNG -> $PNG_OUT"
 else
-  echo "[INFO] Skipped PNG export (no converter found)." >&2
+  echo "[WARN] PNG export unavailable or failed." >&2
+  if $PNG_REQUIRED; then exit 1; fi
 fi

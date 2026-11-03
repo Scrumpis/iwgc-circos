@@ -1,0 +1,10 @@
+--- a/Circos/SVG.pm
++++ b/Circos/SVG.pm
+@@ -314,6 +314,7 @@
+ 		# when the start/end radius is the same, there can be no
+ 		# fill because the slice is 0-width
+ 		#
++		$style =~ s/fill:[^;]+;/fill:none;/;
+ 		$svg = sprintf(
+ 									 qq{<path d="M %.2f,%.2f A%.2f,%.2f %.2f %d,%d %.2f,%.2f" style="%s" %s/>},
+ 									 getxypos( $start_a, $params{radius_from} ),

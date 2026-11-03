@@ -1,0 +1,12 @@
+# The image contains dependencies, a reviewed Circos patch and the licensed font. Runtime source
+# is mounted for testing/use. Keep credentials, Git metadata, results and caches
+# out of the build context, including untracked files on a maintainer's laptop.
+**
+!Dockerfile
+!fonts
+!fonts/LiberationSans-Bold.ttf
+!fonts/LICENSE.LiberationSans
+!patches
+!patches/circos-zero-width-svg.patch
+!patches/NOTICE.md
+!patches/LICENSE.Circos

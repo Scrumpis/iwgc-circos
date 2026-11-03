@@ -1,0 +1,119 @@
+{
+  "candidate_commit": "a5940bcddcc31150371e035fcb173b5dd2f5c3c3",
+  "fast": {
+    "run_id": 41546692988,
+    "job_id": 125623877650,
+    "conclusion": "failure",
+    "unit_tests": {
+      "discovered": 62,
+      "passed": 60,
+      "skipped": 2,
+      "failures": 0,
+      "seconds": 12.157
+    },
+    "failure": "Circos missing List::MoreUtils; exited 0 without SVG or PNG"
+  },
+  "container": {
+    "run_id": 41546693013,
+    "job_id": 125623878118,
+    "conclusion": "failure",
+    "docker_build_exit_code": 1,
+    "failed_step": "RIdeogram source installation",
+    "diagnostics": [
+      "make: not found",
+      "pkg-config: not found",
+      "rsvg configuration failed",
+      "requireNamespace(\"RIdeogram\", quietly = TRUE) is not TRUE"
+    ],
+    "image_id": null,
+    "registry_digest": null,
+    "container_checks": "skipped"
+  },
+  "smoke_artifact": {
+    "id": 13188169169,
+    "zip_sha256": "324168e455000c6b0635d407ff232ea4d9c6cfb15556c65862c67a6ebcf4b59d",
+    "commands": [
+      {
+        "argv": [
+          "bash",
+          "<repo>/iwgc_circos_tracks.sh",
+          "genome.fa",
+          "-gene",
+          "genes.gff3",
+          "-repeat",
+          "repeats.gff3",
+          "-intact",
+          "repeats.gff3",
+          "-ltr-dating",
+          "ages.list",
+          "-links",
+          "links.coords",
+          "-gc",
+          "-window",
+          "40000",
+          "-out",
+          "iwgc_circos_data"
+        ],
+        "rc": 0,
+        "stdout": "Generating fixed windows with size 40000\nPreparing links from links.coords\nGenerating syntenic links (normalized) from iwgc_circos_data/genome.fa_links_input.sixcol\nCleaning up intermediate files...\n",
+        "stderr": "***** WARNING: File iwgc_circos_data/genome.fa_windows.bed has inconsistent naming convention for record:\nscaffold_T1\t0\t40000\n\n***** WARNING: File iwgc_circos_data/genome.fa_windows.bed has inconsistent naming convention for record:\nscaffold_T1\t0\t40000\n\n***** WARNING: File iwgc_circos_data/genome.fa_windows.bed has inconsistent naming convention for record:\nscaffold_T1\t0\t40000\n\n***** WARNING: File iwgc_circos_data/genome.fa_windows.bed has inconsistent naming convention for record:\nscaffold_T1\t0\t40000\n\n"
+      },
+      {
+        "argv": [
+          "bash",
+          "<repo>/create_configs.sh",
+          "-gap"
+        ],
+        "rc": 0,
+        "stdout": "[INFO] ideogram target: iwgc_circos/ideogram.conf\n[INFO] Resolved karyotype: iwgc_circos_data/genome.fa_karyotype.circos\n[INFO] Compact layout active: 6 dynamic tracks\n[INFO]  spacing=0.0200r, per-track height=0.063333r\n[INFO]  provisional inner r0=0.640000 -> final inner r0=0.500002\n[OK] Wrote iwgc_circos/iwgc_circos.conf\n[INFO] -gap set: patching pairwise into: iwgc_circos/ideogram.conf\n[INFO] using karyotype: iwgc_circos_data/genome.fa_karyotype.circos\n[INFO] pairwise will be: <pairwise scaffold_T1 Chr1>\n[OK] Patched iwgc_circos/ideogram.conf with pairwise: scaffold_T1 Chr1\n[INFO] Using karyotype for ticks: iwgc_circos_data/genome.fa_karyotype.circos\n[INFO] Auto tick spacing: major=1u, minor=0.5u (0.00024 Gbp; 2 chr)\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "circos",
+          "-conf",
+          "iwgc_circos/iwgc_circos.conf",
+          "-outputdir",
+          "iwgc_circos/tmp"
+        ],
+        "rc": 0,
+        "stdout": "\n*** REQUIRED MODULE(S) MISSING OR OUT-OF-DATE ***\n\nYou are missing one or more Perl modules, require newer versions, or some modules failed to load. Use CPAN to install it as described in this tutorial\n\nhttp://www.circos.ca/documentation/tutorials/configuration/perl_and_modules\n\nmissing List::MoreUtils\n  error Can't locate List/MoreUtils.pm in @INC (you may need to install the List::MoreUtils module) (@INC contains: /usr/bin/lib /usr/bin/../lib /usr/bin /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.34.0 /usr/local/share/perl/5.34.0 /usr/lib/x86_64-linux-gnu/perl5/5.34 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.34 /usr/share/perl/5.34 /usr/local/lib/site_perl) at (eval 50) line 1.\n",
+        "stderr": ""
+      }
+    ]
+  },
+  "local_checks": {
+    "new_false_success_regression": {
+      "cases": 1,
+      "exit_code": 0
+    },
+    "workflow_guards": {
+      "cases": 17,
+      "exit_code": 0
+    },
+    "actionlint": {
+      "version": "1.7.12",
+      "shellcheck_pyflakes": "disabled",
+      "exit_code": 0
+    },
+    "auxiliary_smoke": {
+      "exit_code": 0,
+      "tracks": 6,
+      "chromosomes": 2,
+      "link": true,
+      "legend": true,
+      "svg_rasterization": "unavailable in existing SIF",
+      "sif_sha256": "5067065f346b5233dc708bf032053a3287a38b7150ca12ca0900cb8419db7cb7"
+    }
+  },
+  "corrected_clean_docker_build": "pending next authorized push/run",
+  "publication": "not attempted",
+  "source_sha256": {
+    ".github/workflows/validate.yml": "62de359f39a6d84df53af68c91c113555ac07d386c343cb74f36030e7aafecd9",
+    "Dockerfile": "5ac26258ebdb42ca94efdbd518ce8cc6bbf9abc5a7fa1cbc0a0ef2904a2b3ab5",
+    "tests/smoke.py": "32f1ba9c722b4fb9d05f29e3db30d850e51321fd864274cad0f53bd2677f89d5",
+    "tests/test_smoke.py": "93b0dd1f228abda158d8c72a4bf8b0c2a860fd13fcbec4512fd9d24d0ac776b7",
+    "docs/release-process.md": "6722da416b5194340018bcf56a1d01caafa35174e7aa032bf7c0bf8c773c6a0f",
+    "docs/validation/ci-first-run.md": "3481630f4d30a1dd782761a3cb2748bf28905c43fb60338d7624557dea4406f4"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "tests/check_workflows.py"
+      ],
+      "exit_code": 0,
+      "guard_cases": 17,
+      "classification": "offline real Git history; fake registry/Docker; static workflow contract"
+    },
+    {
+      "argv": [
+        "actionlint",
+        "-shellcheck=",
+        "-pyflakes="
+      ],
+      "version": "1.7.12",
+      "exit_code": 0,
+      "classification": "workflow static lint; not GitHub execution"
+    },
+    {
+      "shell": "for script in iwgc_circos_tracks.sh create_configs.sh add_legend.sh preprocess/minimap2_self_alignment.sh tools/check_container.sh; do bash -n \"$script\" || exit; done",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "completed_scientific_tests_restarted": false,
+  "clean_docker_build_executed": false,
+  "github_actions_executed": false,
+  "publication_executed": false,
+  "live_settings_changed": false,
+  "preservation": {
+    "unchanged_incoming_files": 81,
+    "expected_modified_paths": [
+      ".github/workflows/container.yml",
+      ".github/workflows/validate.yml",
+      "docs/release-process.md",
+      "tools/check_container.sh"
+    ],
+    "renamed_from": ".github/workflows/publish.yml",
+    "renamed_to": ".github/workflows/publish.yaml",
+    "scientific_runtime_and_existing_evidence_unchanged": true,
+    "frozen_manifest_unchanged": true
+  }
+}

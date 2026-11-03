@@ -1,171 +1,64 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:22.04
-
+# Dependency image: run the versioned checkout through a bind mount at /data.
+# amd64 only (the pinned Miniconda installer is x86_64).
+FROM ubuntu:22.04 AS core
 LABEL maintainer="scrumpis"
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Core dependencies
-RUN apt-get update && apt-get install -y \
-    wget bzip2 ca-certificates git curl unzip \
-    python3 python3-venv python3-pip \
-    build-essential make gcc g++ zlib1g-dev libbz2-dev liblzma-dev libncurses5-dev libcurl4-gnutls-dev \
-    r-base r-cran-ggplot2 \
-    minimap2 mummer trf cd-hit ncbi-blast+ gnuplot \
-    samtools bedtools \
-    librsvg2-bin \
-    && update-ca-certificates \
+# Signed Ubuntu packages supply Circos and Perl dependencies without an insecure
+# direct tarball download or unversioned CPAN installations.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates wget bzip2 git curl patch \
+    python3 gawk samtools bedtools circos liblist-moreutils-perl minimap2 librsvg2-bin fontconfig \
     && rm -rf /var/lib/apt/lists/*
 
-# Install R package 'rideogram'
-RUN R -e "install.packages('rideogram', repos='http://cran.us.r-project.org')"
+# Reviewed zero-width SVG fix; keep the patch and notices with the modified source.
+COPY patches/circos-zero-width-svg.patch patches/NOTICE.md patches/LICENSE.Circos /usr/share/doc/iwgc-circos/
+RUN patch --forward --batch --fuzz=0 /usr/share/perl5/Circos/SVG.pm /usr/share/doc/iwgc-circos/circos-zero-width-svg.patch
 
-# Install Miniconda for tidk
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
-    bash /tmp/miniconda.sh -b -p /opt/conda && \
-    rm /tmp/miniconda.sh && \
-    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
-    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
-    /opt/conda/bin/conda update -n base -c defaults conda -y
+# Make the exact licensed fallback available to SVG rasterizers as well as Circos.
+COPY fonts/LiberationSans-Bold.ttf /usr/local/share/fonts/iwgc/LiberationSans-Bold.ttf
+COPY fonts/LICENSE.LiberationSans /usr/share/doc/iwgc-circos-font/LICENSE.LiberationSans
+RUN fc-cache -f /usr/local/share/fonts/iwgc
 
-ENV PATH="/opt/conda/bin:${PATH}"
+WORKDIR /data
+CMD ["bash"]
 
-# Install tidk via conda
-RUN conda config --add channels conda-forge && \
-    conda config --add channels bioconda && \
-    conda install -y tidk && \
-    conda clean --all -y
-
-# Install quarTeT
-WORKDIR /opt
-RUN git clone https://github.com/aaranyue/quarTeT.git
-WORKDIR /opt/quarTeT
-RUN pip3 install .
-
-# Make quartet accessible globally
-ENV PATH="/opt/quarTeT:/opt/conda/bin:$PATH"
-
-# Install Circos 0.69-9
-WORKDIR /opt
-
-RUN apt-get update && apt-get install -y \
-    curl ca-certificates libgd-dev cpanminus && \
-    rm -rf /var/lib/apt/lists/*
-
-# Securely download Circos 0.69-9
-RUN wget --no-check-certificate https://circos.ca/distribution/circos-0.69-9.tgz && \
-    ls -lh circos-0.69-9.tgz && \
-    tar -xzf circos-0.69-9.tgz && \
-    mv circos-0.69-9 circos && \
-    rm circos-0.69-9.tgz
-
-# Ensure /bin/env exists for Perl scripts
-RUN [ -f /bin/env ] || ln -s /usr/bin/env /bin/env
-
-ENV PATH="/opt/circos/bin:${PATH}"
-
-# Install required Perl modules
-RUN cpanm --notest \
-    Config::General     \
-    Font::TTF::Font     \
-    GD                  \
-    Math::Bezier        \
-    Math::Round         \
-    Math::VecStat       \
-    Params::Validate    \
-    Regexp::Common      \
-    Set::IntSpan        \
-    Statistics::Basic   \
-    SVG                 \
-    Text::Format
-
-# Validate the installation
-RUN circos -modules && circos -version
-
-# Set default behavior
-CMD ["-h"]
-(base) john7932@ANR-YQ96QLT6HC iwgc-circos % more Dockerfile
-# syntax=docker/dockerfile:1
-FROM ubuntu:22.04
-
-LABEL maintainer="scrumpis"
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Core dependencies
-RUN apt-get update && apt-get install -y \
-    wget bzip2 ca-certificates git curl unzip \
-    python3 python3-venv python3-pip \
-    build-essential make gcc g++ zlib1g-dev libbz2-dev liblzma-dev libncurses5-dev libcurl4-gnutls-dev \
-    r-base r-cran-ggplot2 \
-    minimap2 mummer trf cd-hit ncbi-blast+ gnuplot \
-    samtools bedtools \
-    librsvg2-bin \
-    && update-ca-certificates \
+FROM core AS full
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip python3-setuptools mummer trf cd-hit ncbi-blast+ \
+    gnuplot r-base r-base-dev r-cran-ggplot2 libxml2-dev librsvg2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install R package 'rideogram'
-RUN R -e "install.packages('rideogram', repos='http://cran.us.r-project.org')"
+# Optional quarTeT plotting dependency, retained for compatibility. te --noplot
+# is the path used by iwgc-circos. Stop on install errors rather than R exit 0.
+# r-base-dev supplies make/compilers, pkg-config and PNG/JPEG/ICU headers;
+# XML and rsvg additionally need their development libraries above.
+RUN Rscript -e 'install.packages("RIdeogram", repos="https://cloud.r-project.org"); stopifnot(requireNamespace("RIdeogram", quietly=TRUE))'
 
-# Install Miniconda for tidk
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
-    bash /tmp/miniconda.sh -b -p /opt/conda && \
-    rm /tmp/miniconda.sh && \
-    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
-    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
-    /opt/conda/bin/conda update -n base -c defaults conda -y
-
+ARG MINICONDA=Miniconda3-py312_25.1.1-2-Linux-x86_64.sh
+ARG MINICONDA_SHA256=4766d85b5f7d235ce250e998ebb5a8a8210cbd4f2b0fea4d2177b3ed9ea87884
+RUN wget -q "https://repo.anaconda.com/miniconda/${MINICONDA}" -O /tmp/miniconda.sh \
+    && echo "${MINICONDA_SHA256}  /tmp/miniconda.sh" | sha256sum -c - \
+    && bash /tmp/miniconda.sh -b -p /opt/conda \
+    && rm /tmp/miniconda.sh
+# Use only these channels; do not silently accept Anaconda default-channel terms.
+RUN /opt/conda/bin/conda install -y --override-channels -c conda-forge -c bioconda tidk=0.2.0 \
+    && /opt/conda/bin/conda clean --all -y
 ENV PATH="/opt/conda/bin:${PATH}"
 
-# Install tidk via conda
-RUN conda config --add channels conda-forge && \
-    conda config --add channels bioconda && \
-    conda install -y tidk && \
-    conda clean --all -y
+ARG QUARTET_REF=91b197f3992debafcaa409e82601374495b7e40e
+# This pinned package declares a modern `quartet` entry point. Keep the public
+# quartet.py command using a launcher outside its Python package/script directory.
+RUN git clone https://github.com/aaranyue/quarTeT.git /opt/quarTeT \
+    && git -C /opt/quarTeT checkout --detach "$QUARTET_REF" \
+    && /opt/conda/bin/python -m pip install --no-deps --no-build-isolation /opt/quarTeT \
+    && test -x /opt/conda/bin/quartet \
+    && printf '#!/bin/sh\nexec /opt/conda/bin/quartet "$@"\n' > /usr/local/bin/quartet.py \
+    && chmod 755 /usr/local/bin/quartet.py
+ENV PATH="/opt/quarTeT:${PATH}"
 
-# Install quarTeT
-WORKDIR /opt
-RUN git clone https://github.com/aaranyue/quarTeT.git
-WORKDIR /opt/quarTeT
-RUN pip3 install .
-
-# Make quartet accessible globally
-ENV PATH="/opt/quarTeT:/opt/conda/bin:$PATH"
-
-# Install Circos 0.69-9
-WORKDIR /opt
-
-RUN apt-get update && apt-get install -y \
-    curl ca-certificates libgd-dev cpanminus && \
-    rm -rf /var/lib/apt/lists/*
-
-# Securely download Circos 0.69-9
-RUN wget --no-check-certificate https://circos.ca/distribution/circos-0.69-9.tgz && \
-    ls -lh circos-0.69-9.tgz && \
-    tar -xzf circos-0.69-9.tgz && \
-    mv circos-0.69-9 circos && \
-    rm circos-0.69-9.tgz
-
-# Ensure /bin/env exists for Perl scripts
-RUN [ -f /bin/env ] || ln -s /usr/bin/env /bin/env
-
-ENV PATH="/opt/circos/bin:${PATH}"
-
-# Install required Perl modules
-RUN cpanm --notest \
-    Config::General     \
-    Font::TTF::Font     \
-    GD                  \
-    Math::Bezier        \
-    Math::Round         \
-    Math::VecStat       \
-    Params::Validate    \
-    Regexp::Common      \
-    Set::IntSpan        \
-    Statistics::Basic   \
-    SVG                 \
-    Text::Format
-
-# Validate the installation
-RUN circos -modules && circos -version
-
-# Set default behavior
-CMD ["-h"]
+RUN samtools --version && bedtools --version && circos -modules && circos -version \
+    && tidk --version && quartet.py -h && rsvg-convert --version
+WORKDIR /data
+CMD ["bash"]

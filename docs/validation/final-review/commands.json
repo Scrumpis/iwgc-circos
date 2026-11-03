@@ -1,0 +1,154 @@
+{
+  "docker_build": {
+    "argv": [
+      "docker",
+      "build",
+      "--pull",
+      "--no-cache",
+      "--platform",
+      "linux/amd64",
+      "-t",
+      "iwgc-circos:clean-review",
+      "."
+    ],
+    "rc": 127,
+    "stderr": "docker: command not found",
+    "new_image_id": null,
+    "pullable_registry_digest": null
+  },
+  "docker_environment": {
+    "client": false,
+    "daemon_socket": false,
+    "configured_host": false,
+    "configured_context": false,
+    "subordinate_uid_gid_file_records": 0,
+    "remote_document_executors": 0,
+    "host_configuration_changed": false
+  },
+  "unit_suite": {
+    "argv": [
+      "singularity",
+      "exec",
+      "--cleanenv",
+      "<existing-sif>",
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "rc": 0,
+    "passed": 62,
+    "skipped": 0,
+    "seconds": 12.469,
+    "classification": "auxiliary regression; not a clean Docker run"
+  },
+  "independent_numeric": {
+    "argv": [
+      "singularity",
+      "exec",
+      "--cleanenv",
+      "<existing-sif>",
+      "python3",
+      "tests/independent_check.py",
+      "--output",
+      "<scratch>"
+    ],
+    "rc": 0,
+    "checks": 24,
+    "classification": "independently constructed numerical oracle; same implementation-author evaluator; existing runtime"
+  },
+  "render_gap_positive_control": {
+    "argv": [
+      "python3",
+      "tests/check_render_gaps.py",
+      "<native.png>",
+      "<native.png>"
+    ],
+    "rc": 0
+  },
+  "render_gap_failure": {
+    "argv": [
+      "python3",
+      "tests/check_render_gaps.py",
+      "<native.png>",
+      "<librsvg-derived.png>"
+    ],
+    "rc": 1,
+    "native": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        255,
+        255
+      ]
+    ],
+    "svg": [
+      [
+        239,
+        59,
+        44
+      ],
+      [
+        253,
+        141,
+        60
+      ]
+    ],
+    "interpretation": "confirmed old-runtime native/SVG gap mismatch; new image pending"
+  },
+  "workflow_lint": {
+    "argv": [
+      "actionlint",
+      "-shellcheck=",
+      "-pyflakes="
+    ],
+    "version": "1.7.12",
+    "release_url": "https://github.com/rhysd/actionlint/releases/tag/v1.7.12",
+    "archive_sha256": "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8",
+    "rc": 0,
+    "github_actions_executed": false
+  },
+  "syntax": {
+    "argv": [
+      "bash",
+      "-n",
+      "tools/check_container.sh",
+      "iwgc_circos_tracks.sh",
+      "create_configs.sh",
+      "add_legend.sh",
+      "preprocess/minimap2_self_alignment.sh"
+    ],
+    "rc": 0
+  },
+  "skill": {
+    "repository_validator_rc": 0,
+    "skill_creator_validator_rc": 0,
+    "fresh_trial": "prior explicit-context trial preserved; not rerun for limited follow-up",
+    "automatic_discovery": "unverified"
+  },
+  "reference_workflows": {
+    "repository": "https://github.com/Scrumpis/dndsR",
+    "read_only_commit": "5983405287ed8ecc62feeaedb15f176ef09b9790",
+    "paths": [
+      ".github/workflows/publish.yaml",
+      ".github/workflows/container.yaml",
+      "docs/dev/RELEASE.md",
+      "docs/dev/GITHUB-SETUP.md"
+    ],
+    "execution_of_reference_workflows": "not independently rerun here"
+  },
+  "renderer_versions": {
+    "ImageMagick": "6.9.11-60",
+    "librsvg2": "2.52.5+dfsg-3ubuntu0.2",
+    "cairo": "1.16.0-5ubuntu2.1",
+    "fontconfig": "2.13.1-4.2ubuntu5"
+  },
+  "actions_pending": "requires authorized branch push; no push/merge/tag/publication performed"
+}
