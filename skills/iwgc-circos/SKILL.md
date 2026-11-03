@@ -3,8 +3,8 @@ name: iwgc-circos
 description: Install, run, troubleshoot, and interpret iwgc-circos genome visualization from FASTA, GFF3, LTR age tables, and alignment coordinates using native tools or containers. Use for iwgc-circos track generation, Circos configuration, rendering, and SVG track labels.
 license: MIT
 metadata:
-  version: "1.0.0-rc.1"
-  software-version: "0.4.0-rc.1"
+  version: "1.0.0"
+  software-version: "0.4.0"
   source: "https://github.com/Scrumpis/iwgc-circos"
 ---
 
