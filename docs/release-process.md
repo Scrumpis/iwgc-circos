@@ -5,17 +5,19 @@ initial release. Temporary work uses `feature/*`, `fix/*` or `audit/*`, includin
 the current `audit/release-candidate-0.4.0` branch. The default branch stays `main`.
 This follows dndsR's branch, environment and versioned publication conventions.
 
-First CI update: the initial push of `a5940bc` ran both checking workflows;
-both failed on missing environment dependencies. See the
-[first-run diagnosis and bounded corrections](validation/ci-first-run.md).
-The corrected clean Docker build still needs its next authorized push/run.
+CI update: the maintainer pushed `a5940bc`, then `86b9b6e`; both checking
+workflows executed on each. Their failures and bounded corrections are in the
+[first-run record](validation/ci-first-run.md) and
+[second-run record](validation/ci-second-run.md). RIdeogram and Perl dependency
+installation progressed successfully on the second attempt; a complete clean
+image and full-image checks have not yet succeeded.
 
-The workflows are prepared locally. No push, merge, tag, publication or live
-settings change was made by the automation audit. The paragraphs below record
-that pre-CI setup state. The candidate remains `0.4.0-rc.1`:
-**ready for its first CI run after an authorized freeze/push, not for release**.
-The clean image has not been built here; the recorded SVG/native rendering
-mismatch remains a required failing gate until resolved in the new image.
+The candidate remains `0.4.0-rc.1`: **ready for corrected CI after an authorized
+push, not for release**. Both environments now apply the maintainer-approved
+one-line Circos SVG correction, with native PNG and path geometry unchanged.
+The existing fidelity gate stays mandatory. Local package/SIF verification is
+auxiliary evidence, not a clean Docker result. No push, merge, tag, publication
+or live settings change was performed by this follow-up.
 See the [scientific release review](validation/final-review/GO-NO-GO.md) and
 [automation audit](validation/automation-review/REPORT.md).
 

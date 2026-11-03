@@ -271,7 +271,9 @@ class Pipeline(unittest.TestCase):
         if version != 'tidk 0.2.0': self.skipTest('limitation is specific to the audited tidk version')
         self.fa.write_text('>Chr1\n'+'TTTAGGG'*100+'ACGT'*7150+'CCCTAAA'*100+'\n')
         p=self.run_tracks('-telomere',ok=False)
-        self.assertIn('no telomere report',p.stderr)
+        # Legacy quarTeT exits zero without a report; the pinned package emits
+        # its own nonzero discovery error. Both must remain failures.
+        self.assertRegex(p.stderr,'no telomere report|No telomere-like repeats found')
 
     def test_paths_with_spaces(self):
         self.fa=self.fa.rename(self.work/'genome spaced.fa')

@@ -39,6 +39,10 @@ def main():
     assert job['name'] == 'publish' and job['environment'] == 'dockerhub-release'
     assert job['if'] == "vars.DOCKERHUB_PUBLISH_ENABLED == 'true'"
     assert w['env']['IMAGE'] == 'scrumpis/iwgc-circos'
+    correction = 'patch --forward --batch --fuzz=0'
+    assert correction in (ROOT / 'Dockerfile').read_text()
+    assert any(correction in s.get('run', '') and 'patches/circos-zero-width-svg.patch' in s.get('run', '')
+               for s in workflows['validate.yml']['jobs']['fast']['steps'])
     assert w['concurrency']['cancel-in-progress'] == 'false'
     steps = {s.get('name'): s for s in job['steps'] if 'name' in s}
     guard = steps['Check version, reviewed ancestry, and new registry tag']['run']

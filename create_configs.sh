@@ -249,10 +249,13 @@ if [[ -z "${CHRS_EVAL// /}" ]]; then
   exit 1
 fi
 
-# Substitute placeholders (${chrs}, drop ${reverse}) into a working copy
+# Substitute placeholders and qualify local includes: Ubuntu searches its global
+# ideogram/ticks files before unqualified project files.
 SUBBED="$WORKDIR/subbed.txt"
 sed -e "s|\${chrs}|$(escape_sed_repl "$CHRS_EVAL")|g" \
     -e "s|\${reverse}||g" \
+    -e "s|<<include \(iwgc_circos/\)\?ideogram.conf>>|<<include $(escape_sed_repl "${OUTDIR%/}")/ideogram.conf>>|g" \
+    -e "s|<<include \(iwgc_circos/\)\?ticks.conf>>|<<include $(escape_sed_repl "${OUTDIR%/}")/ticks.conf>>|g" \
     "$TEMPLATE" > "$SUBBED"
 
 # Replace only the first karyotype line with the resolved concrete path

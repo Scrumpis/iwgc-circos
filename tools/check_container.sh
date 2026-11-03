@@ -18,6 +18,9 @@ test -s fonts/LiberationSans-Bold.ttf
 test -s fonts/LICENSE.LiberationSans
 cmp fonts/LiberationSans-Bold.ttf /usr/local/share/fonts/iwgc/LiberationSans-Bold.ttf
 cmp fonts/LICENSE.LiberationSans /usr/share/doc/iwgc-circos-font/LICENSE.LiberationSans
+cmp patches/circos-zero-width-svg.patch /usr/share/doc/iwgc-circos/circos-zero-width-svg.patch
+cmp patches/NOTICE.md /usr/share/doc/iwgc-circos/NOTICE.md
+cmp patches/LICENSE.Circos /usr/share/doc/iwgc-circos/LICENSE.Circos
 for script in iwgc_circos_tracks.sh create_configs.sh add_legend.sh preprocess/minimap2_self_alignment.sh tools/check_container.sh; do
   bash -n "$script"
 done

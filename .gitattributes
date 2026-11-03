@@ -1,2 +1,4 @@
 # Preserve historical figures in Git; omit generated/example render outputs from source archives.
 /iwgc_circos/tmp export-ignore
+# Unified diff context requires a marker space before upstream tab indentation.
+*.patch whitespace=-space-before-tab

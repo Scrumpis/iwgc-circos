@@ -8,9 +8,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Signed Ubuntu packages supply Circos and Perl dependencies without an insecure
 # direct tarball download or unversioned CPAN installations.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates wget bzip2 git curl \
+    ca-certificates wget bzip2 git curl patch \
     python3 gawk samtools bedtools circos liblist-moreutils-perl minimap2 librsvg2-bin fontconfig \
     && rm -rf /var/lib/apt/lists/*
+
+# Reviewed zero-width SVG fix; keep the patch and notices with the modified source.
+COPY patches/circos-zero-width-svg.patch patches/NOTICE.md patches/LICENSE.Circos /usr/share/doc/iwgc-circos/
+RUN patch --forward --batch --fuzz=0 /usr/share/perl5/Circos/SVG.pm /usr/share/doc/iwgc-circos/circos-zero-width-svg.patch
 
 # Make the exact licensed fallback available to SVG rasterizers as well as Circos.
 COPY fonts/LiberationSans-Bold.ttf /usr/local/share/fonts/iwgc/LiberationSans-Bold.ttf
@@ -44,9 +48,14 @@ RUN /opt/conda/bin/conda install -y --override-channels -c conda-forge -c biocon
 ENV PATH="/opt/conda/bin:${PATH}"
 
 ARG QUARTET_REF=91b197f3992debafcaa409e82601374495b7e40e
+# This pinned package declares a modern `quartet` entry point. Keep the public
+# quartet.py command using a launcher outside its Python package/script directory.
 RUN git clone https://github.com/aaranyue/quarTeT.git /opt/quarTeT \
     && git -C /opt/quarTeT checkout --detach "$QUARTET_REF" \
-    && /usr/bin/pip3 install --no-deps /opt/quarTeT
+    && /opt/conda/bin/python -m pip install --no-deps --no-build-isolation /opt/quarTeT \
+    && test -x /opt/conda/bin/quartet \
+    && printf '#!/bin/sh\nexec /opt/conda/bin/quartet "$@"\n' > /usr/local/bin/quartet.py \
+    && chmod 755 /usr/local/bin/quartet.py
 ENV PATH="/opt/quarTeT:${PATH}"
 
 RUN samtools --version && bedtools --version && circos -modules && circos -version \

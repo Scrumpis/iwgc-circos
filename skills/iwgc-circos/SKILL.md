@@ -58,10 +58,18 @@ genome. `apptainer` is a documented substitute for `singularity`, untested here.
 
 For native operation install the listed dependencies using the platform's
 package manager, then omit `singularity exec --cleanenv "$IWGC_SIF"` from each
-command. Docker users can build `docker build --pull --no-cache --platform linux/amd64 -t iwgc-circos:candidate .` and
+command. Ubuntu also needs `liblist-moreutils-perl`. The supported image applies
+the checkout's `patches/circos-zero-width-svg.patch`; an unmodified Ubuntu 22.04
+native Circos needs the same reviewed SVG correction, with install permissions:
+`patch --forward --batch --fuzz=0 /usr/share/perl5/Circos/SVG.pm patches/circos-zero-width-svg.patch`.
+Already patched/incompatible source fails without reversing it; inspect rather
+than force. Other installations may put the module elsewhere. This corrects
+zero-width SVG fill and preserves numerical tracks and native PNG.
+Docker users can build `docker build --pull --no-cache --platform linux/amd64 -t iwgc-circos:candidate .` and
 replace that prefix with `docker run --rm -v "$PWD":/data -w /data iwgc-circos:candidate`.
 Maintainer CI is configured to clean-build/test source updates and publish tested
-version tags after setup and authorization; it has not executed yet. See the
+version tags after setup and authorization. Two initial CI attempts exposed
+packaging failures; the corrected clean image/full checks remain pending. See the
 checkout's `docs/release-process.md`.
 The full image includes telomere tools; `--target core` builds only core tracks
 and rendering. Builds download dependencies and are not fully locked. Do not
@@ -145,10 +153,11 @@ new biological conclusion from a successful render.
   positive input; no report now causes failure. Do not interpret that as absence.
 - Center fallback warning: symmetric ideogram chords may be parallel, so root-box
   center is used. Inspect letter placement; edited/translated SVG requires review.
-- PNG warning: SVG may still be valid. Prefer `rsvg-convert` in the qualified image. The old
-  0.69-8 SVG differs from its native PNG at two expected white gaps in both
-  tested backends, and ImageMagick also misplaces text. Do not accept such
-  conversion as validated output; see the current review record. Explicit `-png FILE` requires converter success.
+- PNG warning: prefer `rsvg-convert` in the qualified image. Uncorrected Circos
+  fills zero-width SVG arcs and differs from native PNG at known white gaps.
+  The reviewed patch fixes the auxiliary reproduction; actual corrected-image
+  fidelity checks remain required. ImageMagick also misplaced text in an earlier
+  test. Explicit `-png FILE` requires converter success.
 - Legend geometry error: use original Circos SVG with ideogram/plot groups and at least
   one numeric ring. `-conf`/`-ideo` are retained compatibility options; geometry comes from SVG.
 - FUSE/Singularity startup failure: report the runtime error; try a locally supported

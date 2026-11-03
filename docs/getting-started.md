@@ -18,15 +18,15 @@ assume it contains candidate scripts. Run scripts from your checkout, mounted
 into the image. Record `sha256sum iwgc-circos.sif` and `git rev-parse HEAD`.
 The verification record identifies the existing image actually tested.
 
-Docker build (not executed in this audit; Docker is unavailable):
+Docker build (Docker is unavailable locally; corrected CI build still pending):
 
 ```bash
 docker build --pull --no-cache --platform linux/amd64 -t iwgc-circos:candidate .
 ```
 
 For automated clean builds and tested-image Docker Hub releases, see
-[the release process](release-process.md). Workflows are prepared but have not
-executed on GitHub yet.
+[the release process](release-process.md). Two initial GitHub runs exposed
+packaging failures; see the [corrections and evidence](validation/ci-second-run.md).
 
 The default image includes optional quarTeT/tidk. For all other tracks and
 rendering, `docker build --target core -t iwgc-circos:core .` avoids the
@@ -36,9 +36,24 @@ does not copy or install the runtime scripts from this checkout. `CMD` opens Bas
 Native Linux requirements: Bash, GNU awk, Python 3.9+, samtools, bedtools,
 Circos and its modules; optional minimap2 for preprocessing, quarTeT/tidk for
 plant telomeres, `rsvg-convert` for labeled PNG. On Ubuntu, the core packages
-are `gawk python3 samtools bedtools circos minimap2 librsvg2-bin`. Other
+are `gawk python3 samtools bedtools circos liblist-moreutils-perl minimap2 librsvg2-bin patch`. Other
 platforms are not tested. Apptainer may substitute for Singularity but was not
 exercised here.
+
+The supported image applies the reviewed [Circos SVG correction](../patches/NOTICE.md).
+For an Ubuntu 22.04 native installation with the unmodified packaged Circos,
+apply the same patch with installation permissions before qualifying SVG output:
+
+```bash
+sudo patch --forward --batch --fuzz=0 /usr/share/perl5/Circos/SVG.pm patches/circos-zero-width-svg.patch
+```
+
+It corrects false filled areas for zero-width slices; it does not alter numeric
+tracks, positive-width fills or native PNG. Already corrected/incompatible
+source makes this command fail without reversing the patch. Inspect that result;
+do not force it. Other installations may locate the module elsewhere. Generated
+configurations explicitly select the project's ideogram/tick files so system
+defaults cannot silently replace the intended layout.
 
 ## Verify the installation
 

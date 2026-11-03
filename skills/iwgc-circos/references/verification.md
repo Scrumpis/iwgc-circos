@@ -34,8 +34,8 @@ The local image lacks an SVG-to-PNG converter, so labeled PNG conversion is
 not established by its smoke run. Circos' own PNG output is checked. Candidate
 Dockerfile includes librsvg; it still needs an actual clean Docker build.
 
-Unverified unless a later release record explicitly says otherwise: clean
-Docker build, Docker execution, GitHub Actions, Apptainer, macOS, Windows,
+Unverified unless a later release record explicitly says otherwise: successful
+corrected clean Docker build/full-image execution, Apptainer, macOS, Windows,
 ARM, general browser font portability, genome-scale performance and biological
 annotation/dating accuracy. The Dockerfile pins some upstream artifacts but
 is not a dependency lock or bit-for-bit reproducible build.
@@ -67,3 +67,22 @@ probes are white. `tests/check_render_gaps.py` detects this difference; the
 new-image CI/publishing checks must pass it. Structural smoke success alone did
 not establish SVG/native fidelity. No plot/scientific defaults were changed to
 hide this observation; clean-image verification remains pending.
+
+Second-CI follow-up: runs on `a5940bc` and `86b9b6e` actually executed and failed
+at packaging boundaries. The pinned quarTeT commit is version 1.3.1; its proper
+installation and a separate `quartet.py` launcher were verified in an isolated
+directory. The 63-test suite passed with that package and tidk 0.2.0, including
+the unchanged four-band plant control and the single-chromosome failure contract.
+Both known dependency error messages are accepted without accepting success.
+
+Ubuntu's configuration search can shadow bare project ideogram/tick includes.
+The candidate explicitly qualifies those paths and the smoke requires the
+1237.5 px outer ideogram radius derived from the project configuration. Actual
+Ubuntu-package and legacy-install smokes pass that invariant.
+
+The maintainer approved a one-line zero-width SVG fill correction after review.
+In an isolated Ubuntu-package render it changes only 17 path fill styles:
+all path geometry and the native PNG remain identical, and both gap probes
+become white. The image and fast CI now apply the patch and retain its GPL
+notices. No complete corrected Docker build/CI success is claimed. Details and
+current source identities are in the checkout's `docs/validation/ci-second-run.md`.

@@ -82,6 +82,9 @@ class Configs(unittest.TestCase):
 
     def test_custom_outdir_include_files(self):
         self.run_config('-outdir','custom')
+        text=(self.w/'custom/iwgc_circos.conf').read_text()
+        self.assertIn('<<include custom/ideogram.conf>>',text)
+        self.assertIn('<<include custom/ticks.conf>>',text)
         for f in ('ideogram.conf','ideogram.position.conf','ideogram.label.conf','bands.conf','ticks.conf','iwgc_circos.conf'):
             self.assertTrue((self.w/'custom'/f).is_file())
 

@@ -29,13 +29,20 @@ portable skill. No release/tag has been created.
   malformed karyotypes; omit empty tracks. Preserve the three main shell interfaces.
 - Use licensed Liberation Sans Bold by default, embedding the chosen font in
   labeled SVG. Text metrics differ from historical figures; inspect captions/labels.
+- Apply the reviewed Circos zero-width SVG fill correction, preserving native
+  PNG, all path geometry and positive-width fills. Ship its GPL notice/license.
+- Select project ideogram/tick includes explicitly on Ubuntu and use portable
+  installed image/housekeeping includes; verify the intended radius in smoke.
 - Add small synthetic known-answer tests, real Circos smoke, CI checks, human
   getting-started guide, project instructions, and portable versioned Agent Skill.
 - Prepare automatic clean full-image validation and version-tag Docker Hub
   publishing. The exact tested image is pushed only after all checks pass; CI
-  execution and registry publication remain pending authorization/setup.
+  first runs exposed packaging failures, now corrected locally. Successful
+  corrected clean-image execution and registry publication remain pending.
 - Repair container recipe and dependency provenance; core/full stages preserve
   an optional telomere workflow without imposing its environment on core use.
+  Install the unchanged pinned quarTeT package with compatible packaging tools
+  and retain `quartet.py` through a separate launcher.
 
 Scientific/default corrections were reviewed and authorized in the audit
 conversation; see [the proposal/evidence](validation/proposed-behavior-changes.md).
@@ -50,13 +57,15 @@ executed commands. A rendered plot is not scientific certification.
   identity and tests are recorded. No reproducible-registry digest is claimed here.
 - Review the known single-chromosome tidk 0.2.0 limitation and the qualified
   telomere workflow. Current wrapper fails on missing reports.
-- Resolve or qualify the old 0.69-8 SVG/native histogram-gap mismatch in the
-  clean candidate image; the publishing check now detects it.
+- Verify the approved SVG/native histogram-gap correction in the clean
+  candidate image; the unchanged publishing check must pass.
 - Review figures/font metrics and commission independent scientific/maintainer
   review. Automatic skill discovery and other container engines/platforms are
   not established by the explicit fresh-agent trial.
 
-All existing representative results were preserved. No push, merge, tag,
-release publication or upstream changes were made.
+All existing representative results were preserved. The maintainer pushed
+candidate commits for CI; no merge, tag, release publication or upstream
+repository modification was performed by this review. See the
+[second-run evidence](validation/ci-second-run.md).
 
 Current decision and exact proposed freeze commits: [GO/NO-GO report](validation/final-review/GO-NO-GO.md).

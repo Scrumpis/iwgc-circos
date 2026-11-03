@@ -1,0 +1,468 @@
+{
+  "candidate_commit": "86b9b6ed66e1cb4f92321d117b3fc0dce9ce95f9",
+  "runs": [
+    {
+      "name": "Validate",
+      "run_id": 41547650006,
+      "job_id": 125627059409,
+      "url": "https://github.com/Scrumpis/iwgc-circos/actions/runs/41547650006",
+      "conclusion": "failure",
+      "unit_tests": {
+        "discovered": 63,
+        "passed": 61,
+        "skipped": 2,
+        "failures": 0,
+        "seconds": 14.188
+      },
+      "failure": "Circos configuration include etc/image.conf missing",
+      "circos_exit_code": 255
+    },
+    {
+      "name": "Clean container",
+      "run_id": 41547649975,
+      "job_id": 125627059500,
+      "url": "https://github.com/Scrumpis/iwgc-circos/actions/runs/41547649975",
+      "conclusion": "failure",
+      "RIdeogram_installation": "success",
+      "failure": "quarTeT installed as UNKNOWN-0.0.0 without quartet.py",
+      "missing_command_exit_code": 127,
+      "docker_step_exit_code": 1,
+      "image_id": null,
+      "registry_digest": null,
+      "full_image_checks": "skipped"
+    }
+  ],
+  "selected_log_lines": [
+    "2026-11-02T23:44:52.2124043Z Ran 63 tests in 14.188s",
+    "2026-11-02T23:44:52.2124408Z OK (skipped=2)",
+    "2026-11-02T23:44:54.5447925Z RuntimeError: circos exited 255:",
+    "2026-11-02T23:44:54.5461051Z   Config::General The file \"etc/image.conf\" does not exist within ConfigPath:",
+    "2026-11-02T23:44:54.5469076Z \tCircos::Error::fatal_error(\"configuration\", \"cannot_find_include\", \"/etc/circos\\x{a}iwgc_circos\\x{a}iwgc_circos/etc\\x{a}/usr/bin/etc\\x{a}/usr/bin\"..., \"Config::General The file \\\"etc/image.conf\\\" does not exist with\"...) called at /usr/share/perl5/Circos/Configuration.pm line 826",
+    "2026-11-02T23:48:06.3090473Z #16 162.4 * DONE (RIdeogram)",
+    "2026-11-02T23:48:44.9439807Z #19 4.049   Created wheel for UNKNOWN: filename=UNKNOWN-0.0.0-py3-none-any.whl size=1793 sha256=e1fcd36a3ae419719591e156a6390d5f59c5b9ed9ea1e038d4461850a6c2b50c",
+    "2026-11-02T23:48:44.9443325Z #19 4.057 Successfully installed UNKNOWN-0.0.0",
+    "2026-11-02T23:48:45.6822317Z #20 0.687 /bin/sh: 1: quartet.py: not found",
+    "2026-11-02T23:48:45.6834814Z 0.687 /bin/sh: 1: quartet.py: not found"
+  ],
+  "maintainer_svg_approval": "Apply the one-line SVG correction",
+  "evidence_scope": "Actual failed GitHub runs; corrected package/SIF/raster reproductions are auxiliary, not a clean Docker build.",
+  "environment": {
+    "sif_sha256": "5067065f346b5233dc708bf032053a3287a38b7150ca12ca0900cb8419db7cb7",
+    "Ubuntu_package_hybrid": true,
+    "clean_Docker_execution_of_correction": false,
+    "patch_and_image_CI": "pending next push",
+    "rasterizer": "host librsvg API, exact Liberation Sans Bold registered",
+    "same_implementer_and_rechecker": true
+  },
+  "download_sha256": {
+    "iwgc-ubuntu-circos.deb": "f179410f8f1acc587b4ddf45b8a4cddd46ccc16e195e7363b3eda60122710255",
+    "iwgc-circos-symbols.deb": "123054f626c8dce5c0690345d1be0973d7992e5f6010bccc6c28b293912eb162",
+    "iwgc-cmu-fonts.deb": "b81f546e30b28e0e3bfd2a1ce37d0a3f726959812b098c8befd3a9a1cc3f85a3",
+    "iwgc-quartet-pinned.tar.gz": "172588d04699d48810f68d9f8921e7df64de04f192eeb1754c385bbd69e2a92f"
+  },
+  "patch_application": {
+    "first_application_rc": 0,
+    "second_application_rc": 1,
+    "already_patched_source_unchanged": true,
+    "matches_experiment": true,
+    "upstream_svg_module_sha256": "96e6e9cb54793a7fb520796f72cc3e68c5167331f04ef9e0a3c1c0d31c7e609e",
+    "patched_svg_module_sha256": "6cd524951fcaaac4409779776d6fe27f218708720ee5f771e384bf8bdebc14e9"
+  },
+  "render_comparison": {
+    "native_png_sha256": "c8f39e3c43bbf49d7ac8ec82320ead685648a2c2e95618a04875c868f4eef7f6",
+    "native_png_byte_identical": true,
+    "all_svg_path_geometry_identical": true,
+    "changed_svg_path_styles": [
+      {
+        "path": "M 2207.79,1116.43 A805.04,805.04 0.00 0,1 2219.88,1860.36",
+        "before": "stroke-linecap:round;fill:rgb(239,59,44);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 2219.88,1860.36 A805.04,805.04 0.00 0,1 2219.94,1860.23",
+        "before": "stroke-linecap:round;fill:rgb(239,59,44);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 2219.88,1860.36 A805.04,805.04 0.00 0,1 1617.08,2296.48",
+        "before": "stroke-linecap:round;fill:rgb(239,59,44);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 1408.87,2299.87 A805.04,805.04 0.00 0,1 792.21,1883.57",
+        "before": "stroke-linecap:round;fill:rgb(239,59,44);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 792.21,1883.57 A805.04,805.04 0.00 0,1 792.28,1883.69",
+        "before": "stroke-linecap:round;fill:rgb(239,59,44);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 792.21,1883.57 A805.04,805.04 0.00 0,1 780.12,1139.64",
+        "before": "stroke-linecap:round;fill:rgb(239,59,44);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 780.12,1139.64 A805.04,805.04 0.00 0,1 780.06,1139.77",
+        "before": "stroke-linecap:round;fill:rgb(239,59,44);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 780.12,1139.64 A805.04,805.04 0.00 0,1 1382.92,703.52",
+        "before": "stroke-linecap:round;fill:rgb(239,59,44);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 1579.73,800.19 A704.33,704.33 0.00 0,1 2119.25,1164.42",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 2119.25,1164.42 A704.33,704.33 0.00 0,1 2119.19,1164.31",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 2119.25,1164.42 A704.33,704.33 0.00 0,1 2129.83,1815.28",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 2129.83,1815.28 A704.33,704.33 0.00 0,1 2129.88,1815.17",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 1420.27,2199.81 A704.33,704.33 0.00 0,1 880.75,1835.58",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 880.75,1835.58 A704.33,704.33 0.00 0,1 880.81,1835.69",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 880.75,1835.58 A704.33,704.33 0.00 0,1 870.17,1184.72",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 870.17,1184.72 A704.33,704.33 0.00 0,1 870.12,1184.83",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      },
+      {
+        "path": "M 870.17,1184.72 A704.33,704.33 0.00 0,1 1397.57,803.15",
+        "before": "stroke-linecap:round;fill:rgb(253,141,60);",
+        "after": "stroke-linecap:round;fill:none;"
+      }
+    ],
+    "changed_style_count": 17
+  },
+  "render_gate": {
+    "unchanged_test": "tests/check_render_gaps.py",
+    "before": {
+      "exit_code": 1,
+      "native": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          255,
+          255
+        ]
+      ],
+      "svg": [
+        [
+          239,
+          59,
+          44
+        ],
+        [
+          253,
+          141,
+          60
+        ]
+      ]
+    },
+    "after": {
+      "exit_code": 0,
+      "native": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          255,
+          255
+        ]
+      ],
+      "svg": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          255,
+          255
+        ]
+      ]
+    }
+  },
+  "checks": {
+    "full_suite_with_pinned_quartet": {
+      "tests": 63,
+      "passed": 63,
+      "skipped": 0,
+      "seconds": 12.01,
+      "exit_code": 0
+    },
+    "focused_config_after_include_qualification": {
+      "passed": 8,
+      "seconds": 7.392,
+      "exit_code": 0
+    },
+    "legacy_smoke": {
+      "exit_code": 0
+    },
+    "Ubuntu_package_smoke": {
+      "exit_code": 0
+    },
+    "patched_Ubuntu_smoke": {
+      "exit_code": 0
+    },
+    "wrong_stock_layout": "rejected by radius invariant",
+    "workflow_guards": {
+      "cases": 17,
+      "exit_code": 0
+    },
+    "actionlint": {
+      "version": "1.7.12",
+      "exit_code": 0,
+      "shellcheck_pyflakes": "disabled"
+    },
+    "bash_syntax": {
+      "exit_code": 0
+    },
+    "skill_repository_validator": {
+      "exit_code": 0
+    },
+    "skill_creator_validator": {
+      "exit_code": 0
+    },
+    "patch_whitespace": "Only the syntactic unified-diff marker before tab indentation is exempted via .gitattributes; other whitespace checks remain enabled."
+  },
+  "commands": [
+    {
+      "argv": [
+        "singularity",
+        "exec",
+        "--cleanenv",
+        "../iwgc_circos/iwgc-circos-tracks.sif",
+        "/opt/conda/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-deps",
+        "--no-build-isolation",
+        "--target",
+        "/tmp/iwgc-quartet-installed",
+        "/tmp/iwgc-quartet-pinned-source"
+      ],
+      "rc": 0
+    },
+    {
+      "argv": [
+        "singularity",
+        "exec",
+        "--cleanenv",
+        "--env",
+        "PYTHONPATH=/tmp/iwgc-quartet-installed",
+        "--env",
+        "PREPEND_PATH=/tmp/iwgc-quartet-compat/bin",
+        "../iwgc_circos/iwgc-circos-tracks.sif",
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "rc": 0
+    },
+    {
+      "argv": [
+        "singularity",
+        "exec",
+        "--cleanenv",
+        "--env",
+        "PYTHONPATH=/tmp/iwgc-quartet-installed",
+        "--env",
+        "PREPEND_PATH=/tmp/iwgc-quartet-compat/bin",
+        "../iwgc_circos/iwgc-circos-tracks.sif",
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_configs.py",
+        "-v"
+      ],
+      "rc": 0
+    },
+    {
+      "argv": [
+        "singularity",
+        "exec",
+        "--cleanenv",
+        "../iwgc_circos/iwgc-circos-tracks.sif",
+        "python3",
+        "tests/smoke.py",
+        "--output",
+        "/tmp/iwgc-second-final-legacy-smoke"
+      ],
+      "rc": 0
+    },
+    {
+      "argv": [
+        "singularity",
+        "exec",
+        "--cleanenv",
+        "--env",
+        "PERL5LIB=/usr/share/perl5",
+        "--env",
+        "PREPEND_PATH=/usr/bin",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/bin/circos:/usr/bin/circos",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/share/perl5/Circos.pm:/usr/share/perl5/Circos.pm",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/share/perl5/Circos:/usr/share/perl5/Circos",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/etc/circos:/etc/circos",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/share/circos:/usr/share/circos",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/share/fonts/truetype/cmu:/usr/share/fonts/truetype/cmu",
+        "../iwgc_circos/iwgc-circos-tracks.sif",
+        "/opt/conda/bin/python",
+        "tests/smoke.py",
+        "--output",
+        "/tmp/iwgc-second-final-ubuntu-smoke"
+      ],
+      "rc": 0
+    },
+    {
+      "argv": [
+        "singularity",
+        "exec",
+        "--cleanenv",
+        "--env",
+        "PERL5LIB=/usr/share/perl5",
+        "--env",
+        "PREPEND_PATH=/usr/bin",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/bin/circos:/usr/bin/circos",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/share/perl5/Circos.pm:/usr/share/perl5/Circos.pm",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/share/perl5/Circos:/usr/share/perl5/Circos",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/etc/circos:/etc/circos",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/share/circos:/usr/share/circos",
+        "--bind",
+        "/tmp/iwgc-ubuntu-circos/usr/share/fonts/truetype/cmu:/usr/share/fonts/truetype/cmu",
+        "--bind",
+        "/tmp/iwgc-ubuntu-svg-proposed.pm:/usr/share/perl5/Circos/SVG.pm",
+        "../iwgc_circos/iwgc-circos-tracks.sif",
+        "/opt/conda/bin/python",
+        "tests/smoke.py",
+        "--output",
+        "/tmp/iwgc-second-proposed-svg-smoke"
+      ],
+      "rc": 0,
+      "note": "temporary approved renderer experiment; an additional preservation mount of original SVG.pm was read-only"
+    },
+    {
+      "argv": [
+        "python3",
+        "tests/check_render_gaps.py",
+        "/tmp/iwgc-second-fix-project-smoke/iwgc_circos/tmp/iwgc_circos.png",
+        "/tmp/iwgc-ubuntu-correct-project-raster.png"
+      ],
+      "rc": 1,
+      "expected": "detect original defect"
+    },
+    {
+      "argv": [
+        "python3",
+        "tests/check_render_gaps.py",
+        "/tmp/iwgc-second-fix-project-smoke/iwgc_circos/tmp/iwgc_circos.png",
+        "/tmp/iwgc-proposed-svg-raster.png"
+      ],
+      "rc": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "tests/check_workflows.py"
+      ],
+      "rc": 0
+    },
+    {
+      "argv": [
+        "actionlint",
+        "-shellcheck=",
+        "-pyflakes="
+      ],
+      "rc": 0
+    }
+  ],
+  "source_sha256": {
+    ".dockerignore": "42ec49be43c4949f9b525dd2c96a6630f30104806384f5d41fa872898e5abcaf",
+    ".github/workflows/validate.yml": "f06d9b09cb3cc6d5459909cfbbd468799cb1ee02a15b7000d10799333ffc952b",
+    "Dockerfile": "053491e77c249c684e925ab106238ede416bb64ab008bbf21f1098a4040d228b",
+    "create_configs.sh": "5f96d65d035191f5dd5a536626317d703468e0ce51cf556f124fe325eeb283f1",
+    "docs/getting-started.md": "984d553cf4181a883328873c40f9ffb01b245a3eae98e3ca47f354a25cb3e96c",
+    "docs/release-process.md": "70f9a352d90a275931da8c441e56b6776dc2d6b777daf606cb8021e95c4e1180",
+    "docs/validation/ci-second-run.md": "a27fac4d5922e462680db0be1b6de09b0b4ea92290eb7eb7248080879dc60aa2",
+    "docs/validation/rendering-proposal/README.md": "55eb74d2c4171db6b03cc6f356e7ff33f954cf02e20dc2c36f0155775fb3baaf",
+    "docs/validation/rendering-proposal/circos-zero-width-svg.patch": "88e8bf1cea3e5cb9f3b3b1f1e91f42d1024baadf03932dba56d933a90d7a0aa9",
+    "docs/validation/rendering-proposal/comparison.json": "2b87c7081a1b39e4ed06254bce5a8d2077b7f98240202cede5477879228bd9b9",
+    "iwgc_circos/iwgc_circos.conf": "1cdfd87d6bfd384ea1e7caecf9a56f09e74abfd48d790dafc73be35291440341",
+    "iwgc_circos_template.config": "1e09e27e90f2f4afa72e26d8471bb83d128e948a72bb626ce3bcdc1b9b88813c",
+    "patches/LICENSE.Circos": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    "patches/NOTICE.md": "b9d220d3efd095f7d5032b69f52293190e01e78e2c9b0a5b25f037475aac318c",
+    "patches/circos-zero-width-svg.patch": "88e8bf1cea3e5cb9f3b3b1f1e91f42d1024baadf03932dba56d933a90d7a0aa9",
+    "skills/iwgc-circos/SKILL.md": "c44a604c5c42841a1efb85beac0a5c46ff67258afd901a64c47de694a8a9f2e7",
+    "skills/iwgc-circos/references/verification.md": "9f6b2fcc06a8fe389ac081150655512fdcec94f8e539878ca74575c3bc6316d7",
+    "tests/check_workflows.py": "f3c930997cd4557a09d76cd58250d05d22b8a42e3d0cfeee44ff978e6a7910b1",
+    "tests/smoke.py": "95f8e2152240619b2d46fc97b999bf5ea90196dde67abed447ca5ec7bcc7fec8",
+    "tests/test_configs.py": "02d5c8b5e4b45a81b01f4700ef9a500b37f06db5f347ed10c1735932f07fd34c",
+    "tests/test_pipeline.py": "6c97340530d680f02bc1c7efd13ca503193ec5f43165efeda69714c3546be950",
+    "tools/check_container.sh": "42e1efd282420e7fabca8a4dd6f36c9db093fda15ca797faa7fb40bee19c2015",
+    ".gitattributes": "bd9ee14a735833317ba2320c468e3b5139176efd4ca5d963c17b5ee068259af9",
+    "docs/release-notes-0.4.0-rc.1.md": "11951fbd814700f709799f315062c078d417d0f60ab37d7916293b78b42ebc05"
+  },
+  "preserved_scientific_sources": {
+    "iwgc_circos_tracks.sh": "7958435e8b336f4aa8c577752ccb7a5b515d8b1b098bab7e5d4f0b3e1b357484",
+    "tools/prepare_inputs.py": "56f80209b6666bd6580efb12dd6fda5711731243e2950fdea2aede5ee3bd3bab",
+    "preprocess/minimap2_self_alignment.sh": "1401ae250f2ef85f6309c498077d25489ab41922972c08b753311b2840276ea6",
+    "tests/reproduce_baseline.py": "8b3cc2412024a2680c99aa83762c09e166063adc86bf987e0bba02e3410219fe",
+    "docs/validation/baseline-probes.json": "0197cc8b605fc28e7ec22421dad4a0d418c931961b4b153771f1ad94c43aceec",
+    "docs/validation/baseline-reproduced.json": "974e3e3283be30132868b52f5e081018913067d6125972d8ec297897249a6568"
+  }
+}

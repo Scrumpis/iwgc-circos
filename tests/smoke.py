@@ -37,6 +37,11 @@ def check_svg(path, count):
     plots=[g for key,g in groups.items() if re.fullmatch('plot[0-9]+',key)]
     assert len(plots)==count, groups.keys()
     assert len(groups['ideograms'].findall(NS+'path'))>=2
+    # The project radius is 0.825 * 1500 = 1237.5 px. Ubuntu's global
+    # ideogram.conf uses 0.80 instead; do not accept its silent substitution.
+    radii=[float(r) for p in groups['ideograms'].findall(NS+'path')
+           for r in re.findall(r'A\s*([0-9.]+)',p.get('d',''))]
+    assert radii and abs(max(radii)-1237.5)<0.01, 'project ideogram configuration was not loaded'
     assert len(groups['track_0'].findall(NS+'path'))>=1, 'no rendered link ribbon'
     for plot in plots:
         assert plot.findall('.//'+NS+'path'), 'empty plotted ring'
